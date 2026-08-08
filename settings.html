@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jessel — Account Settings</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap">
+<style>
+  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-soft:#EAE8D5; --ivory-card:#FDFDF7; --terracotta:#9B3B3B; --hairline-dark:rgba(13,40,24,0.15); }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
+  body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
+  .nav { display:flex; justify-content:space-between; align-items:center; padding:1.75rem 3rem; border-bottom:1px solid var(--hairline-dark); background:var(--ivory); }
+  .brand { display:flex; align-items:center; gap:0.85rem; text-decoration:none; }
+  .brand__mark { width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; }
+  .brand__name { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:500; }
+  .main { max-width:640px; margin:0 auto; padding:5rem 2rem 8rem; }
+  .form-eyebrow { display:inline-flex; font-weight:500; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:1.5rem; }
+  .form-title { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.2rem,3.5vw,2.8rem); margin-bottom:4rem; padding-bottom:2rem; border-bottom:1px solid var(--hairline-dark); }
+  .form-title em { font-style:italic; color:var(--gold-dark); }
+  .section { margin-bottom:4rem; }
+  .section-title { font-size:11px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:2rem; padding-bottom:1rem; border-bottom:1px solid var(--hairline-dark); }
+  .field { margin-bottom:2rem; }
+  .field label { display:block; font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:0.85rem; }
+  .field input { width:100%; background:transparent; border:0; border-bottom:1px solid var(--hairline-dark); padding:0.5rem 0 0.85rem; font-size:16px; font-weight:300; color:var(--jungle-primary); outline:none; }
+  .field input:focus { border-bottom-color:var(--gold); }
+  .btn-primary { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.85rem 1.5rem; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .btn-primary:hover { background:var(--gold); color:var(--jungle-deep); }
+  .integration-row { display:flex; justify-content:space-between; align-items:center; padding:1.5rem 0; border-bottom:1px solid var(--hairline-dark); }
+  .integration-name { font-size:15px; font-weight:500; }
+  .integration-status { font-size:12px; color:rgba(13,40,24,0.5); margin-top:0.15rem; }
+  .btn-connect { background:transparent; border:1px solid var(--hairline-dark); color:var(--jungle-primary); padding:0.6rem 1.2rem; font-size:11px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .toggle-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; }
+  .toggle { width:44px; height:24px; background:var(--ivory-soft); border:1px solid var(--hairline-dark); border-radius:12px; position:relative; cursor:pointer; }
+  .toggle::after { content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; background:var(--ivory); border-radius:50%; transition:transform 300ms; }
+  .toggle.active { background:var(--jungle-primary); border-color:var(--jungle-primary); }
+  .toggle.active::after { transform:translateX(20px); background:var(--gold); }
+  .billing-row { display:flex; justify-content:space-between; align-items:center; padding:1.5rem 0; }
+  .plan-name { font-size:15px; font-weight:500; }
+  .plan-desc { font-size:12px; color:rgba(13,40,24,0.5); margin-top:0.15rem; }
+  .btn-disabled { background:transparent; border:1px solid var(--hairline-dark); color:rgba(13,40,24,0.4); cursor:not-allowed; padding:0.65rem 1.2rem; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; border-radius:2px; }
+  .coming-soon { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(13,40,24,0.35); margin-left:0.5rem; }
+  .danger-zone { border:1px solid rgba(155,59,59,0.3); border-radius:4px; padding:2rem; background:rgba(155,59,59,0.02); }
+  .danger-text { font-size:14px; color:rgba(155,59,59,0.8); margin-bottom:1.5rem; }
+  .btn-danger { background:transparent; border:1px solid var(--terracotta); color:var(--terracotta); padding:0.75rem 1.5rem; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .btn-danger:hover { background:var(--terracotta); color:var(--ivory); }
+  @media (max-width:880px) { .nav{padding:1.25rem 1.5rem;} .main{padding:3rem 1.5rem 5rem;} }
+</style>
+</head>
+<body>
+<nav class="nav"><a href="dashboard.html" class="brand"><div class="brand__mark">J</div><div class="brand__name">Jessel<sup>™</sup></div></a></nav>
+<main class="main">
+  <div class="form-eyebrow">Settings</div>
+  <h1 class="form-title">Account <em>settings</em>.</h1>
+
+  <section class="section">
+    <h2 class="section-title">Profile</h2>
+    <form id="profileForm">
+      <div class="field"><label for="name">Full name</label><input id="name" type="text" placeholder="Enter your name"></div>
+      <div class="field"><label for="email">Email address</label><input id="email" type="email" placeholder="you@email.com"></div>
+      <button class="btn-primary" type="submit" id="saveBtn"><span>Save changes</span></button>
+    </form>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Connected accounts</h2>
+    <div class="integration-row">
+      <div><div class="integration-name">GitHub</div><div class="integration-status">Not connected</div></div>
+      <button class="btn-connect" disabled>Connect</button>
+    </div>
+    <div class="integration-row">
+      <div><div class="integration-name">Google</div><div class="integration-status">Not connected</div></div>
+      <button class="btn-connect" disabled>Connect</button>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Notifications</h2>
+    <div class="toggle-row">
+      <span>Email me when a project gets a new update</span>
+      <div class="toggle" id="notifToggle"></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Billing</h2>
+    <div class="billing-row">
+      <div><div class="plan-name">Free plan</div><div class="plan-desc">Includes 3 projects and weekly digests.</div></div>
+      <div style="display:flex;align-items:center;"><button class="btn-disabled">Upgrade</button><span class="coming-soon">Coming soon</span></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <h2 class="section-title">Danger zone</h2>
+    <div class="danger-zone">
+      <p class="danger-text">This permanently deletes your account and all projects. This can't be undone.</p>
+      <button class="btn-danger" id="deleteBtn">Delete account</button>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+  let notify = false;
+  let currentUser = null;
+
+  async function load() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { window.location.href = 'login.html'; return; }
+    currentUser = user;
+
+    const { data } = await sb.from('freelancers').select('*').eq('id', user.id).single();
+    if (data) {
+      document.getElementById('name').value = data.name || '';
+      document.getElementById('email').value = data.email || user.email || '';
+      notify = data.notify_on_updates || false;
+    } else {
+      document.getElementById('email').value = user.email || '';
+    }
+    document.getElementById('notifToggle').classList.toggle('active', notify);
+  }
+
+  document.getElementById('notifToggle').addEventListener('click', function () {
+    notify = !notify;
+    this.classList.toggle('active', notify);
+  });
+
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    await sb.from('freelancers').upsert({ id: currentUser.id, name, email, notify_on_updates: notify });
+    const btn = document.getElementById('saveBtn');
+    btn.querySelector('span').textContent = 'Saved!';
+    setTimeout(() => { btn.querySelector('span').textContent = 'Save changes'; }, 2000);
+  });
+
+  document.getElementById('deleteBtn').addEventListener('click', async () => {
+    if (!confirm("This permanently deletes your account and all projects. This can't be undone. Continue?")) return;
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  load();
+</script>
+</body>
+</html>

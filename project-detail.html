@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jessel — Project</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap">
+<style>
+  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-light:#D4AF37; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-card:#FDFDF7; --hairline-dark:rgba(13,40,24,0.15); }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
+  body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
+  .nav { display:flex; justify-content:space-between; align-items:center; padding:1.75rem 3rem; border-bottom:1px solid var(--hairline-dark); background:var(--ivory); }
+  .brand { display:flex; align-items:center; gap:0.85rem; text-decoration:none; }
+  .brand__mark { width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; }
+  .brand__name { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:500; }
+  .nav-link { display:inline-flex; align-items:center; gap:0.6rem; color:var(--jungle-primary); text-decoration:none; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; }
+  .main { max-width:900px; margin:0 auto; padding:4rem 2rem 8rem; }
+  .header-row { display:flex; justify-content:space-between; align-items:flex-end; padding-bottom:2.5rem; border-bottom:1px solid var(--hairline-dark); margin-bottom:3rem; }
+  .eyebrow { display:inline-flex; font-weight:500; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:1rem; }
+  .title-group { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
+  .page-title { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2rem,3vw,2.8rem); }
+  .badge { font-size:10px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; padding:0.35rem 0.65rem; border-radius:2px; background:rgba(143,188,143,0.15); color:var(--jungle-secondary); border:1px solid rgba(143,188,143,0.3); }
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2rem; margin-bottom:3rem; }
+  .stat-label { display:block; font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:0.5rem; }
+  .stat-value { font-size:14px; word-break:break-all; }
+  .stat-value.mono { font-family:'JetBrains Mono',monospace; font-size:13px; }
+  .client-link-box { background:var(--ivory-card); border:1px solid var(--hairline-dark); border-left:2px solid var(--gold); border-radius:2px; padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:4rem; gap:1rem; flex-wrap:wrap; }
+  .link-label { font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); display:block; margin-bottom:0.35rem; }
+  .link-url { font-family:'JetBrains Mono',monospace; font-size:14px; }
+  .copy-btn { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.75rem 1.25rem; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .add-milestone-btn { background:transparent; border:1px solid var(--hairline-dark); color:var(--jungle-primary); padding:0.75rem 1.25rem; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .milestone-input-group { display:none; margin-top:1rem; align-items:center; gap:1rem; }
+  .milestone-input-group.active { display:flex; }
+  .milestone-input { flex:1; background:transparent; border:0; border-bottom:1px solid var(--hairline-dark); padding:0.5rem 0; font-size:16px; outline:none; }
+  .milestone-submit { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.65rem 1.25rem; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .timeline { position:relative; padding-left:2rem; }
+  .timeline-item { position:relative; padding-bottom:2.5rem; }
+  .timeline-marker { position:absolute; left:-2rem; top:5px; width:11px; height:11px; border-radius:50%; background:var(--ivory); border:2px solid var(--jungle-secondary); }
+  .timeline-item--milestone .timeline-marker { width:14px; height:14px; background:var(--gold); border-color:var(--gold-light); left:-2.1rem; transform:rotate(45deg); border-radius:2px; }
+  .timeline-item--milestone .timeline-content { background:var(--ivory-card); border:1px solid var(--hairline-dark); border-left:2px solid var(--gold); padding:1.25rem 1.5rem; border-radius:2px; }
+  .timeline-text { font-size:15px; color:rgba(13,40,24,0.8); line-height:1.6; margin-bottom:0.5rem; }
+  .timeline-time { font-size:11px; color:rgba(13,40,24,0.4); }
+  .timeline-empty { text-align:center; padding:4rem 2rem; color:rgba(13,40,24,0.5); font-size:14px; border:1px dashed var(--hairline-dark); border-radius:2px; background:var(--ivory-card); margin-left:-2rem; }
+  .client-feedback { margin-top:1rem; padding-top:0.85rem; border-top:1px dashed var(--hairline-dark); display:flex; flex-direction:column; gap:0.5rem; }
+  .client-feedback-item { font-size:13px; color:rgba(13,40,24,0.75); display:flex; align-items:flex-start; gap:0.5rem; }
+  .client-feedback-item .cf-icon { color:var(--gold-dark); flex-shrink:0; }
+  .client-feedback-item .cf-time { font-size:11px; color:rgba(13,40,24,0.4); margin-left:0.4rem; }
+  @media (max-width:880px) { .nav{padding:1.25rem 1.5rem;} .main{padding:3rem 1.5rem 5rem;} .header-row{flex-direction:column;align-items:flex-start;gap:1.5rem;} }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="dashboard.html" class="brand"><div class="brand__mark">J</div><div class="brand__name">Jessel<sup>™</sup></div></a>
+  <a href="dashboard.html" class="nav-link">
+    <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M13 5H1M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+    Back to Dashboard
+  </a>
+</nav>
+<main class="main">
+  <div class="header-row">
+    <div>
+      <div class="eyebrow">Project Workspace</div>
+      <div class="title-group"><h1 class="page-title" id="projectName">Loading…</h1><span class="badge" id="projectBadge"></span></div>
+    </div>
+  </div>
+  <div class="stats-grid">
+    <div><span class="stat-label">Repository</span><span class="stat-value mono" id="statRepo">—</span></div>
+    <div><span class="stat-label">Client Email</span><span class="stat-value" id="statEmail">—</span></div>
+    <div><span class="stat-label">Digest Frequency</span><span class="stat-value" id="statFreq">—</span></div>
+    <div><span class="stat-label">Preview URL</span><span class="stat-value mono" id="statPreview">—</span></div>
+  </div>
+  <div class="client-link-box">
+    <div><span class="link-label">Client Update URL</span><div class="link-url" id="clientLink">—</div></div>
+    <button class="copy-btn" id="copyBtn">Copy client link</button>
+  </div>
+  <div style="margin-bottom:2.5rem;">
+    <button class="add-milestone-btn" id="addMilestoneBtn">+ Add milestone</button>
+    <form class="milestone-input-group" id="milestoneForm">
+      <input class="milestone-input" id="milestoneInput" placeholder="e.g. Authentication flow completed">
+      <button class="milestone-submit" type="submit">Add</button>
+    </form>
+  </div>
+  <div class="timeline" id="timeline">
+    <div class="timeline-empty">Loading…</div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const projectId = params.get('id');
+  let project = null;
+
+  async function load() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { window.location.href = 'login.html'; return; }
+    if (!projectId) { window.location.href = 'dashboard.html'; return; }
+
+    const { data: proj } = await sb.from('projects').select('*').eq('id', projectId).single();
+    if (!proj || proj.freelancer_id !== user.id) { window.location.href = 'dashboard.html'; return; }
+    project = proj;
+
+    document.getElementById('projectName').textContent = proj.name;
+    document.getElementById('projectBadge').textContent = proj.status === 'completed' ? 'Completed' : 'Active';
+    document.getElementById('statRepo').textContent = proj.github_repo || '—';
+    document.getElementById('statEmail').textContent = proj.client_email || '—';
+    document.getElementById('statFreq').textContent = proj.digest_frequency || '—';
+    document.getElementById('statPreview').textContent = proj.preview_url || '—';
+    document.getElementById('clientLink').textContent = window.location.origin + '/client-page.html?p=' + proj.client_link_slug;
+
+    loadUpdates();
+  }
+
+  async function loadUpdates() {
+    const { data: updates } = await sb.from('updates').select('*').eq('project_id', projectId).order('created_at', { ascending: false });
+    await renderTimeline(updates || []);
+  }
+
+  async function renderTimeline(updates) {
+    const el = document.getElementById('timeline');
+    if (updates.length === 0) {
+      el.innerHTML = '<div class="timeline-empty">No activity yet. Updates will appear here once your GitHub repo is connected.</div>';
+      return;
+    }
+
+    // Fetch all client reactions/comments for these updates in one go
+    const updateIds = updates.map(u => u.id);
+    const { data: reactions } = await sb.from('reactions').select('*').in('update_id', updateIds).order('created_at', { ascending: true });
+    const reactionsByUpdate = {};
+    (reactions || []).forEach(r => {
+      if (!reactionsByUpdate[r.update_id]) reactionsByUpdate[r.update_id] = [];
+      reactionsByUpdate[r.update_id].push(r);
+    });
+
+    el.innerHTML = updates.map(u => {
+      const feedback = reactionsByUpdate[u.id] || [];
+      const feedbackHtml = feedback.length === 0 ? '' : `
+        <div class="client-feedback">
+          ${feedback.map(f => `
+            <div class="client-feedback-item">
+              <span class="cf-icon">${f.emoji_or_comment.startsWith('👍') ? '👍' : '💬'}</span>
+              <span>${f.emoji_or_comment.replace(/</g, '&lt;')}<span class="cf-time">${new Date(f.created_at).toLocaleString()}</span></span>
+            </div>
+          `).join('')}
+        </div>
+      `;
+      return `
+        <div class="timeline-item ${u.type === 'milestone' ? 'timeline-item--milestone' : ''}">
+          <div class="timeline-marker"></div>
+          <div class="timeline-content">
+            <p class="timeline-text">${(u.friendly_summary || u.raw_message || '').replace(/</g, '&lt;')}</p>
+            <div class="timeline-time">${new Date(u.created_at).toLocaleString()}</div>
+            ${feedbackHtml}
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  document.getElementById('copyBtn').addEventListener('click', () => {
+    navigator.clipboard.writeText(document.getElementById('clientLink').textContent);
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy client link'; }, 2000);
+  });
+
+  document.getElementById('addMilestoneBtn').addEventListener('click', () => {
+    const form = document.getElementById('milestoneForm');
+    form.classList.toggle('active');
+    if (form.classList.contains('active')) document.getElementById('milestoneInput').focus();
+  });
+
+  document.getElementById('milestoneForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const text = document.getElementById('milestoneInput').value.trim();
+    if (!text) return;
+    await sb.from('updates').insert({ project_id: projectId, type: 'milestone', friendly_summary: text });
+    document.getElementById('milestoneInput').value = '';
+    document.getElementById('milestoneForm').classList.remove('active');
+    loadUpdates();
+  });
+
+  load();
+</script>
+</body>
+</html>

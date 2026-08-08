@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jessel — New Project</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap">
+<style>
+  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-soft:#EAE8D5; --hairline-dark:rgba(13,40,24,0.15); --ease-quiet:cubic-bezier(.22,1,.36,1); --ease-precise:cubic-bezier(.4,0,.2,1); }
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
+  body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
+  .nav { display:flex; justify-content:space-between; align-items:center; padding:1.75rem 3rem; border-bottom:1px solid var(--hairline-dark); background:var(--ivory); }
+  .brand { display:flex; align-items:center; gap:0.85rem; text-decoration:none; }
+  .brand__mark { width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; }
+  .brand__name { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--jungle-primary); font-weight:500; }
+  .nav-link { display:inline-flex; align-items:center; gap:0.6rem; color:var(--jungle-primary); text-decoration:none; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; }
+  .nav-link:hover { color:var(--gold-dark); }
+  .main { max-width:640px; margin:0 auto; padding:5rem 2rem 8rem; }
+  .form-eyebrow { display:inline-flex; font-weight:500; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:1.5rem; }
+  .form-title { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.2rem,3.5vw,2.8rem); margin-bottom:3.5rem; padding-bottom:2rem; border-bottom:1px solid var(--hairline-dark); }
+  .form-title em { font-style:italic; color:var(--gold-dark); }
+  .field { margin-bottom:2.5rem; }
+  .field label { display:block; font-size:11px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:0.95rem; }
+  .field input { width:100%; background:transparent; border:0; border-bottom:1px solid var(--hairline-dark); padding:0.5rem 0 0.85rem; font-size:16px; font-weight:300; color:var(--jungle-primary); outline:none; }
+  .field input:focus { border-bottom-color:var(--gold); }
+  .helper-text { display:block; font-size:12px; color:rgba(13,40,24,0.45); margin-top:0.65rem; }
+  .toggle-group { display:inline-flex; background:var(--ivory-soft); padding:4px; border-radius:2px; }
+  .toggle-group button { border:0; background:transparent; padding:0.65rem 1.5rem; font-size:12px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:rgba(13,40,24,0.5); cursor:pointer; border-radius:2px; }
+  .toggle-group button.active { background:var(--jungle-primary); color:var(--ivory); }
+  .actions { display:flex; justify-content:flex-end; align-items:center; gap:2rem; margin-top:3rem; }
+  .cancel-link { font-size:13px; color:rgba(13,40,24,0.5); text-decoration:none; }
+  .btn-primary { background:var(--jungle-primary); color:var(--ivory); border:0; padding:1rem 1.75rem; font-size:12px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; cursor:pointer; border-radius:2px; display:inline-flex; align-items:center; gap:0.65rem; }
+  .btn-primary:hover { background:var(--gold); color:var(--jungle-deep); }
+  .form-error { color:#9B3B3B; font-size:13px; margin-bottom:1rem; display:none; }
+  .form-error.show { display:block; }
+  @media (max-width:880px) { .nav{padding:1.25rem 1.5rem;} .main{padding:3rem 1.5rem 5rem;} }
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="dashboard.html" class="brand"><div class="brand__mark">J</div><div class="brand__name">Jessel<sup>™</sup></div></a>
+  <a href="dashboard.html" class="nav-link">
+    <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M13 5H1M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+    Back to Dashboard
+  </a>
+</nav>
+<main class="main">
+  <div class="form-eyebrow">New project</div>
+  <h1 class="form-title">Set up your <em>workspace</em>.</h1>
+  <form id="newProjectForm">
+    <div class="field"><label for="project-name">Project name</label><input id="project-name" type="text" placeholder="e.g. Sarah's Bakery Website" required></div>
+    <div class="field">
+      <label>Connect GitHub repo</label>
+      <p class="helper-text" style="margin-top:0;">GitHub connection isn't live yet — you can connect a repo from the project page once that's built.</p>
+    </div>
+    <div class="field"><label for="client-email">Client email</label><input id="client-email" type="email" placeholder="client@example.com"><span class="helper-text">We'll use this to send update notifications.</span></div>
+    <div class="field">
+      <label>Update frequency</label>
+      <div class="toggle-group" id="freqToggle">
+        <button type="button" class="active" data-value="daily">Daily</button>
+        <button type="button" data-value="weekly">Weekly</button>
+      </div>
+    </div>
+    <div class="field"><label>Preview URL <span style="text-transform:lowercase;opacity:0.6;">(optional)</span></label><input id="preview-url" type="text" placeholder="https://my-project.vercel.app"><span class="helper-text">Paste a live link to your project if you have one.</span></div>
+    <div class="form-error" id="formError"></div>
+    <div class="actions">
+      <a href="dashboard.html" class="cancel-link">Cancel</a>
+      <button class="btn-primary" type="submit" id="submitBtn"><span>Create project</span></button>
+    </div>
+  </form>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+  let frequency = 'daily';
+  document.querySelectorAll('#freqToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#freqToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      frequency = btn.dataset.value;
+    });
+  });
+
+  const errorEl = document.getElementById('formError');
+  const submitBtn = document.getElementById('submitBtn');
+
+  document.getElementById('newProjectForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errorEl.classList.remove('show');
+
+    const name = document.getElementById('project-name').value.trim();
+    if (!name) { errorEl.textContent = 'Project name is required.'; errorEl.classList.add('show'); return; }
+
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { window.location.href = 'login.html'; return; }
+
+    submitBtn.disabled = true;
+    const { error } = await sb.from('projects').insert({
+      freelancer_id: user.id,
+      name,
+      client_email: document.getElementById('client-email').value.trim() || null,
+      digest_frequency: frequency,
+      preview_url: document.getElementById('preview-url').value.trim() || null,
+    });
+    submitBtn.disabled = false;
+
+    if (error) { errorEl.textContent = error.message; errorEl.classList.add('show'); return; }
+    window.location.href = 'dashboard.html';
+  });
+</script>
+</body>
+</html>
