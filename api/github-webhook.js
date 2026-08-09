@@ -27,7 +27,7 @@ export default async function handler(req, res) {
   const { data: project } = await supabase
     .from('projects')
     .select('*')
-    .eq('github_repo', repoFullName)
+    .ilike('github_repo', repoFullName)
     .single();
 
   if (!project) {
