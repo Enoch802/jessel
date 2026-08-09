@@ -13,7 +13,7 @@ const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // Secret is sensitive, and that lives in Vercel's environment variables,
 // never here). Get this from GitHub -> Settings -> Developer settings ->
 // OAuth Apps -> your Jessel app.
-window.GITHUB_CLIENT_ID = "YOUR_GITHUB_CLIENT_ID_HERE";
+window.GITHUB_CLIENT_ID = "Ov23liCM4NjxDwoUXuhb";
 
 // ============================================
 // Auto-clean links: strips ".html" from every internal link on the page,
