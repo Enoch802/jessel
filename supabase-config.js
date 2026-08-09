@@ -7,7 +7,35 @@
 const SUPABASE_URL = "https://lubvapzunrcwqcorgprd.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_qXLa9TIC_u5z6EIZVQcJNA_a877E7Hs";
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ============================================
+// "Keep me signed in" support
+// If checked: session survives closing the browser (localStorage)
+// If unchecked: session clears when the browser is closed (sessionStorage)
+// The choice is remembered via a small flag in localStorage (not the
+// session itself, just the preference), so every page loads with the
+// right kind of session storage from the start.
+// ============================================
+function getPersistPreference() {
+  return localStorage.getItem('jessel_persist') !== 'false'; // default: true
+}
+
+function buildClient(persist) {
+  return supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    auth: {
+      storage: persist ? window.localStorage : window.sessionStorage,
+      persistSession: true,
+      autoRefreshToken: true,
+    },
+  });
+}
+
+let sb = buildClient(getPersistPreference());
+
+// Call this right before signing in, passing the checkbox's checked state
+window.configureAuthStorage = function (persist) {
+  localStorage.setItem('jessel_persist', persist ? 'true' : 'false');
+  sb = buildClient(persist);
+};
 
 // GitHub OAuth App Client ID — safe to expose publicly (only the Client
 // Secret is sensitive, and that lives in Vercel's environment variables,
