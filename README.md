@@ -47,3 +47,7 @@ These become live backend endpoints automatically once deployed on Vercel:
   ready to receive data, but nothing sends it there yet)
 - Automatic email sending to clients (Resend)
 - Google sign-in requires enabling the Google provider in Supabase Auth settings
+
+
+
+
