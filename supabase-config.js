@@ -59,3 +59,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 });
+
+// ============================================
+// PWA setup — applied to every page automatically since this file
+// is loaded everywhere. Adds the manifest link, theme color, and
+// apple touch icon to <head>, and registers the service worker.
+// ============================================
+(function setupPWA() {
+  const manifestLink = document.createElement('link');
+  manifestLink.rel = 'manifest';
+  manifestLink.href = '/manifest.json';
+  document.head.appendChild(manifestLink);
+
+  const themeColor = document.createElement('meta');
+  themeColor.name = 'theme-color';
+  themeColor.content = '#0D2818';
+  document.head.appendChild(themeColor);
+
+  const appleIcon = document.createElement('link');
+  appleIcon.rel = 'apple-touch-icon';
+  appleIcon.href = '/icons/apple-touch-icon.png';
+  document.head.appendChild(appleIcon);
+
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js').catch((err) => {
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
+})();
