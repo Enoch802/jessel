@@ -24,14 +24,20 @@ export default async function handler(req, res) {
   }
 
   // Find which Jessel project this repo belongs to
-  const { data: project } = await supabase
+  const { data: project, error: projectError } = await supabase
     .from('projects')
     .select('*')
     .ilike('github_repo', repoFullName)
     .single();
 
   if (!project) {
-    return res.status(200).json({ received: true, note: 'No matching project found' });
+    console.error('Project lookup failed. repoFullName received:', repoFullName, 'Supabase error:', projectError);
+    return res.status(200).json({
+      received: true,
+      note: 'No matching project found',
+      debug_repoFullName_received: repoFullName,
+      debug_supabase_error: projectError ? projectError.message : null,
+    });
   }
 
   for (const commit of commits) {
