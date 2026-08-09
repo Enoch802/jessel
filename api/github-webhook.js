@@ -1,16 +1,13 @@
 // api/github-webhook.js
-// This becomes a live endpoint automatically once deployed on Vercel:
-// https://your-site.vercel.app/api/github-webhook
-//
-// GitHub will POST here every time someone pushes code, once the
-// GitHub OAuth App + webhook are set up (a later step — this file
-// is ready to receive that data, it just isn't connected yet).
+// GitHub calls this automatically every time someone pushes code to a
+// connected repo. This saves each commit as an update and turns it into
+// a plain-English summary via Groq.
 
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_ROLE_KEY // service role key needed here to bypass RLS safely on the server
+  process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
 export default async function handler(req, res) {
@@ -18,15 +15,50 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  // TODO once GitHub App is set up:
-  // 1. Verify the request really came from GitHub (check the signature header)
-  // 2. Find which Jessel project this repo belongs to
-  // 3. For each commit in the push, insert a row into the `updates` table
-  // 4. Call /api/summarize to turn the raw commit message into plain English
-  // 5. Trigger the email notification if the client has one on file
-
   const payload = req.body;
-  console.log('Received GitHub webhook (not yet processed):', payload?.repository?.full_name);
+  const repoFullName = payload?.repository?.full_name;
+  const commits = payload?.commits || [];
 
-  return res.status(200).json({ received: true, note: 'GitHub webhook wiring not yet implemented' });
+  if (!repoFullName || commits.length === 0) {
+    return res.status(200).json({ received: true, note: 'No commits to process' });
+  }
+
+  // Find which Jessel project this repo belongs to
+  const { data: project } = await supabase
+    .from('projects')
+    .select('*')
+    .eq('github_repo', repoFullName)
+    .single();
+
+  if (!project) {
+    return res.status(200).json({ received: true, note: 'No matching project found' });
+  }
+
+  for (const commit of commits) {
+    let friendlySummary = commit.message;
+
+    // Turn the raw commit message into plain English via Groq
+    try {
+      const siteUrl = `https://${req.headers.host}`;
+      const summarizeRes = await fetch(`${siteUrl}/api/summarize`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ commitMessage: commit.message }),
+      });
+      const summarizeData = await summarizeRes.json();
+      if (summarizeData.summary) friendlySummary = summarizeData.summary;
+    } catch (err) {
+      console.error('Summarize call failed, using raw message instead:', err);
+    }
+
+    await supabase.from('updates').insert({
+      project_id: project.id,
+      type: 'commit',
+      raw_message: commit.message,
+      friendly_summary: friendlySummary,
+      commit_sha: commit.id,
+    });
+  }
+
+  return res.status(200).json({ received: true, processed: commits.length });
 }
