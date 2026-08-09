@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const appleIcon = document.createElement('link');
   appleIcon.rel = 'apple-touch-icon';
-  appleIcon.href = '/icons/apple-touch-icon.png';
+  appleIcon.href = '/apple-touch-icon.png';
   document.head.appendChild(appleIcon);
 
   if ('serviceWorker' in navigator) {
