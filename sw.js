@@ -16,3 +16,5 @@ self.addEventListener('fetch', (event) => {
   // yet. This can be expanded later if offline support is ever wanted.
   event.respondWith(fetch(event.request).catch(() => caches.match(event.request)));
 });
+
+
