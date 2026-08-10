@@ -410,6 +410,20 @@
     document.getElementById('milestoneInput').value = '';
     document.getElementById('milestoneForm').classList.remove('active');
     loadUpdates();
+
+    // Milestones always email the client immediately, regardless of digest frequency
+    if (project.client_email) {
+      fetch('/api/send-update-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          clientEmail: project.client_email,
+          projectName: project.name,
+          updateText: text,
+          clientLink: window.location.origin + '/client-page.html?p=' + project.client_link_slug,
+        }),
+      }).catch((err) => console.warn('Milestone email failed to send:', err));
+    }
   });
 
   const editSettingsBtn = document.getElementById('editSettingsBtn');
