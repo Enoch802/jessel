@@ -7,49 +7,237 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap">
 <style>
-  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-light:#D4AF37; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-card:#FDFDF7; --hairline-dark:rgba(13,40,24,0.15); }
-  * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
-  body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
-  .container { max-width:720px; margin:0 auto; padding:4rem 2rem 6rem; }
-  .brand { display:flex; align-items:center; gap:0.85rem; margin-bottom:3.5rem; text-decoration:none; }
-  .brand__mark { width:32px; height:32px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; color:var(--gold); font-family:'Cormorant Garamond',serif; font-style:italic; }
-  .eyebrow { display:inline-flex; font-weight:500; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:1.25rem; }
-  h1 { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.2rem,4vw,2.8rem); margin-bottom:1.5rem; }
-  .btn-preview { display:inline-flex; align-items:center; gap:0.65rem; background:var(--jungle-primary); color:var(--ivory); padding:0.85rem 1.5rem; font-size:12px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; text-decoration:none; border-radius:2px; }
-  .timeline { position:relative; padding-left:2rem; }
-  .entry { position:relative; padding-bottom:3rem; }
-  .entry-marker { position:absolute; left:-2rem; top:5px; width:11px; height:11px; border-radius:50%; background:var(--ivory); border:2px solid var(--jungle-secondary); }
-  .entry--milestone .entry-marker { width:14px; height:14px; background:var(--gold); border-color:var(--gold-light); left:-2.1rem; transform:rotate(45deg); border-radius:2px; }
-  .entry--milestone .entry-card { background:var(--ivory-card); border:1px solid var(--hairline-dark); border-left:2px solid var(--gold); padding:1.5rem 1.75rem; border-radius:2px; }
-  .entry--milestone .entry-summary { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:500; margin-bottom:0.75rem; }
-  .entry-summary { font-size:17px; line-height:1.6; margin-bottom:0.75rem; }
-  .entry-time { font-size:12px; color:rgba(13,40,24,0.45); margin-bottom:1.25rem; }
-  .reactions { display:flex; align-items:center; gap:1.5rem; padding-top:1rem; border-top:1px dashed var(--hairline-dark); }
-  .react-btn { display:inline-flex; align-items:center; gap:0.5rem; background:transparent; border:1px solid var(--hairline-dark); padding:0.5rem 0.9rem; border-radius:2px; cursor:pointer; font-size:12px; font-weight:500; color:var(--jungle-secondary); }
-  .react-btn.active { background:var(--jungle-primary); border-color:var(--jungle-primary); color:var(--ivory); }
-  .comment-link { background:transparent; border:0; cursor:pointer; font-size:12px; color:var(--gold-dark); font-weight:500; }
-  .comment-box { margin-top:1rem; display:none; flex-direction:column; gap:0.5rem; }
-  .comment-box.active { display:flex; }
-  .comment-input { width:100%; background:var(--ivory-card); border:1px solid var(--hairline-dark); padding:0.75rem; font-size:14px; outline:none; border-radius:2px; }
-  .comment-submit { align-self:flex-end; background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.5rem 1rem; font-size:11px; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
-  .footer { margin-top:5rem; padding-top:2rem; border-top:1px solid var(--hairline-dark); text-align:center; font-size:12px; color:rgba(13,40,24,0.4); }
-  .empty { text-align:center; padding:4rem 2rem; color:rgba(13,40,24,0.5); font-size:14px; border:1px dashed var(--hairline-dark); border-radius:2px; background:var(--ivory-card); margin-left:-2rem; }
-  @media (max-width:640px) { .container{padding:2.5rem 1.5rem 4rem;} .timeline{padding-left:1.5rem;} .entry-marker{left:-1.5rem;} }
+  :root {
+    --jungle-deep: #05140A;
+    --jungle-primary: #0D2818;
+    --jungle-mid: #0a1f12;
+    --jungle-secondary: #1A4D2E;
+    --gold: #C9A227;
+    --gold-light: #D4AF37;
+    --gold-dark: #B8860B;
+    --ivory: #F5F5DC;
+    --ivory-soft: #EAE8D5;
+    --ivory-card: #FDFDF7;
+    --moss: #8FBC8F;
+    --hairline-dark: rgba(13, 40, 24, 0.15);
+    --ease-quiet: cubic-bezier(.22, 1, .36, 1);
+    --ease-precise: cubic-bezier(.4, 0, .2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--ivory);
+    color: var(--jungle-primary);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  .container {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 4rem 2rem 6rem;
+  }
+
+  .header { margin-bottom: 4rem; }
+  .brand {
+    display: flex; align-items: center; gap: 0.85rem;
+    margin-bottom: 3.5rem; text-decoration: none;
+  }
+  .brand__mark {
+    width: 32px; height: 32px; border: 1px solid var(--gold);
+    border-radius: 50%; display: grid; place-items: center;
+    color: var(--gold); font-family: 'Cormorant Garamond', serif;
+    font-size: 1.1rem; font-weight: 500; font-style: italic;
+  }
+  .brand__name {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.2rem;
+    letter-spacing: 0.04em; color: var(--jungle-primary); font-weight: 500;
+  }
+
+  .eyebrow {
+    display: inline-flex; align-items: center;
+    font-family: 'Inter', sans-serif; font-weight: 500;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold-dark); margin-bottom: 1.25rem;
+  }
+  .eyebrow::after {
+    content: ''; display: inline-block; width: 2rem; height: 1px;
+    margin-left: 0.85rem; background: currentColor;
+  }
+
+  h1 {
+    font-family: 'Cormorant Garamond', serif; font-weight: 400;
+    font-size: clamp(2.2rem, 4vw, 2.8rem); line-height: 1.1;
+    color: var(--jungle-primary); letter-spacing: -0.01em;
+    margin-bottom: 1.5rem;
+  }
+  h1 em { font-style: italic; color: var(--gold-dark); }
+
+  .btn-preview {
+    display: inline-flex; align-items: center; gap: 0.65rem;
+    background: var(--jungle-primary); color: var(--ivory);
+    padding: 0.85rem 1.5rem; font-family: 'Inter', sans-serif;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.2em;
+    text-transform: uppercase; text-decoration: none; cursor: pointer;
+    border-radius: 2px; position: relative; overflow: hidden;
+  }
+  .btn-preview span { position: relative; z-index: 1; transition: color 400ms var(--ease-quiet); }
+  .btn-preview::before {
+    content: ''; position: absolute; inset: 0; background: var(--gold);
+    transform: translateY(100%); transition: transform 500ms var(--ease-quiet);
+  }
+  .btn-preview:hover::before { transform: translateY(0); }
+  .btn-preview:hover span { color: var(--jungle-deep); }
+  .btn-preview svg { position: relative; z-index: 1; transition: transform 400ms var(--ease-quiet); }
+  .btn-preview:hover svg { transform: translateX(4px); }
+
+  .timeline { position: relative; padding-left: 2rem; }
+  .timeline::before {
+    content: ''; position: absolute; left: 5px; top: 5px; bottom: 5px;
+    width: 1px; background: var(--hairline-dark);
+  }
+
+  .entry { position: relative; padding-bottom: 3rem; }
+  .entry-marker {
+    position: absolute; left: -2rem; top: 5px;
+    width: 11px; height: 11px; border-radius: 50%;
+    background: var(--ivory); border: 2px solid var(--jungle-secondary);
+    z-index: 1;
+  }
+
+  .entry--milestone .entry-marker {
+    width: 14px; height: 14px; background: var(--gold);
+    border-color: var(--gold-light); left: -2.1rem;
+    transform: rotate(45deg); border-radius: 2px;
+  }
+  .entry--milestone .entry-card {
+    background: var(--ivory-card); border: 1px solid var(--hairline-dark);
+    border-left: 2px solid var(--gold); padding: 1.5rem 1.75rem; border-radius: 2px;
+  }
+  .entry--milestone .entry-summary {
+    font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 500;
+    color: var(--jungle-primary); margin-bottom: 0.75rem; line-height: 1.3;
+  }
+
+  .entry-card { padding-right: 0.5rem; }
+  .entry-summary {
+    font-size: 17px; line-height: 1.6; color: var(--jungle-primary);
+    margin-bottom: 0.75rem; font-weight: 400;
+  }
+
+  .entry-time {
+    font-size: 12px; color: rgba(13, 40, 24, 0.45);
+    letter-spacing: 0.05em; display: flex; align-items: center; gap: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .entry-time svg { width: 12px; height: 12px; }
+
+  .reactions {
+    display: flex; align-items: center; gap: 1.5rem;
+    padding-top: 1rem; border-top: 1px dashed var(--hairline-dark);
+  }
+  .react-btn {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    background: transparent; border: 1px solid var(--hairline-dark);
+    padding: 0.5rem 0.9rem; border-radius: 2px; cursor: pointer;
+    font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 500;
+    color: var(--jungle-secondary); letter-spacing: 0.05em;
+    transition: background 200ms var(--ease-precise), border-color 200ms var(--ease-precise), color 200ms var(--ease-precise);
+  }
+  .react-btn:hover { border-color: var(--gold); background: rgba(201, 162, 39, 0.05); }
+  .react-btn.active {
+    background: var(--jungle-primary); border-color: var(--jungle-primary); color: var(--ivory);
+  }
+
+  .comment-link {
+    background: transparent; border: 0; cursor: pointer;
+    font-size: 12px; color: var(--gold-dark); font-weight: 500;
+    letter-spacing: 0.05em; padding: 0.5rem 0;
+    transition: color 200ms var(--ease-precise);
+  }
+  .comment-link:hover { color: var(--jungle-primary); text-decoration: underline; }
+
+  .comment-box {
+    margin-top: 1rem; display: none; flex-direction: column; gap: 0.5rem;
+  }
+  .comment-box.active { display: flex; }
+  .comment-input {
+    width: 100%; background: var(--ivory-card); border: 1px solid var(--hairline-dark);
+    padding: 0.75rem; font-family: 'Inter', sans-serif; font-size: 14px;
+    color: var(--jungle-primary); outline: none; border-radius: 2px;
+    transition: border-color 300ms var(--ease-precise);
+  }
+  .comment-input:focus { border-color: var(--gold); }
+  .comment-submit {
+    align-self: flex-end; background: var(--jungle-primary); color: var(--ivory);
+    border: 0; padding: 0.5rem 1rem; font-size: 11px; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; border-radius: 2px;
+  }
+
+  .existing-feedback { margin-top: 1rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .feedback-item {
+    display: flex; align-items: flex-start; gap: 0.5rem;
+    font-size: 13px; color: rgba(13, 40, 24, 0.75);
+    background: var(--ivory-card); border: 1px solid var(--hairline-dark);
+    border-radius: 2px; padding: 0.6rem 0.85rem;
+  }
+  .feedback-item .fi-text { flex: 1; word-break: break-word; }
+  .feedback-item .fi-time { font-size: 11px; color: rgba(13, 40, 24, 0.4); margin-left: 0.4rem; }
+  
+  .feedback-item .fi-actions { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+  .feedback-item .fi-edit { background: none; border: 0; color: var(--gold-dark); cursor: pointer; font-size: 11px; text-decoration: underline; }
+  .feedback-item .fi-edit:hover { color: var(--jungle-primary); }
+  .feedback-item .fi-separator { opacity: 0.3; font-size: 11px; }
+  .feedback-item .fi-delete { background: none; border: 0; color: rgba(155, 59, 59, 0.6); cursor: pointer; font-size: 11px; text-decoration: underline; }
+  .feedback-item .fi-delete:hover { color: #9B3B3B; }
+  
+  .feedback-item .fi-save { background: var(--jungle-primary); color: var(--ivory); border: 0; padding: 0.3rem 0.6rem; font-size: 10px; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: 2px; }
+  .feedback-item .fi-cancel { background: transparent; border: 0; color: rgba(13, 40, 24, 0.5); cursor: pointer; font-size: 11px; text-decoration: underline; }
+  .feedback-item .fi-edit-input { width: 100%; background: var(--ivory); border: 1px solid var(--gold); padding: 0.25rem; font-size: 13px; color: var(--jungle-primary); outline: none; border-radius: 2px; }
+
+  .footer {
+    margin-top: 5rem; padding-top: 2rem; border-top: 1px solid var(--hairline-dark);
+    text-align: center; font-size: 12px; color: rgba(13, 40, 24, 0.4);
+  }
+  .empty {
+    text-align: center; padding: 4rem 2rem; color: rgba(13, 40, 24, 0.5);
+    font-size: 14px; border: 1px dashed var(--hairline-dark);
+    border-radius: 2px; background: var(--ivory-card); margin-left: -2rem;
+  }
+
+  @media (max-width: 640px) {
+    .container { padding: 2.5rem 1.5rem 4rem; }
+    .timeline { padding-left: 1.5rem; }
+    .entry-marker, .entry--milestone .entry-marker { left: -1.5rem; }
+    .entry-summary { font-size: 16px; }
+  }
 </style>
 </head>
 <body>
+
 <div class="container">
-  <header>
-    <div class="brand"><div class="brand__mark">J</div><div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:500;">Jessel</div></div>
+  <header class="header">
+    <a href="#" class="brand">
+      <div class="brand__mark">J</div>
+      <div class="brand__name">Jessel<sup>™</sup></div>
+    </a>
+    
     <div class="eyebrow">Project Update</div>
     <h1 id="projectName">Loading…</h1>
+    
     <a href="#" class="btn-preview" id="previewBtn" style="display:none;">
       <span>View live preview</span>
-      <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
+      <svg width="14" height="10" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
+      </svg>
     </a>
   </header>
+
   <div class="timeline" id="timeline"></div>
-  <footer class="footer">Powered by Jessel</footer>
+
+  <footer class="footer">
+    Powered by Jessel
+  </footer>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -58,14 +246,32 @@
   const slug = new URLSearchParams(window.location.search).get('p');
   let projectId = null;
 
+  function getMyCommentIds() {
+    try { return JSON.parse(sessionStorage.getItem('jessel_my_comments') || '[]'); }
+    catch { return []; }
+  }
+  function rememberMyComment(id) {
+    const ids = getMyCommentIds();
+    ids.push(id);
+    sessionStorage.setItem('jessel_my_comments', JSON.stringify(ids));
+  }
+
   async function load() {
-    if (!slug) { document.getElementById('projectName').textContent = 'Project link not found'; return; }
+    if (!slug) { 
+      document.getElementById('projectName').textContent = 'Project link not found'; 
+      return; 
+    }
 
     const { data: proj } = await sb.from('projects').select('*').eq('client_link_slug', slug).single();
-    if (!proj) { document.getElementById('projectName').textContent = 'Project link not found'; return; }
+    if (!proj) { 
+      document.getElementById('projectName').textContent = 'Project link not found'; 
+      return; 
+    }
 
     projectId = proj.id;
-    document.getElementById('projectName').textContent = proj.name;
+    
+    const nameEl = document.getElementById('projectName');
+    nameEl.textContent = proj.name;
 
     if (proj.preview_url) {
       const btn = document.getElementById('previewBtn');
@@ -74,61 +280,172 @@
       btn.style.display = 'inline-flex';
     }
 
-    const { data: updates } = await sb.from('updates').select('*').eq('project_id', proj.id).order('created_at', { ascending: false });
+    loadUpdatesAgain();
+  }
+
+  async function loadUpdatesAgain() {
+    const { data: updates } = await sb.from('updates').select('*').eq('project_id', projectId).order('created_at', { ascending: false });
     renderTimeline(updates || []);
   }
 
-  function renderTimeline(updates) {
+  async function renderTimeline(updates) {
     const el = document.getElementById('timeline');
     if (updates.length === 0) {
       el.innerHTML = '<div class="empty">No updates yet. Check back soon.</div>';
       return;
     }
-    el.innerHTML = updates.map(u => `
-      <article class="entry ${u.type === 'milestone' ? 'entry--milestone' : ''}" data-id="${u.id}">
-        <div class="entry-marker"></div>
-        <div class="entry-card">
-          <p class="entry-summary">${(u.friendly_summary || u.raw_message || '').replace(/</g, '&lt;')}</p>
-          <div class="entry-time">${new Date(u.created_at).toLocaleString()}</div>
-          <div class="reactions">
-            <button class="react-btn" data-react="${u.id}">👍 Looks good</button>
-            <button class="comment-link" data-comment="${u.id}">Leave a comment</button>
-          </div>
-          <div class="comment-box" id="comment-box-${u.id}">
-            <textarea class="comment-input" rows="3" placeholder="Leave a note for the team..." id="comment-input-${u.id}"></textarea>
-            <button class="comment-submit" data-submit="${u.id}">Post comment</button>
-          </div>
-        </div>
-      </article>
-    `).join('');
 
-    document.querySelectorAll('[data-react]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        btn.classList.toggle('active');
-        if (btn.classList.contains('active')) {
-          await sb.from('reactions').insert({ update_id: btn.dataset.react, emoji_or_comment: '👍 Looks good' });
-        }
-      });
+    const updateIds = updates.map(u => u.id);
+    const { data: allReactions } = await sb.from('reactions').select('*').in('update_id', updateIds).order('created_at', { ascending: true });
+    
+    const reactionsByUpdate = {};
+    (allReactions || []).forEach(r => {
+      if (!reactionsByUpdate[r.update_id]) reactionsByUpdate[r.update_id] = [];
+      reactionsByUpdate[r.update_id].push(r);
     });
-    document.querySelectorAll('[data-comment]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.getElementById('comment-box-' + btn.dataset.comment).classList.toggle('active');
-      });
-    });
-    document.querySelectorAll('[data-submit]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const id = btn.dataset.submit;
-        const input = document.getElementById('comment-input-' + id);
-        const text = input.value.trim();
-        if (!text) return;
-        await sb.from('reactions').insert({ update_id: id, emoji_or_comment: text });
-        input.value = '';
-        document.getElementById('comment-box-' + id).classList.remove('active');
-      });
-    });
+
+    el.innerHTML = updates.map(u => {
+      const feedback = reactionsByUpdate[u.id] || [];
+      const myIds = getMyCommentIds();
+      
+      const feedbackHtml = feedback.length === 0 ? '' : `
+        <div class="existing-feedback">
+          ${feedback.map(f => `
+            <div class="feedback-item" data-reaction-id="${f.id}">
+              <span class="fi-text" id="fi-text-${f.id}">${f.emoji_or_comment.replace(/</g, '&lt;')}<span class="fi-time">${new Date(f.created_at).toLocaleString()}</span></span>
+              ${myIds.includes(f.id) ? `
+                <div class="fi-actions" id="fi-actions-${f.id}">
+                  <button class="fi-edit" data-edit-reaction="${f.id}">Edit</button>
+                  <span class="fi-separator">·</span>
+                  <button class="fi-delete" data-delete-reaction="${f.id}">Remove</button>
+                </div>
+              ` : ''}
+            </div>
+          `).join('')}
+        </div>
+      `;
+
+      const isMilestone = u.type === 'milestone';
+      const summaryText = (u.friendly_summary || u.raw_message || '').replace(/</g, '&lt;');
+      
+      const timeIcon = isMilestone ? 
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg" style="color: var(--gold-dark);"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>` :
+        `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+
+      return `
+        <article class="entry ${isMilestone ? 'entry--milestone' : ''}" data-id="${u.id}">
+          <div class="entry-marker"></div>
+          <div class="entry-card">
+            <p class="entry-summary">${summaryText}</p>
+            <div class="entry-time">
+              ${timeIcon}
+              <span>${new Date(u.created_at).toLocaleString()}</span>
+            </div>
+            ${feedbackHtml}
+            <div class="reactions">
+              <button class="react-btn" data-react="${u.id}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" xmlns="http://www.w3.org/2000/svg"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path></svg>
+                Looks good
+              </button>
+              <button class="comment-link" data-comment="${u.id}">Leave a comment</button>
+            </div>
+            <div class="comment-box" id="comment-box-${u.id}">
+              <textarea class="comment-input" rows="3" placeholder="Leave a note for the team..." id="comment-input-${u.id}"></textarea>
+              <button class="comment-submit" data-submit="${u.id}">Post comment</button>
+            </div>
+          </div>
+        </article>
+      `;
+    }).join('');
   }
+
+  document.getElementById('timeline').addEventListener('click', async (e) => {
+    const editBtn = e.target.closest('[data-edit-reaction]');
+    const cancelBtn = e.target.closest('[data-cancel-reaction]');
+    const saveBtn = e.target.closest('[data-save-reaction]');
+    const deleteBtn = e.target.closest('[data-delete-reaction]');
+    const reactBtn = e.target.closest('[data-react]');
+    const commentBtn = e.target.closest('[data-comment]');
+    const submitBtn = e.target.closest('[data-submit]');
+
+    if (editBtn) {
+      const id = editBtn.dataset.editReaction;
+      const textEl = document.getElementById(`fi-text-${id}`);
+      const actionsEl = document.getElementById(`fi-actions-${id}`);
+      
+      const currentText = textEl.childNodes[0].nodeValue.trim();
+      
+      textEl.dataset.originalHtml = textEl.innerHTML;
+      textEl.innerHTML = `<input type="text" class="fi-edit-input" id="fi-input-${id}" value="${currentText.replace(/"/g, '&quot;')}">`;
+      
+      actionsEl.innerHTML = `
+        <button class="fi-save" data-save-reaction="${id}">Save</button>
+        <button class="fi-cancel" data-cancel-reaction="${id}">Cancel</button>
+      `;
+      document.getElementById(`fi-input-${id}`).focus();
+    }
+
+    if (cancelBtn) {
+      const id = cancelBtn.dataset.cancelReaction;
+      const textEl = document.getElementById(`fi-text-${id}`);
+      const actionsEl = document.getElementById(`fi-actions-${id}`);
+      
+      textEl.innerHTML = textEl.dataset.originalHtml;
+      actionsEl.innerHTML = `
+        <button class="fi-edit" data-edit-reaction="${id}">Edit</button>
+        <span class="fi-separator">·</span>
+        <button class="fi-delete" data-delete-reaction="${id}">Remove</button>
+      `;
+    }
+
+    // Save Edit Click — actually saves to Supabase
+    if (saveBtn) {
+      const id = saveBtn.dataset.saveReaction;
+      const input = document.getElementById(`fi-input-${id}`);
+      const newText = input.value.trim();
+      if (!newText) return;
+
+      const { error } = await sb.from('reactions').update({ emoji_or_comment: newText }).eq('id', id);
+      if (error) {
+        alert('Failed to save. Please try again.');
+        return;
+      }
+      loadUpdatesAgain();
+    }
+
+    if (deleteBtn) {
+      if (!confirm('Remove this comment?')) return;
+      await sb.from('reactions').delete().eq('id', deleteBtn.dataset.deleteReaction);
+      loadUpdatesAgain();
+    }
+
+    if (reactBtn) {
+      reactBtn.classList.toggle('active');
+      if (reactBtn.classList.contains('active')) {
+        const { data } = await sb.from('reactions').insert({ update_id: reactBtn.dataset.react, emoji_or_comment: '👍 Looks good' }).select().single();
+        if (data) rememberMyComment(data.id);
+        loadUpdatesAgain();
+      }
+    }
+
+    if (commentBtn) {
+      document.getElementById('comment-box-' + commentBtn.dataset.comment).classList.toggle('active');
+    }
+
+    if (submitBtn) {
+      const id = submitBtn.dataset.submit;
+      const input = document.getElementById('comment-input-' + id);
+      const text = input.value.trim();
+      if (!text) return;
+      const { data } = await sb.from('reactions').insert({ update_id: id, emoji_or_comment: text }).select().single();
+      if (data) rememberMyComment(data.id);
+      input.value = '';
+      loadUpdatesAgain();
+    }
+  });
 
   load();
 </script>
+
 </body>
 </html>
