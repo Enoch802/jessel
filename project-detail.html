@@ -7,7 +7,7 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400&display=swap">
 <style>
-  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-light:#D4AF37; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-card:#FDFDF7; --hairline-dark:rgba(13,40,24,0.15); --ease-precise: cubic-bezier(.4, 0, .2, 1); }
+  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-light:#D4AF37; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-card:#FDFDF7; --hairline-dark:rgba(13,40,24,0.15); --ease-quiet: cubic-bezier(.22, 1, .36, 1); --ease-precise: cubic-bezier(.4, 0, .2, 1); }
   * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
   body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
   .nav { display:flex; justify-content:space-between; align-items:center; padding:1.75rem 3rem; border-bottom:1px solid var(--hairline-dark); background:var(--ivory); }
@@ -21,11 +21,35 @@
   .title-group { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; }
   .page-title { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2rem,3vw,2.8rem); }
   .badge { font-size:10px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; padding:0.35rem 0.65rem; border-radius:2px; background:rgba(143,188,143,0.15); color:var(--jungle-secondary); border:1px solid rgba(143,188,143,0.3); }
-  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2rem; margin-bottom:3rem; }
-  .stat-label { display:block; font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:0.5rem; }
+  
+  .stats-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem; }
+  .stats-title { font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); }
+  .edit-settings-btn { background:transparent; border:0; color:var(--gold-dark); font-size:11px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; transition: color 200ms ease; }
+  .edit-settings-btn:hover { color:var(--jungle-primary); }
+  
+  .stats-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:2rem; margin-bottom:0.5rem; }
+  .stat-item { display:flex; flex-direction:column; gap:0.5rem; }
+  .stat-label { display:block; font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); }
   .stat-value { font-size:14px; word-break:break-all; }
   .stat-value.mono { font-family:'JetBrains Mono',monospace; font-size:13px; }
-  .client-link-box { background:var(--ivory-card); border:1px solid var(--hairline-dark); border-left:2px solid var(--gold); border-radius:2px; padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:4rem; gap:1rem; flex-wrap:wrap; }
+  
+  .stat-input { width:100%; background:transparent; border:0; border-bottom:1px solid var(--gold); padding:0.25rem 0; font-family:'Inter',sans-serif; font-size:14px; color:var(--jungle-primary); outline:none; }
+  .stat-input.mono { font-family:'JetBrains Mono',monospace; font-size:13px; }
+  
+  .toggle-group { display:inline-flex; background:var(--ivory-soft); padding:4px; border-radius:2px; position:relative; margin-top:-0.25rem; }
+  .toggle-group input { display:none; }
+  .toggle-group label { position:relative; z-index:1; padding:0.65rem 1.5rem; font-size:12px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:rgba(13,40,24,0.5); cursor:pointer; transition:color 300ms var(--ease-precise); }
+  .toggle-group input:checked + label { color:var(--ivory); }
+  .toggle-slider { position:absolute; top:4px; bottom:4px; width:calc(50% - 4px); background:var(--jungle-primary); border-radius:2px; transition:transform 400ms var(--ease-quiet); }
+  #editWeekly:checked ~ .toggle-slider { transform:translateX(100%); }
+
+  .stats-edit-actions { margin-top:1.5rem; display:none; align-items:center; gap:1.5rem; margin-bottom:3rem; }
+  .stats-edit-actions.active { display:flex; }
+  .cancel-link { background:transparent; border:0; color:rgba(13,40,24,0.5); font-size:12px; font-weight:500; cursor:pointer; text-decoration:underline; transition: color 200ms ease; }
+  .cancel-link:hover { color:var(--jungle-primary); }
+  .inline-btn { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.65rem 1.25rem; font-size:11px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+
+  .client-link-box { background:var(--ivory-card); border:1px solid var(--hairline-dark); border-left:2px solid var(--gold); border-radius:2px; padding:1.25rem 1.5rem; display:flex; justify-content:space-between; align-items:center; margin-bottom:4rem; gap:1rem; flex-wrap:wrap; margin-top:3rem; }
   .link-label { font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); display:block; margin-bottom:0.35rem; }
   .link-url { font-family:'JetBrains Mono',monospace; font-size:14px; }
   .copy-btn { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.75rem 1.25rem; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
@@ -42,12 +66,26 @@
   .timeline-text { font-size:15px; color:rgba(13,40,24,0.8); line-height:1.6; margin-bottom:0.5rem; }
   .timeline-time { font-size:11px; color:rgba(13,40,24,0.4); }
   .timeline-empty { text-align:center; padding:4rem 2rem; color:rgba(13,40,24,0.5); font-size:14px; border:1px dashed var(--hairline-dark); border-radius:2px; background:var(--ivory-card); margin-left:-2rem; }
+  .helper-text { display:block; font-size:12px; color:rgba(13,40,24,0.5); margin-bottom:0.75rem; }
   .client-feedback { margin-top:1rem; padding-top:0.85rem; border-top:1px dashed var(--hairline-dark); display:flex; flex-direction:column; gap:0.5rem; }
   .client-feedback-item { font-size:13px; color:rgba(13,40,24,0.75); display:flex; align-items:flex-start; gap:0.5rem; }
   .client-feedback-item .cf-icon { color:var(--gold-dark); flex-shrink:0; }
   .client-feedback-item .cf-time { font-size:11px; color:rgba(13,40,24,0.4); margin-left:0.4rem; }
+  .client-feedback-item .cf-delete { background:none; border:0; color:rgba(155,59,59,0.6); cursor:pointer; font-size:11px; text-decoration:underline; margin-left:auto; flex-shrink:0; }
+  .client-feedback-item .cf-delete:hover { color:#9B3B3B; }
   
-  /* Repository Picker Styles */
+  .milestone-actions { display:flex; align-items:center; gap:0.5rem; margin-top:0.5rem; }
+  .milestone-edit { background:none; border:0; color:var(--gold-dark); cursor:pointer; font-size:11px; text-decoration:underline; }
+  .milestone-edit:hover { color:var(--jungle-primary); }
+  .milestone-separator { opacity:0.3; font-size:11px; }
+  .milestone-delete { background:none; border:0; color:rgba(155,59,59,0.6); cursor:pointer; font-size:11px; text-decoration:underline; }
+  .milestone-delete:hover { color:#9B3B3B; }
+  
+  .milestone-edit-form { display:flex; align-items:center; gap:0.75rem; margin-top:0; }
+  .milestone-edit-input { flex:1; background:transparent; border:0; border-bottom:1px solid var(--gold); padding:0.25rem 0; font-family:'Inter',sans-serif; font-size:15px; color:var(--jungle-primary); outline:none; }
+  .milestone-save-btn { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.4rem 0.75rem; font-size:10px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
+  .milestone-cancel-btn { background:transparent; border:0; color:rgba(13,40,24,0.5); font-size:10px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; text-decoration:underline; }
+
   .repo-list { display:flex; flex-direction:column; gap:0.75rem; margin-top:1rem; }
   .repo-card {
     display:flex; align-items:center; gap:0.75rem;
@@ -79,11 +117,43 @@
       <div class="title-group"><h1 class="page-title" id="projectName">Loading…</h1><span class="badge" id="projectBadge"></span></div>
     </div>
   </div>
+
+  <div class="stats-header">
+    <span class="stats-title">Project Details</span>
+    <button class="edit-settings-btn" id="editSettingsBtn">Edit</button>
+  </div>
+
   <div class="stats-grid">
-    <div><span class="stat-label">Repository</span><span class="stat-value mono" id="statRepo">—</span></div>
-    <div><span class="stat-label">Client Email</span><span class="stat-value" id="statEmail">—</span></div>
-    <div><span class="stat-label">Digest Frequency</span><span class="stat-value" id="statFreq">—</span></div>
-    <div><span class="stat-label">Preview URL</span><span class="stat-value mono" id="statPreview">—</span></div>
+    <div class="stat-item">
+      <span class="stat-label">Repository</span>
+      <span class="stat-value mono" id="statRepo">—</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Client Email</span>
+      <span class="stat-value" id="statEmail">—</span>
+      <input type="email" class="stat-input" id="editEmailInput" style="display:none;">
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Digest Frequency</span>
+      <span class="stat-value" id="statFreq">—</span>
+      <div class="toggle-group" id="editFreqToggle" style="display:none;">
+        <input type="radio" id="editDaily" name="editFreq" value="daily" checked>
+        <label for="editDaily">Daily</label>
+        <input type="radio" id="editWeekly" name="editFreq" value="weekly">
+        <label for="editWeekly">Weekly</label>
+        <div class="toggle-slider"></div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Preview URL</span>
+      <span class="stat-value mono" id="statPreview">—</span>
+      <input type="text" class="stat-input mono" id="editPreviewInput" style="display:none;">
+    </div>
+  </div>
+
+  <div class="stats-edit-actions" id="statsEditActions">
+    <button class="inline-btn" id="saveSettingsBtn">Save changes</button>
+    <button class="cancel-link" id="cancelSettingsBtn">Cancel</button>
   </div>
 
   <div id="githubSection" style="margin-bottom:3rem;"></div>
@@ -120,7 +190,6 @@
     if (!proj || proj.freelancer_id !== user.id) { window.location.href = 'dashboard.html'; return; }
     project = proj;
 
-    // If GitHub just redirected back with a fresh token, save it and clean the URL
     if (githubTokenFromUrl) {
       await sb.from('projects').update({ github_access_token: githubTokenFromUrl }).eq('id', projectId);
       project.github_access_token = githubTokenFromUrl;
@@ -143,14 +212,14 @@
     const el = document.getElementById('githubSection');
 
     if (project.github_repo) {
-      el.innerHTML = `<p class="stat-label">Connected repo</p><p class="stat-value mono" style="margin-top: 0.5rem;">${project.github_repo}</p>`;
+      el.innerHTML = `<p class="helper-text">Connected repo: <strong>${project.github_repo}</strong></p>`;
       return;
     }
 
     if (!project.github_access_token) {
       el.innerHTML = `<button class="add-milestone-btn" id="connectGithubBtn">Connect GitHub</button>`;
       document.getElementById('connectGithubBtn').addEventListener('click', () => {
-        const clientId = window.GITHUB_CLIENT_ID; // set in supabase-config.js
+        const clientId = window.GITHUB_CLIENT_ID;
         const redirectUri = window.location.origin + '/api/github-callback';
         const authUrl = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=repo&state=${projectId}`;
         window.location.href = authUrl;
@@ -158,8 +227,7 @@
       return;
     }
 
-    // Token exists but no repo picked yet — show a repo picker
-    el.innerHTML = `<p class="stat-label" style="margin-bottom:0;">Choose a repository</p><div id="repoList" class="repo-list">Loading your repos…</div>`;
+    el.innerHTML = `<p class="helper-text" style="margin-bottom:0;">Choose a repository:</p><div id="repoList" class="repo-list">Loading your repos…</div>`;
     fetchRepos();
   }
 
@@ -172,7 +240,7 @@
       const listEl = document.getElementById('repoList');
 
       if (!Array.isArray(repos) || repos.length === 0) {
-        listEl.innerHTML = '<p class="stat-value">No repositories found on your GitHub account.</p>';
+        listEl.innerHTML = '<p class="helper-text">No repositories found on your GitHub account.</p>';
         return;
       }
 
@@ -189,13 +257,13 @@
         btn.addEventListener('click', () => connectRepo(btn.dataset.repo));
       });
     } catch (err) {
-      document.getElementById('repoList').innerHTML = '<p class="stat-value" style="color:#9B3B3B;">Couldn\'t load repos. Your GitHub connection may need to be refreshed.</p>';
+      document.getElementById('repoList').innerHTML = '<p class="helper-text" style="color:#9B3B3B;">Couldn\'t load repos. Your GitHub connection may need to be refreshed.</p>';
     }
   }
 
   async function connectRepo(fullName) {
     const [owner, repo] = fullName.split('/');
-    document.getElementById('repoList').innerHTML = '<p class="stat-value">Connecting…</p>';
+    document.getElementById('repoList').innerHTML = '<p class="helper-text">Connecting…</p>';
 
     const webhookRes = await fetch('/api/create-webhook', {
       method: 'POST',
@@ -205,7 +273,7 @@
 
     if (!webhookRes.ok) {
       const err = await webhookRes.json();
-      document.getElementById('repoList').innerHTML = `<p class="stat-value" style="color:#9B3B3B;">Couldn't connect: ${err.error || 'unknown error'}</p>`;
+      document.getElementById('repoList').innerHTML = `<p class="helper-text" style="color:#9B3B3B;">Couldn't connect: ${err.error || 'unknown error'}</p>`;
       return;
     }
 
@@ -227,7 +295,6 @@
       return;
     }
 
-    // Fetch all client reactions/comments for these updates in one go
     const updateIds = updates.map(u => u.id);
     const { data: reactions } = await sb.from('reactions').select('*').in('update_id', updateIds).order('created_at', { ascending: true });
     const reactionsByUpdate = {};
@@ -244,21 +311,82 @@
             <div class="client-feedback-item">
               <span class="cf-icon">${f.emoji_or_comment.startsWith('👍') ? '👍' : '💬'}</span>
               <span>${f.emoji_or_comment.replace(/</g, '&lt;')}<span class="cf-time">${new Date(f.created_at).toLocaleString()}</span></span>
+              <button class="cf-delete" data-delete-reaction="${f.id}">Remove</button>
             </div>
           `).join('')}
         </div>
       `;
+      
+      const isMilestone = u.type === 'milestone';
+      const text = (u.friendly_summary || u.raw_message || '').replace(/</g, '&lt;');
+      const milestoneActions = isMilestone ? `
+        <div class="milestone-actions" id="milestone-actions-${u.id}">
+          <button class="milestone-edit" data-edit-milestone="${u.id}">Edit</button>
+          <span class="milestone-separator">·</span>
+          <button class="milestone-delete" data-delete-milestone="${u.id}">Remove</button>
+        </div>
+      ` : '';
+
       return `
-        <div class="timeline-item ${u.type === 'milestone' ? 'timeline-item--milestone' : ''}">
+        <div class="timeline-item ${isMilestone ? 'timeline-item--milestone' : ''}">
           <div class="timeline-marker"></div>
           <div class="timeline-content">
-            <p class="timeline-text">${(u.friendly_summary || u.raw_message || '').replace(/</g, '&lt;')}</p>
+            <p class="timeline-text" id="milestone-text-${u.id}">${text}</p>
+            ${milestoneActions}
             <div class="timeline-time">${new Date(u.created_at).toLocaleString()}</div>
             ${feedbackHtml}
           </div>
         </div>
       `;
     }).join('');
+
+    document.querySelectorAll('[data-delete-milestone]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Remove this milestone? This cannot be undone.')) return;
+        await sb.from('updates').delete().eq('id', btn.dataset.deleteMilestone);
+        loadUpdates();
+      });
+    });
+
+    document.querySelectorAll('[data-delete-reaction]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        if (!confirm('Remove this comment?')) return;
+        await sb.from('reactions').delete().eq('id', btn.dataset.deleteReaction);
+        loadUpdates();
+      });
+    });
+
+    document.querySelectorAll('[data-edit-milestone]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.editMilestone;
+        const textEl = document.getElementById(`milestone-text-${id}`);
+        const actionsEl = document.getElementById(`milestone-actions-${id}`);
+        const currentText = textEl.innerText;
+
+        textEl.innerHTML = `<input type="text" class="milestone-edit-input" id="milestone-input-${id}" value="${currentText.replace(/"/g, '&quot;')}">`;
+        actionsEl.innerHTML = `
+          <button class="milestone-save-btn" data-save-milestone="${id}">Save</button>
+          <button class="milestone-cancel-btn" data-cancel-milestone="${id}">Cancel</button>
+        `;
+        document.getElementById(`milestone-input-${id}`).focus();
+      });
+    });
+
+    document.querySelectorAll('[data-cancel-milestone]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        loadUpdates();
+      });
+    });
+
+    document.querySelectorAll('[data-save-milestone]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.saveMilestone;
+        const newText = document.getElementById(`milestone-input-${id}`).value.trim();
+        if (!newText) return;
+        await sb.from('updates').update({ friendly_summary: newText }).eq('id', id);
+        loadUpdates();
+      });
+    });
   }
 
   document.getElementById('copyBtn').addEventListener('click', () => {
@@ -282,6 +410,82 @@
     document.getElementById('milestoneInput').value = '';
     document.getElementById('milestoneForm').classList.remove('active');
     loadUpdates();
+  });
+
+  const editSettingsBtn = document.getElementById('editSettingsBtn');
+  const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+  const cancelSettingsBtn = document.getElementById('cancelSettingsBtn');
+  const statsEditActions = document.getElementById('statsEditActions');
+
+  const statEmail = document.getElementById('statEmail');
+  const editEmailInput = document.getElementById('editEmailInput');
+
+  const statFreq = document.getElementById('statFreq');
+  const editFreqToggle = document.getElementById('editFreqToggle');
+
+  const statPreview = document.getElementById('statPreview');
+  const editPreviewInput = document.getElementById('editPreviewInput');
+
+  editSettingsBtn.addEventListener('click', () => {
+    editEmailInput.value = project.client_email || '';
+    editPreviewInput.value = project.preview_url || '';
+    if ((project.digest_frequency || '').toLowerCase() === 'weekly') {
+      document.getElementById('editWeekly').checked = true;
+    } else {
+      document.getElementById('editDaily').checked = true;
+    }
+
+    statEmail.style.display = 'none';
+    editEmailInput.style.display = 'block';
+    
+    statFreq.style.display = 'none';
+    editFreqToggle.style.display = 'inline-flex';
+    
+    statPreview.style.display = 'none';
+    editPreviewInput.style.display = 'block';
+
+    editSettingsBtn.style.display = 'none';
+    statsEditActions.classList.add('active');
+  });
+
+  cancelSettingsBtn.addEventListener('click', () => {
+    statEmail.style.display = 'block';
+    editEmailInput.style.display = 'none';
+    
+    statFreq.style.display = 'block';
+    editFreqToggle.style.display = 'none';
+    
+    statPreview.style.display = 'block';
+    editPreviewInput.style.display = 'none';
+
+    editSettingsBtn.style.display = 'block';
+    statsEditActions.classList.remove('active');
+  });
+
+  saveSettingsBtn.addEventListener('click', async () => {
+    const newEmail = editEmailInput.value.trim();
+    const newPreview = editPreviewInput.value.trim();
+    const newFreq = document.querySelector('input[name="editFreq"]:checked').value;
+
+    const { error } = await sb.from('projects').update({ 
+      client_email: newEmail, 
+      preview_url: newPreview, 
+      digest_frequency: newFreq 
+    }).eq('id', projectId);
+
+    if (!error) {
+      project.client_email = newEmail;
+      project.preview_url = newPreview;
+      project.digest_frequency = newFreq;
+      
+      statEmail.textContent = newEmail || '—';
+      statPreview.textContent = newPreview || '—';
+      statFreq.textContent = newFreq || '—';
+    } else {
+      alert('Failed to save settings. Please try again.');
+    }
+
+    cancelSettingsBtn.click();
   });
 
   load();
