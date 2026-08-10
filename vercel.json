@@ -2,10 +2,11 @@
   "cleanUrls": true,
   "redirects": [
     { "source": "/", "destination": "/login", "permanent": false }
+  ],
+  "crons": [
+    {
+      "path": "/api/send-digests",
+      "schedule": "0 9 * * *"
+    }
   ]
 }
-
-
-
-
-
