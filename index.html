@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jessel — Automatic Client Updates for Developers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A;
+    --charcoal: #1A1A1A;
+    --gray-dark: #4A4A4A;
+    --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5;
+    --off-white: #FAFAFA;
+    --white: #FFFFFF;
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--off-white);
+    color: var(--black);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ===== Typography ===== */
+  h1, h2, h3, h4 {
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  p { color: var(--gray-dark); }
+
+  /* ===== Layout ===== */
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+
+  section {
+    padding: 8rem 0;
+    position: relative;
+  }
+
+  /* ===== Navigation (Glassmorphism) ===== */
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    background: rgba(250, 250, 250, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(229, 229, 229, 0.6);
+  }
+
+  .nav__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 72px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--black);
+  }
+
+  .logo__mark {
+    width: 28px;
+    height: 28px;
+    background: var(--black);
+    border-radius: 4px;
+  }
+
+  .logo__text {
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+  }
+
+  .nav__link {
+    text-decoration: none;
+    color: var(--gray-dark);
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+
+  .nav__link:hover { color: var(--black); }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.7rem 1.4rem;
+    border-radius: 4px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s var(--ease-quiet);
+    border: 1px solid transparent;
+  }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+  }
+
+  .btn-primary:hover {
+    background: transparent;
+    color: var(--black);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--black);
+    border-color: var(--gray-light);
+  }
+
+  .btn-secondary:hover {
+    background: var(--black);
+    color: var(--white);
+    border-color: var(--black);
+  }
+
+  .btn-large {
+    padding: 1rem 2rem;
+    font-size: 1rem;
+  }
+
+  /* ===== Hero Section ===== */
+  .hero {
+    padding-top: 12rem;
+    padding-bottom: 6rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Motion Graphic: Monochrome shifting gradient */
+  .hero__bg {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 600px;
+    background: radial-gradient(circle, rgba(229,229,229,0.5) 0%, rgba(250,250,250,0) 70%);
+    z-index: -1;
+    animation: pulse-bg 8s infinite alternate ease-in-out;
+  }
+
+  @keyframes pulse-bg {
+    0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
+    100% { transform: translateX(-50%) scale(1.2); opacity: 0.4; }
+  }
+
+  .hero__content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .hero h1 {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero__sub {
+    font-size: 1.2rem;
+    color: var(--gray-dark);
+    max-width: 600px;
+    margin: 0 auto 3rem;
+  }
+
+  .hero__ctas {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 4rem;
+  }
+
+  /* Glassmorphism Product Mockup */
+  .mockup {
+    max-width: 900px;
+    margin: 0 auto;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 8px;
+    box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08);
+    overflow: hidden;
+  }
+
+  .mockup__bar {
+    height: 36px;
+    background: rgba(250, 250, 250, 0.8);
+    border-bottom: 1px solid var(--gray-light);
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    gap: 0.5rem;
+  }
+
+  .mockup__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gray-light);
+  }
+
+  .mockup__body {
+    padding: 2rem;
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 2rem;
+    height: 400px;
+  }
+
+  .mockup__sidebar {
+    border-right: 1px solid var(--gray-light);
+    padding-right: 2rem;
+  }
+
+  .mockup__item {
+    height: 12px;
+    background: var(--gray-light);
+    border-radius: 2px;
+    margin-bottom: 1rem;
+  }
+
+  .mockup__item.short { width: 60%; }
+  .mockup__item.mid { width: 80%; }
+
+  .mockup__main {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .mockup__card {
+    background: var(--white);
+    border: 1px solid var(--gray-light);
+    border-radius: 4px;
+    padding: 1rem;
+  }
+
+  .mockup__text {
+    height: 10px;
+    background: var(--gray-light);
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .mockup__text.w-90 { width: 90%; }
+  .mockup__text.w-70 { width: 70%; }
+  
+  /* Motion Graphic: Live Update Blinker */
+  .mockup__live {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--black);
+    background: var(--gray-light);
+    padding: 0.2rem 0.5rem;
+    border-radius: 2px;
+  }
+
+  .mockup__live::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--black);
+    border-radius: 50%;
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* ===== Problem Section ===== */
+  .problem__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3rem;
+    margin-top: 4rem;
+  }
+
+  .problem__item h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .problem__item p {
+    font-size: 0.95rem;
+  }
+
+  /* ===== How It Works ===== */
+  .how-it-works {
+    background: var(--white);
+    border-top: 1px solid var(--gray-light);
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .section-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 5rem;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+  }
+
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2rem;
+  }
+
+  .step {
+    position: relative;
+    padding-top: 2rem;
+    border-top: 2px solid var(--black);
+  }
+
+  .step__num {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--gray-mid);
+    margin-bottom: 1rem;
+  }
+
+  .step h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .step p {
+    font-size: 0.9rem;
+  }
+
+  /* ===== Features ===== */
+  .features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+
+  .feature-card {
+    background: var(--white);
+    border: 1px solid var(--gray-light);
+    padding: 2rem;
+    border-radius: 4px;
+    transition: transform 0.3s var(--ease-quiet), box-shadow 0.3s var(--ease-quiet);
+  }
+
+  .feature-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(10, 10, 10, 0.05);
+  }
+
+  .feature-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .feature-card p {
+    font-size: 0.9rem;
+  }
+
+  /* ===== Who It's For ===== */
+  .who {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  /* ===== FAQ ===== */
+  .faq {
+    background: var(--white);
+    border-top: 1px solid var(--gray-light);
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .faq__list {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .faq__item {
+    border-bottom: 1px solid var(--gray-light);
+  }
+
+  .faq__item:first-child {
+    border-top: 1px solid var(--gray-light);
+  }
+
+  .faq__q {
+    width: 100%;
+    background: none;
+    border: none;
+    text-align: left;
+    padding: 1.5rem 0;
+    font-family: 'Inter', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--black);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .faq__q::after {
+    content: '+';
+    font-size: 1.5rem;
+    font-weight: 400;
+    transition: transform 0.2s ease;
+  }
+
+  .faq__item.active .faq__q::after {
+    transform: rotate(45deg);
+  }
+
+  .faq__a {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s var(--ease-quiet), padding 0.3s var(--ease-quiet);
+  }
+
+  .faq__item.active .faq__a {
+    max-height: 200px;
+    padding-bottom: 1.5rem;
+  }
+
+  .faq__a p {
+    font-size: 0.95rem;
+  }
+
+  /* ===== Final CTA ===== */
+  .final-cta {
+    background: var(--black);
+    color: var(--white);
+    text-align: center;
+    padding: 10rem 0;
+  }
+
+  .final-cta h2 {
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    margin-bottom: 1.5rem;
+  }
+
+  .final-cta p {
+    color: var(--gray-light);
+    max-width: 500px;
+    margin: 0 auto 3rem;
+  }
+
+  /* ===== Footer ===== */
+  footer {
+    background: var(--black);
+    color: var(--gray-mid);
+    padding: 3rem 0;
+    border-top: 1px solid var(--charcoal);
+  }
+
+  .footer__inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer__logo {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  .footer__links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .footer__links a {
+    color: var(--gray-mid);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+
+  .footer__links a:hover { color: var(--white); }
+
+  /* ===== Scroll Reveal Animation ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet);
+  }
+
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .nav__links .nav__link:not(.btn) { display: none; }
+    .hero { padding-top: 8rem; }
+    .mockup__body { grid-template-columns: 1fr; height: auto; }
+    .mockup__sidebar { display: none; }
+    .problem__grid, .steps, .features__grid { grid-template-columns: 1fr; }
+    .footer__inner { flex-direction: column; gap: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="container nav__inner">
+    <a href="#" class="logo">
+      <div class="logo__mark"></div>
+      <span class="logo__text">Jessel</span>
+    </a>
+    <div class="nav__links">
+      <a href="#how-it-works" class="nav__link">How it works</a>
+      <a href="#features" class="nav__link">Features</a>
+      <a href="#faq" class="nav__link">FAQ</a>
+      <a href="login.html" class="nav__link">Log in</a>
+      <a href="signup.html" class="btn btn-primary">Sign up</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero__bg"></div>
+  <div class="container">
+    <div class="hero__content reveal">
+      <h1>Automatic client updates for developers.</h1>
+      <p class="hero__sub">Jessel pulls updates from your GitHub commits, translates them into plain English, and sends them to your clients automatically. No more manual status reports.</p>
+      <div class="hero__ctas">
+        <a href="signup.html" class="btn btn-primary btn-large">Get started free</a>
+        <a href="#how-it-works" class="btn btn-secondary btn-large">See how it works</a>
+      </div>
+    </div>
+
+    <!-- Glassmorphism Mockup -->
+    <div class="mockup reveal" style="transition-delay: 0.2s;">
+      <div class="mockup__bar">
+        <div class="mockup__dot"></div>
+        <div class="mockup__dot"></div>
+        <div class="mockup__dot"></div>
+      </div>
+      <div class="mockup__body">
+        <div class="mockup__sidebar">
+          <div class="mockup__item mid"></div>
+          <div class="mockup__item short"></div>
+          <div class="mockup__item mid"></div>
+          <div class="mockup__item short"></div>
+        </div>
+        <div class="mockup__main">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+            <div style="width: 40%; height: 16px; background: var(--gray-dark); border-radius: 2px;"></div>
+            <div class="mockup__live">LIVE UPDATE</div>
+          </div>
+          <div class="mockup__card">
+            <div class="mockup__text w-90"></div>
+            <div class="mockup__text w-70"></div>
+          </div>
+          <div class="mockup__card">
+            <div class="mockup__text w-90"></div>
+            <div class="mockup__text w-70"></div>
+          </div>
+          <div class="mockup__card">
+            <div class="mockup__text w-90"></div>
+            <div class="mockup__text w-70"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Problem -->
+<section id="problem" class="problem">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>The status update problem.</h2>
+      <p>Freelance developers waste hours formatting weekly updates. Clients hate being out of the loop.</p>
+    </div>
+    <div class="problem__grid">
+      <div class="problem__item reveal">
+        <h3>Time-consuming</h3>
+        <p>Writing manual status reports takes you away from actual development work.</p>
+      </div>
+      <div class="problem__item reveal" style="transition-delay: 0.1s;">
+        <h3>Silent gaps</h3>
+        <p>Clients panic when they don't hear from you, even if you're making great progress.</p>
+      </div>
+      <div class="problem__item reveal" style="transition-delay: 0.2s;">
+        <h3>Context switching</h3>
+        <p>Answering "how is it going?" emails breaks your focus and slows down the project.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- How It Works -->
+<section id="how-it-works" class="how-it-works">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>How it works.</h2>
+      <p>Automate your client communication in four simple steps.</p>
+    </div>
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step__num">01</div>
+        <h3>Connect your GitHub repo</h3>
+        <p>Securely link your repository to Jessel in one click.</p>
+      </div>
+      <div class="step reveal" style="transition-delay: 0.1s;">
+        <div class="step__num">02</div>
+        <h3>Automatic summarization</h3>
+        <p>Commits are automatically summarized in plain English.</p>
+      </div>
+      <div class="step reveal" style="transition-delay: 0.2s;">
+        <div class="step__num">03</div>
+        <h3>Share private link</h3>
+        <p>Clients get a private link to view progress—no login required.</p>
+      </div>
+      <div class="step reveal" style="transition-delay: 0.3s;">
+        <div class="step__num">04</div>
+        <h3>Add milestones</h3>
+        <p>Manually add key milestones to highlight major achievements.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" class="features">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Everything you need to keep clients informed.</h2>
+      <p>A complete toolkit for transparent freelance development.</p>
+    </div>
+    <div class="features__grid">
+      <div class="feature-card reveal">
+        <h3>Automatic GitHub Tracking</h3>
+        <p>Pull requests and commits are tracked automatically from connected repositories.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay: 0.1s;">
+        <h3>AI-Written Summaries</h3>
+        <p>Technical jargon is converted into clear, client-friendly updates.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay: 0.2s;">
+        <h3>Client Comments & Reactions</h3>
+        <p>Clients can leave feedback and react to updates directly on the portal.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay: 0.3s;">
+        <h3>Milestone Tracking</h3>
+        <p>Highlight major project milestones and deliverables separately.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay: 0.4s;">
+        <h3>Email Digests</h3>
+        <p>Send daily or weekly progress summaries straight to the client's inbox.</p>
+      </div>
+      <div class="feature-card reveal" style="transition-delay: 0.5s;">
+        <h3>No Client Login Required</h3>
+        <p>Clients access updates via a secure, private link without creating an account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Who It's For -->
+<section id="who" class="who-section">
+  <div class="container">
+    <div class="who reveal">
+      <h2>Built for freelance developers and small studios.</h2>
+      <p style="margin-top: 1.5rem; font-size: 1.1rem;">If you write code and bill clients, Jessel is designed to bridge the gap between your IDE and your client's inbox.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="faq">
+  <div class="container">
+    <div class="section-header reveal">
+      <h2>Frequently asked questions.</h2>
+    </div>
+    <div class="faq__list reveal">
+      <div class="faq__item">
+        <button class="faq__q">Do clients need an account?</button>
+        <div class="faq__a">
+          <p>No. Clients receive a private, secure link that gives them direct access to the project portal without needing to sign up.</p>
+        </div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q">What happens to my GitHub data?</button>
+        <div class="faq__a">
+          <p>Jessel only reads commit metadata and messages. We do not access your code, source files, or sensitive repository settings.</p>
+        </div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q">Can I use this for multiple projects?</button>
+        <div class="faq__a">
+          <p>Yes. You can connect multiple repositories and manage multiple clients from a single Jessel dashboard.</p>
+        </div>
+      </div>
+      <div class="faq__item">
+        <button class="faq__q">Can I edit the automatic summaries?</button>
+        <div class="faq__a">
+          <p>Absolutely. You have full control to edit, delete, or hide any automatically generated update before the client sees it.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Final CTA -->
+<section class="final-cta">
+  <div class="container reveal">
+    <h2>Ready to automate your updates?</h2>
+    <p>Join the developers who never write another manual status report.</p>
+    <a href="signup.html" class="btn btn-secondary btn-large" style="background: var(--white); color: var(--black); border-color: var(--white);">Sign up for free</a>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="container footer__inner">
+    <div class="footer__logo">Jessel</div>
+    <div class="footer__links">
+      <a href="terms.html">Terms</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="#">© 2024 Jessel</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll Reveal Animation
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  revealEls.forEach(el => observer.observe(el));
+
+  // FAQ Accordion
+  const faqItems = document.querySelectorAll('.faq__item');
+  faqItems.forEach(item => {
+    const question = item.querySelector('.faq__q');
+    question.addEventListener('click', () => {
+      const isActive = item.classList.contains('active');
+      // Close all
+      faqItems.forEach(i => i.classList.remove('active'));
+      // Open clicked if it was closed
+      if (!isActive) {
+        item.classList.add('active');
+      }
+    });
+  });
+</script>
+
+</body>
+</html>
