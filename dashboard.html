@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jessel — Dashboard</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230A0A0A'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Inter,%20sans-serif'%20font-weight='700'%20font-size='52'%20fill='%23FFFFFF'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #0A0A0A;
+    --charcoal: #1A1A1A;
+    --gray-dark: #4A4A4A;
+    --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5;
+    --off-white: #FAFAFA;
+    --white: #FFFFFF;
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--off-white);
+    color: var(--black);
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
+  .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
+  .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
+  .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+  @keyframes float-orb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 66% { transform: translate(-30px, 40px) scale(0.95); } }
+
+  .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.8); z-index: 99; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
+  .mobile-menu-btn { background: none; border: none; color: var(--black); cursor: pointer; padding: 0.5rem; display: flex; align-items: center; }
+  .mobile-logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--black); text-decoration: none; }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03); display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100; transition: transform 0.3s var(--ease-quiet); }
+  .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); margin-bottom: 3rem; padding: 0 0.5rem; }
+  .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 8px; display: grid; place-items: center; color: var(--white); font-size: 1rem; font-weight: 800; }
+  .brand__name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+
+  .nav-links { display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; }
+  .nav-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s ease; }
+  .nav-link:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
+  .nav-link.active { background: var(--black); color: var(--white); }
+  .nav-link svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+  .sidebar-footer { border-top: 1px solid rgba(229, 229, 229, 0.6); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .user-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; margin-bottom: 0.5rem; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--black); color: var(--white); display: grid; place-items: center; }
+  .user-info { display: flex; flex-direction: column; overflow: hidden; }
+  .user-name { font-size: 0.9rem; font-weight: 600; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .user-email { font-size: 0.75rem; color: var(--gray-mid); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+  .btn-logout { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s ease; background: none; border: none; cursor: pointer; font-family: inherit; text-align: left; }
+  .btn-logout:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
+  .btn-logout svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+  .mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 90; opacity: 0; transition: opacity 0.3s ease; }
+  .mobile-overlay.active { display: block; opacity: 1; }
+
+  .main-content { margin-left: 260px; padding: 3rem 3rem 6rem; min-height: 100vh; position: relative; max-width: 1200px; }
+
+  .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--gray-light); }
+  .eyebrow { display: inline-flex; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 0.75rem; }
+  .page-title { font-weight: 800; font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.1; letter-spacing: -0.03em; color: var(--black); }
+  .page-title em { font-style: normal; color: var(--gray-mid); font-weight: 800; }
+
+  .btn-primary { background: var(--black); color: var(--white); border: 1px solid var(--black); padding: 0.8rem 1.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.2s var(--ease-quiet); }
+  .btn-primary:hover { background: transparent; color: var(--black); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(10, 10, 10, 0.1); }
+
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+  .stat-card { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .stat-label { font-size: 12px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--gray-mid); }
+  .stat-value { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; color: var(--black); line-height: 1; }
+  .stat-icon { width: 32px; height: 32px; background: var(--white); border-radius: 8px; display: grid; place-items: center; color: var(--black); margin-bottom: 0.5rem; border: 1px solid var(--gray-light); }
+
+  .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+
+  .feed-section { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 2rem; }
+  .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; border-bottom: 1px solid var(--gray-light); padding-bottom: 1rem; }
+  .section-title { font-size: 1.1rem; font-weight: 700; color: var(--black); letter-spacing: -0.01em; }
+
+  .feed-item { display: flex; gap: 1rem; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid rgba(229, 229, 229, 0.6); }
+  .feed-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+  .feed-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--white); border: 1px solid var(--gray-light); display: grid; place-items: center; flex-shrink: 0; color: var(--black); }
+  .feed-content { flex: 1; }
+  .feed-text { font-size: 0.95rem; color: var(--gray-dark); margin-bottom: 0.25rem; line-height: 1.5; }
+  .feed-text strong { color: var(--black); font-weight: 600; }
+  .feed-meta { font-size: 0.8rem; color: var(--gray-mid); display: flex; align-items: center; gap: 0.5rem; }
+  .feed-meta a { color: var(--black); text-decoration: none; font-weight: 500; }
+  .feed-meta a:hover { text-decoration: underline; }
+
+  .right-panel { display: flex; flex-direction: column; gap: 2rem; }
+  .panel-card { background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; padding: 1.5rem; }
+
+  .attention-item { display: flex; flex-direction: column; gap: 0.5rem; padding: 1rem; background: rgba(10, 10, 10, 0.03); border-radius: 8px; margin-bottom: 1rem; border-left: 2px solid var(--black); }
+  .attention-item.stale { border-left-color: var(--gray-mid); }
+  .attention-item:last-child { margin-bottom: 0; }
+  .attention-header { display: flex; justify-content: space-between; align-items: center; }
+  .attention-project { font-size: 0.8rem; font-weight: 600; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.05em; }
+  .attention-time { font-size: 0.75rem; color: var(--gray-mid); }
+  .attention-text { font-size: 0.9rem; color: var(--black); font-weight: 500; line-height: 1.4; }
+  .attention-text a { color: inherit; text-decoration: underline; }
+
+  .empty-panel { text-align: center; padding: 2rem 1rem; color: var(--gray-mid); font-size: 0.9rem; }
+
+  .quick-action-btn { display: flex; align-items: center; justify-content: center; gap: 0.5rem; width: 100%; background: var(--black); color: var(--white); border: 1px solid var(--black); padding: 0.75rem 1rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 6px; text-decoration: none; transition: all 0.2s var(--ease-quiet); margin-bottom: 0.75rem; }
+  .quick-action-btn:hover { background: transparent; color: var(--black); }
+  .quick-action-btn.secondary { background: transparent; color: var(--black); border-color: var(--gray-light); }
+  .quick-action-btn.secondary:hover { border-color: var(--black); background: var(--black); color: var(--white); }
+
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) {
+    .mobile-topbar { display: flex; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 5rem 1.5rem 4rem; }
+    .content-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<div class="mobile-topbar">
+  <button class="mobile-menu-btn" id="menuToggle">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a href="dashboard.html" class="mobile-logo">Jessel</a>
+  <div style="width: 24px;"></div>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand__mark">J</div>
+    <div class="brand__name">Jessel</div>
+  </a>
+
+  <nav class="nav-links">
+    <a href="dashboard.html" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a href="projects.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Projects
+    </a>
+    <a href="settings.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <span class="user-name" id="sidebarUserName">Account</span>
+        <span class="user-email" id="sidebarUserEmail">&nbsp;</span>
+      </div>
+    </div>
+    <button class="btn-logout" id="logoutBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <div class="page-head reveal">
+    <div>
+      <div class="eyebrow">Workspace</div>
+      <h1 class="page-title">Command <em>Center</em>.</h1>
+    </div>
+    <a href="new-project.html" class="btn-primary">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+      New Project
+    </a>
+  </div>
+
+  <div class="stats-grid reveal">
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      </div>
+      <span class="stat-label">Active Projects</span>
+      <span class="stat-value" id="statProjects">0</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      </div>
+      <span class="stat-label">Updates Sent (7d)</span>
+      <span class="stat-value" id="statUpdates">0</span>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <span class="stat-label">Total Milestones</span>
+      <span class="stat-value" id="statMilestones">0</span>
+    </div>
+  </div>
+
+  <div class="content-grid">
+    <div class="feed-section reveal">
+      <div class="section-header">
+        <h2 class="section-title">Global Activity</h2>
+      </div>
+      <div id="activityFeed">
+        <div class="empty-panel">Loading recent activity...</div>
+      </div>
+    </div>
+
+    <div class="right-panel">
+      <div class="panel-card reveal">
+        <div class="section-header" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">Needs Attention</h2>
+        </div>
+        <div id="attentionPanel">
+          <div class="empty-panel">Checking your projects...</div>
+        </div>
+      </div>
+
+      <div class="panel-card reveal">
+        <div class="section-header" style="margin-bottom: 1.5rem;">
+          <h2 class="section-title">Quick Actions</h2>
+        </div>
+        <a href="new-project.html" class="quick-action-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+          Create Project
+        </a>
+        <a href="projects.html" class="quick-action-btn secondary">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+          View All Projects
+        </a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<script>
+  // ===== Mobile Drawer =====
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      mobileOverlay.classList.toggle('active');
+    });
+  }
+  if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      mobileOverlay.classList.remove('active');
+    });
+  }
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+        mobileOverlay.classList.remove('active');
+      }
+    });
+  });
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  function timeAgo(dateStr) {
+    const diffMs = Date.now() - new Date(dateStr).getTime();
+    const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+    if (days === 0) return 'today';
+    if (days === 1) return 'yesterday';
+    return `${days} days ago`;
+  }
+
+  async function loadDashboard() {
+    const { data: { user } } = await sb.auth.getUser();
+    if (!user) { window.location.href = 'login.html'; return; }
+
+    // Sidebar user info
+    const { data: freelancer } = await sb.from('freelancers').select('*').eq('id', user.id).single();
+    document.getElementById('sidebarUserName').textContent = (freelancer && freelancer.name) || user.email;
+    document.getElementById('sidebarUserEmail').textContent = user.email;
+
+    // 1. Fetch all projects for this freelancer
+    const { data: projects } = await sb.from('projects').select('id, name, status, client_link_slug').eq('freelancer_id', user.id);
+    const activeProjects = (projects || []).filter(p => p.status !== 'completed');
+    document.getElementById('statProjects').textContent = activeProjects.length;
+
+    if (!projects || projects.length === 0) {
+      document.getElementById('activityFeed').innerHTML = '<div class="empty-panel">No projects yet. Create one to get started!</div>';
+      document.getElementById('attentionPanel').innerHTML = '<div class="empty-panel">No projects to monitor yet.</div>';
+      document.getElementById('statUpdates').textContent = '0';
+      document.getElementById('statMilestones').textContent = '0';
+      revealSections();
+      return;
+    }
+
+    const projectIds = projects.map(p => p.id);
+    const projectMap = new Map(projects.map(p => [p.id, p]));
+
+    // 2. Accurate "Updates Sent (7d)" — filtered directly in the query, not client-side after a limit
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { count: recentUpdatesCount } = await sb
+      .from('updates')
+      .select('id', { count: 'exact', head: true })
+      .in('project_id', projectIds)
+      .gte('created_at', sevenDaysAgo);
+    document.getElementById('statUpdates').textContent = recentUpdatesCount || 0;
+
+    // 3. Accurate "Total Milestones" — real count across ALL updates, not just a recent sample
+    const { count: milestoneCount } = await sb
+      .from('updates')
+      .select('id', { count: 'exact', head: true })
+      .in('project_id', projectIds)
+      .eq('type', 'milestone');
+    document.getElementById('statMilestones').textContent = milestoneCount || 0;
+
+    // 4. Global activity feed — most recent 10 updates across all projects
+    const { data: recentUpdates } = await sb
+      .from('updates')
+      .select('id, type, friendly_summary, raw_message, project_id, created_at')
+      .in('project_id', projectIds)
+      .order('created_at', { ascending: false })
+      .limit(10);
+
+    const feedEl = document.getElementById('activityFeed');
+    if (!recentUpdates || recentUpdates.length === 0) {
+      feedEl.innerHTML = '<div class="empty-panel">No recent activity found.</div>';
+    } else {
+      feedEl.innerHTML = recentUpdates.map(u => {
+        const proj = projectMap.get(u.project_id);
+        const projName = proj ? proj.name : 'Unknown Project';
+        const text = u.friendly_summary || u.raw_message || 'Update received';
+        const isMilestone = u.type === 'milestone';
+        const iconSvg = isMilestone
+          ? `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
+          : `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>`;
+
+        return `
+          <div class="feed-item reveal">
+            <div class="feed-icon">${iconSvg}</div>
+            <div class="feed-content">
+              <p class="feed-text"><strong>${projName}:</strong> ${text.replace(/</g, '&lt;')}</p>
+              <div class="feed-meta">
+                <a href="project-detail.html?id=${u.project_id}">View Project</a>
+                <span>•</span>
+                <span>${new Date(u.created_at).toLocaleString()}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // 5. Needs Attention — recent client comments across ALL of the freelancer's updates
+    // (not just the 10 shown in the feed above), plus stale-project detection.
+    const { data: allUpdateIdsRows } = await sb
+      .from('updates')
+      .select('id, project_id')
+      .in('project_id', projectIds);
+
+    const allUpdateIds = (allUpdateIdsRows || []).map(u => u.id);
+    const updateToProjectId = new Map((allUpdateIdsRows || []).map(u => [u.id, u.project_id]));
+
+    let recentComments = [];
+    if (allUpdateIds.length > 0) {
+      const { data: reactions } = await sb
+        .from('reactions')
+        .select('id, emoji_or_comment, created_at, update_id')
+        .in('update_id', allUpdateIds)
+        .order('created_at', { ascending: false })
+        .limit(5);
+      recentComments = (reactions || []).filter(r => !r.emoji_or_comment.startsWith('👍'));
+    }
+
+    // Stale projects: active projects with no update (commit or milestone) in the last 5 days
+    const fiveDaysAgo = Date.now() - 5 * 24 * 60 * 60 * 1000;
+    const lastUpdateByProject = new Map();
+    (recentUpdates || []).forEach(u => {
+      const existing = lastUpdateByProject.get(u.project_id);
+      if (!existing || new Date(u.created_at) > new Date(existing)) {
+        lastUpdateByProject.set(u.project_id, u.created_at);
+      }
+    });
+    const staleProjects = activeProjects.filter(p => {
+      const last = lastUpdateByProject.get(p.id);
+      if (!last) return true; // never had any update at all
+      return new Date(last).getTime() < fiveDaysAgo;
+    });
+
+    const attentionEl = document.getElementById('attentionPanel');
+    const attentionItems = [];
+
+    recentComments.forEach(r => {
+      const projId = updateToProjectId.get(r.update_id);
+      const proj = projectMap.get(projId);
+      attentionItems.push(`
+        <div class="attention-item">
+          <div class="attention-header">
+            <span class="attention-project">${proj ? proj.name : 'Project'}</span>
+            <span class="attention-time">${timeAgo(r.created_at)}</span>
+          </div>
+          <p class="attention-text">"${r.emoji_or_comment.replace(/</g, '&lt;')}"</p>
+        </div>
+      `);
+    });
+
+    staleProjects.slice(0, 3).forEach(p => {
+      const last = lastUpdateByProject.get(p.id);
+      const message = last
+        ? `Hasn't had an update in ${timeAgo(last)}.`
+        : `No updates yet since this project was created.`;
+      attentionItems.push(`
+        <div class="attention-item stale">
+          <div class="attention-header">
+            <span class="attention-project">${p.name}</span>
+          </div>
+          <p class="attention-text">${message} <a href="project-detail.html?id=${p.id}">View project</a></p>
+        </div>
+      `);
+    });
+
+    attentionEl.innerHTML = attentionItems.length > 0
+      ? attentionItems.join('')
+      : '<div class="empty-panel">Nothing needs your attention right now.</div>';
+
+    revealSections();
+  }
+
+  function revealSections() {
+    const revealEls = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    revealEls.forEach(el => observer.observe(el));
+  }
+
+  loadDashboard();
+</script>
+
+</body>
+</html>
