@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jessel — Automatic Client Updates for Developers</title>
-<!-- Favicon -->
+<meta name="description" content="Jessel pulls updates from your GitHub commits, translates them into plain English, and sends them to your clients automatically. No more manual status reports.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230A0A0A'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Inter,%20sans-serif'%20font-weight='700'%20font-size='52'%20fill='%23FFFFFF'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,678 +23,196 @@
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
-
   html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--off-white);
-    color: var(--black);
-    line-height: 1.6;
-    overflow-x: hidden;
-    position: relative;
-  }
-
-  /* ===== Typography ===== */
-  h1, h2, h3, h4 {
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-
-  p { color: var(--gray-dark); }
-
-  /* ===== Layout ===== */
-  .container {
-    max-width: 1140px;
-    margin: 0 auto;
-    padding: 0 2rem;
-  }
-
-  section {
-    padding: 8rem 0;
-    position: relative;
-  }
+  body { font-family: 'Inter', sans-serif; background-color: var(--off-white); color: var(--black); line-height: 1.6; overflow-x: hidden; position: relative; }
 
   /* ===== Ambient Background Motion ===== */
-  .bg-orbs {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.6;
-    animation: float-orb 20s infinite ease-in-out;
-  }
-
+  .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(120px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
   .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
   .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
   .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+  @keyframes float-orb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 66% { transform: translate(-30px, 40px) scale(0.95); } }
 
-  @keyframes float-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, -30px) scale(1.1); }
-    66% { transform: translate(-30px, 40px) scale(0.95); }
-  }
+  /* ===== Typography ===== */
+  h1, h2, h3, h4 { font-weight: 700; letter-spacing: -0.02em; line-height: 1.1; }
+  p { color: var(--gray-dark); }
+  
+  /* ===== Layout ===== */
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 2rem; }
+  section { padding: 8rem 0; position: relative; }
+  .section-header { text-align: center; max-width: 600px; margin: 0 auto 5rem; }
+  .section-header h2 { font-size: clamp(2rem, 4vw, 3rem); margin-bottom: 1rem; font-weight: 800; }
+  .section-header p { font-size: 1.1rem; }
 
   /* ===== Navigation ===== */
-  .nav {
-    position: fixed;
-    top: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    width: calc(100% - 2rem);
-    max-width: 1140px;
-    z-index: 1000;
-    border-radius: 12px;
-    padding: 0.8rem 1.5rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 0 4px 20px rgba(10, 10, 10, 0.03);
-  }
-
-  .logo {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    text-decoration: none;
-    color: var(--black);
-  }
-
-  .logo__mark {
-    width: 24px;
-    height: 24px;
-    background: var(--black);
-    border-radius: 4px;
-  }
-
-  .logo__text {
-    font-size: 1.1rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-  }
-
-  .nav__links {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
-  }
-
-  .nav__link {
-    text-decoration: none;
-    color: var(--gray-dark);
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: color 0.2s ease;
-  }
-
+  .nav { position: fixed; top: 1rem; left: 50%; transform: translateX(-50%); width: calc(100% - 2rem); max-width: 1140px; z-index: 1000; border-radius: 12px; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; align-items: center; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 0 4px 20px rgba(10, 10, 10, 0.03); }
+  .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--black); }
+  .logo__mark { width: 24px; height: 24px; background: var(--black); border-radius: 4px; }
+  .logo__text { font-size: 1.1rem; font-weight: 700; letter-spacing: -0.02em; }
+  
+  .nav__links { display: flex; align-items: center; gap: 2rem; }
+  .nav__link { text-decoration: none; color: var(--gray-dark); font-size: 0.85rem; font-weight: 500; transition: color 0.2s ease; }
   .nav__link:hover { color: var(--black); }
 
-  .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    padding: 0.7rem 1.4rem;
-    border-radius: 6px;
-    text-decoration: none;
-    cursor: pointer;
-    transition: all 0.3s var(--ease-quiet);
-    border: 1px solid transparent;
-    font-size: 0.85rem;
-  }
+  .btn { display: inline-flex; align-items: center; justify-content: center; font-family: 'Inter', sans-serif; font-weight: 600; padding: 0.7rem 1.4rem; border-radius: 6px; text-decoration: none; cursor: pointer; transition: all 0.3s var(--ease-quiet); border: 1px solid transparent; font-size: 0.85rem; }
+  .btn-primary { background: var(--black); color: var(--white); border-color: var(--black); }
+  .btn-primary:hover { background: transparent; color: var(--black); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(10, 10, 10, 0.1); }
+  .btn-secondary { background: rgba(255, 255, 255, 0.4); color: var(--black); border-color: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); }
+  .btn-secondary:hover { background: var(--black); color: var(--white); border-color: var(--black); transform: translateY(-2px); }
+  .btn-large { padding: 1rem 2rem; font-size: 0.95rem; border-radius: 8px; }
 
-  .btn-primary {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--black);
-  }
+  .mobile-nav-toggle { display: none; background: none; border: none; color: var(--black); cursor: pointer; padding: 0.5rem; }
+  .mobile-nav-toggle svg { width: 24px; height: 24px; }
 
-  .btn-primary:hover {
-    background: transparent;
-    color: var(--black);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(10, 10, 10, 0.1);
-  }
+  /* ===== Hero ===== */
+  .hero { padding-top: 10rem; padding-bottom: 4rem; text-align: center; position: relative; overflow: hidden; }
+  .hero__content { max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+  .hero h1 { font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; margin-bottom: 1.5rem; }
+  .hero__sub { font-size: 1.2rem; color: var(--gray-dark); max-width: 600px; margin: 0 auto 3rem; line-height: 1.6; }
+  .hero__ctas { display: flex; justify-content: center; gap: 1rem; margin-bottom: 5rem; }
 
-  .btn-secondary {
-    background: rgba(255, 255, 255, 0.4);
-    color: var(--black);
-    border-color: rgba(255, 255, 255, 0.8);
-    backdrop-filter: blur(8px);
-  }
+  /* ===== Real Dashboard Mockup ===== */
+  .mockup-wrapper { position: relative; max-width: 1000px; margin: 0 auto; }
+  .mockup { border-radius: 12px; overflow: hidden; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08); display: flex; height: 480px; position: relative; }
+  
+  .mini-sidebar { width: 200px; border-right: 1px solid rgba(229, 229, 229, 0.6); padding: 1.5rem 1rem; display: flex; flex-direction: column; }
+  .mini-brand { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 2rem; font-weight: 700; font-size: 0.9rem; color: var(--black); }
+  .mini-brand-mark { width: 20px; height: 20px; background: var(--black); border-radius: 4px; }
+  .mini-nav-item { height: 24px; display: flex; align-items: center; gap: 0.5rem; padding: 0 0.5rem; border-radius: 4px; margin-bottom: 0.5rem; font-size: 0.75rem; color: var(--gray-dark); }
+  .mini-nav-item.active { background: var(--black); color: var(--white); }
+  .mini-nav-icon { width: 12px; height: 12px; background: currentColor; border-radius: 2px; opacity: 0.8; }
+  
+  .mini-main { flex: 1; padding: 1.5rem; text-align: left; overflow: hidden; display: flex; flex-direction: column; }
+  .mini-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid rgba(229, 229, 229, 0.6); }
+  .mini-title { width: 120px; height: 16px; background: var(--black); border-radius: 2px; }
+  .mini-btn { width: 90px; height: 28px; background: var(--black); border-radius: 6px; position: relative; overflow: hidden; transition: background 0.2s; }
+  .mini-btn.clicked { background: var(--gray-dark); }
 
-  .btn-secondary:hover {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--black);
-    transform: translateY(-2px);
-  }
+  .mini-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1.5rem; }
+  .mini-stat { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.9); padding: 0.75rem; border-radius: 6px; }
+  .mini-stat-val { height: 16px; width: 40%; background: var(--gray-dark); border-radius: 2px; margin-bottom: 0.5rem; }
+  .mini-stat-label { height: 8px; width: 80%; background: var(--gray-light); border-radius: 2px; }
 
-  .btn-large {
-    padding: 1rem 2rem;
-    font-size: 0.95rem;
-    border-radius: 8px;
-  }
+  .mini-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .mini-card { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.9); padding: 0.75rem 1rem; border-radius: 6px; transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s; }
+  .mini-card.highlight { border-color: var(--black); box-shadow: 0 4px 12px rgba(10,10,10,0.05); transform: translateY(-2px); }
+  .mini-card-head { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+  .mini-card-title { height: 10px; width: 40%; background: var(--black); border-radius: 2px; }
+  .mini-card-badge { height: 10px; width: 20%; background: var(--gray-light); border-radius: 2px; }
+  .mini-card-line { height: 6px; width: 60%; background: var(--gray-light); border-radius: 2px; }
 
-  /* ===== Hero Section ===== */
-  .hero {
-    padding-top: 10rem;
-    padding-bottom: 6rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
-  }
+  /* ===== Simulated Cursor ===== */
+  .sim-cursor { position: absolute; width: 16px; height: 16px; z-index: 10; pointer-events: none; left: 0; top: 0; opacity: 0; transition: top 0.8s var(--ease-quiet), left 0.8s var(--ease-quiet), opacity 0.3s ease, transform 0.1s ease; }
+  .sim-cursor svg { width: 100%; height: 100%; fill: var(--black); stroke: var(--white); stroke-width: 1; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+  .sim-cursor.active { opacity: 1; }
+  .sim-cursor.click { transform: scale(0.8); }
 
-  .hero__content {
-    max-width: 800px;
-    margin: 0 auto;
-    position: relative;
-    z-index: 2;
-  }
-
-  .hero h1 {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    font-weight: 800;
-    margin-bottom: 1.5rem;
-  }
-
-  .hero__sub {
-    font-size: 1.1rem;
-    color: var(--gray-dark);
-    max-width: 600px;
-    margin: 0 auto 3rem;
-    line-height: 1.6;
-  }
-
-  .hero__ctas {
-    display: flex;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 5rem;
-  }
-
-  /* Hero Mockup with Glassmorphism */
-  .mockup-wrapper {
-    position: relative;
-    max-width: 900px;
-    margin: 0 auto;
-  }
-
-  .mockup {
-    border-radius: 12px;
-    overflow: hidden;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08);
-  }
-
-  .mockup__bar {
-    height: 40px;
-    background: rgba(250, 250, 250, 0.8);
-    border-bottom: 1px solid rgba(229, 229, 229, 0.6);
-    display: flex;
-    align-items: center;
-    padding: 0 1rem;
-    gap: 0.5rem;
-  }
-
-  .mockup__dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--gray-light);
-    border: 1px solid var(--gray-light);
-  }
-
-  .mockup__body {
-    padding: 2rem;
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 2rem;
-    height: 420px;
-  }
-
-  .mockup__sidebar {
-    border-right: 1px solid rgba(229, 229, 229, 0.6);
-    padding-right: 2rem;
-  }
-
-  .mockup__nav-item {
-    height: 10px;
-    background: rgba(229, 229, 229, 0.8);
-    border-radius: 4px;
-    margin-bottom: 1rem;
-    width: 80%;
-  }
-
-  .mockup__nav-item.active { background: var(--gray-mid); width: 90%; }
-
-  .mockup__main {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .mockup__header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-
-  .mockup__title {
-    width: 40%;
-    height: 14px;
-    background: var(--gray-dark);
-    border-radius: 2px;
-  }
-
-  /* Motion Graphic: Live Update Blinker */
-  .mockup__live {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: var(--black);
-    background: rgba(229, 229, 229, 0.6);
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-    border: 1px solid rgba(255, 255, 255, 0.8);
-  }
-
-  .mockup__live::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    background: var(--black);
-    border-radius: 50%;
-    animation: blink 1.5s infinite;
-  }
-
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.2; }
-  }
-
-  .mockup__card {
-    background: rgba(255, 255, 255, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    padding: 1rem;
-    border-radius: 8px;
-  }
-
-  .mockup__text {
-    height: 8px;
-    background: var(--gray-light);
-    border-radius: 2px;
-    margin-bottom: 0.5rem;
-  }
-
-  .mockup__text.w-90 { width: 90%; }
-  .mockup__text.w-70 { width: 70%; }
-  .mockup__text.w-50 { width: 50%; }
-
-  /* Motion Graphic: SVG Chart Animation */
-  .mockup__chart {
-    margin-top: 1rem;
-    height: 80px;
-    width: 100%;
-  }
-
-  .chart-path {
-    fill: none;
-    stroke: var(--black);
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    stroke-dasharray: 1000;
-    stroke-dashoffset: 1000;
-    animation: draw-chart 4s ease-in-out infinite;
-  }
-
-  @keyframes draw-chart {
-    0% { stroke-dashoffset: 1000; }
-    50% { stroke-dashoffset: 0; }
-    100% { stroke-dashoffset: -1000; } /* Loop smoothly */
-  }
-
-  /* Motion Graphic: Typing Effect */
-  .typing-text {
-    border-right: 2px solid var(--black);
-    white-space: nowrap;
-    overflow: hidden;
-    width: 0;
-    animation: typing 3s steps(30, end) infinite, blink-caret 0.75s step-end infinite;
-  }
-
-  @keyframes typing {
-    0%, 90%, 100% { width: 0; }
-    10%, 80% { width: 24ch; }
-  }
-
-  @keyframes blink-caret {
-    50% { border-color: transparent; }
-  }
-
-  /* Floating UI Elements */
-  .floating-badge {
-    position: absolute;
-    padding: 0.6rem 1rem;
-    border-radius: 8px;
-    background: rgba(255, 255, 255, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    box-shadow: 0 8px 20px rgba(10, 10, 10, 0.05);
-    font-size: 0.8rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    z-index: 5;
-  }
-
+  /* Floating Badges */
+  .floating-badge { position: absolute; padding: 0.6rem 1rem; border-radius: 8px; background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 8px 20px rgba(10, 10, 10, 0.05); font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; z-index: 5; }
   .badge-1 { top: 10%; left: -5%; animation: float-badge 6s ease-in-out infinite; }
   .badge-2 { bottom: 15%; right: -5%; animation: float-badge 7s ease-in-out infinite reverse; }
+  @keyframes float-badge { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+  .badge-icon { width: 8px; height: 8px; background: var(--black); border-radius: 50%; }
 
-  @keyframes float-badge {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .badge-icon {
-    width: 8px;
-    height: 8px;
-    background: var(--black);
-    border-radius: 50%;
-  }
+  /* ===== Stats Bar ===== */
+  .stats-bar { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; margin-top: 6rem; padding: 2rem; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; max-width: 800px; margin-left: auto; margin-right: auto; }
+  .stat-item { text-align: center; }
+  .stat-num { font-size: 2rem; font-weight: 800; color: var(--black); letter-spacing: -0.02em; }
+  .stat-label { font-size: 0.8rem; color: var(--gray-mid); text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.25rem; }
 
   /* ===== Sections ===== */
-  .section-header {
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto 5rem;
-  }
+  .problem__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .glass-card { border-radius: 12px; padding: 2rem; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.8); transition: transform 0.3s var(--ease-quiet); }
+  .glass-card:hover { transform: translateY(-4px); }
+  .problem__item h3 { font-size: 1.2rem; margin-bottom: 0.75rem; }
+  .problem__item p { font-size: 0.95rem; }
 
-  .section-header h2 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 1rem;
-    font-weight: 800;
-  }
+  /* How It Works - Horizontal Flow */
+  .how-steps { display: flex; align-items: flex-start; justify-content: center; gap: 1rem; flex-wrap: wrap; }
+  .how-step-item { text-align: center; max-width: 220px; flex: 1; min-width: 180px; }
+  .step-icon-circle { width: 64px; height: 64px; background: var(--black); border-radius: 50%; display: grid; place-items: center; margin: 0 auto 1.5rem; color: var(--white); transition: transform 0.3s var(--ease-quiet); }
+  .step-icon-circle svg { width: 28px; height: 28px; }
+  .how-step-item:hover .step-icon-circle { transform: translateY(-4px); }
+  .how-step-item h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .how-step-item p { font-size: 0.9rem; }
+  .step-arrow { display: flex; align-items: center; justify-content: center; height: 64px; margin-top: 2rem; color: var(--gray-mid); }
+  .step-arrow svg { width: 24px; height: 24px; }
 
-  /* Problem Section */
-  .problem__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-
-  .glass-card {
-    border-radius: 12px;
-    padding: 2rem;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    transition: transform 0.3s var(--ease-quiet);
-  }
-
-  .glass-card:hover {
-    transform: translateY(-4px);
-  }
-
-  .problem__item h3 {
-    font-size: 1.2rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .problem__item p {
-    font-size: 0.95rem;
-  }
-
-  /* How It Works */
-  .steps {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 2rem;
-  }
-
-  .step {
-    position: relative;
-    padding-top: 2rem;
-  }
-
-  .step::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 40px;
-    height: 2px;
-    background: var(--black);
-  }
-
-  .step__num {
-    font-size: 0.8rem;
-    font-weight: 700;
-    color: var(--gray-mid);
-    margin-bottom: 1rem;
-  }
-
-  .step h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .step p {
-    font-size: 0.9rem;
-  }
-
-  /* Features */
-  .features__grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
-  }
-
-  .feature-card h3 {
-    font-size: 1.1rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .feature-card p {
-    font-size: 0.9rem;
-  }
-
-  /* Who It's For */
-  .who {
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto;
-    padding: 4rem;
-    border-radius: 16px;
-  }
+  .features__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; }
+  .feature-card h3 { font-size: 1.1rem; margin-bottom: 0.75rem; }
+  .feature-card p { font-size: 0.9rem; }
 
   /* FAQ */
-  .faq__list {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  .faq__item {
-    margin-bottom: 1rem;
-    border-radius: 8px;
-    overflow: hidden;
-  }
-
-  .faq__q {
-    width: 100%;
-    background: none;
-    border: none;
-    text-align: left;
-    padding: 1.5rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--black);
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.5);
-    backdrop-filter: blur(8px);
-    transition: background 0.3s ease;
-  }
-
-  .faq__q:hover {
-    background: rgba(255, 255, 255, 0.8);
-  }
-
-  .faq__q::after {
-    content: '+';
-    font-size: 1.5rem;
-    font-weight: 400;
-    transition: transform 0.3s var(--ease-quiet);
-  }
-
-  .faq__item.active .faq__q::after {
-    transform: rotate(45deg);
-  }
-
-  .faq__a {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s var(--ease-quiet);
-    background: rgba(255, 255, 255, 0.3);
-  }
-
-  .faq__item.active .faq__a {
-    max-height: 200px;
-  }
-
-  .faq__a p {
-    padding: 1.5rem;
-    font-size: 0.95rem;
-    border-top: 1px solid rgba(229, 229, 229, 0.6);
-  }
+  .faq__list { max-width: 700px; margin: 0 auto; }
+  .faq__item { margin-bottom: 1rem; border-radius: 8px; overflow: hidden; background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.8); }
+  .faq__q { width: 100%; background: none; border: none; text-align: left; padding: 1.5rem; font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 600; color: var(--black); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+  .faq__q::after { content: '+'; font-size: 1.5rem; font-weight: 400; transition: transform 0.3s var(--ease-quiet); }
+  .faq__item.active .faq__q::after { transform: rotate(45deg); }
+  .faq__a { max-height: 0; overflow: hidden; transition: max-height 0.4s var(--ease-quiet); }
+  .faq__item.active .faq__a { max-height: 200px; }
+  .faq__a p { padding: 0 1.5rem 1.5rem; font-size: 0.95rem; border-top: 1px solid rgba(229, 229, 229, 0.6); padding-top: 1rem; }
 
   /* Final CTA */
-  .final-cta {
-    text-align: center;
-    padding: 8rem 0;
-  }
-
-  .cta-box {
-    padding: 4rem;
-    border-radius: 16px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-
-  .final-cta h2 {
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    margin-bottom: 1rem;
-  }
-
-  .final-cta p {
-    color: var(--gray-dark);
-    max-width: 500px;
-    margin: 0 auto 2.5rem;
-  }
+  .final-cta { text-align: center; padding: 8rem 0; }
+  .cta-box { padding: 4rem; border-radius: 16px; max-width: 800px; margin: 0 auto; background: rgba(10, 10, 10, 0.03); border: 1px solid rgba(10, 10, 10, 0.1); }
+  .final-cta h2 { font-size: clamp(2rem, 4vw, 3.5rem); margin-bottom: 1rem; }
+  .final-cta p { color: var(--gray-dark); max-width: 500px; margin: 0 auto 2.5rem; }
 
   /* Footer */
-  footer {
-    background: var(--black);
-    color: var(--gray-mid);
-    padding: 3rem 0;
-    margin-top: 6rem;
-  }
-
-  .footer__inner {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .footer__logo {
-    color: var(--white);
-    font-weight: 700;
-    font-size: 1.2rem;
-  }
-
-  .footer__links {
-    display: flex;
-    gap: 2rem;
-  }
-
-  .footer__links a {
-    color: var(--gray-mid);
-    text-decoration: none;
-    font-size: 0.9rem;
-    transition: color 0.2s;
-  }
-
+  footer { background: var(--black); color: var(--gray-mid); padding: 3rem 0; margin-top: 6rem; }
+  .footer__inner { display: flex; justify-content: space-between; align-items: center; }
+  .footer__logo { color: var(--white); font-weight: 700; font-size: 1.2rem; }
+  .footer__links { display: flex; gap: 2rem; }
+  .footer__links a { color: var(--gray-mid); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
   .footer__links a:hover { color: var(--white); }
 
-  /* ===== Scroll Reveal Animation ===== */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet);
+  /* Scroll Reveal */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 1024px) {
+    .nav__links { display: none; position: absolute; top: 100%; right: 0; left: 0; flex-direction: column; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(16px); padding: 1rem; border-radius: 8px; margin-top: 0.5rem; border: 1px solid rgba(255, 255, 255, 0.8); }
+    .nav__links.open { display: flex; }
+    .mobile-nav-toggle { display: block; }
+    .nav__link { padding: 0.5rem 0; width: 100%; }
+    .nav__links .btn { width: 100%; margin-top: 0.5rem; }
+    
+    .mini-sidebar { display: none; }
+    .mockup { height: 350px; }
+    
+    .how-steps { flex-direction: column; align-items: center; gap: 0; }
+    .how-step-item { max-width: 300px; margin-bottom: 2rem; }
+    .step-arrow { transform: rotate(90deg); height: 40px; margin: 0 0 2rem; }
   }
 
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Responsive */
   @media (max-width: 768px) {
-    .nav__links .nav__link:not(.btn) { display: none; }
     .hero { padding-top: 8rem; }
-    .mockup__body { grid-template-columns: 1fr; height: auto; }
-    .mockup__sidebar { display: none; }
-    .problem__grid, .steps, .features__grid { grid-template-columns: 1fr; }
+    .problem__grid, .features__grid { grid-template-columns: 1fr; }
     .footer__inner { flex-direction: column; gap: 1.5rem; }
     .floating-badge { display: none; }
+    .stats-bar { grid-template-columns: 1fr; gap: 1rem; }
+    .mini-stats { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- Ambient Background Orbs -->
 <div class="bg-orbs">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 </div>
 
-<!-- Navigation -->
 <nav class="nav">
   <a href="#" class="logo">
     <div class="logo__mark"></div>
     <span class="logo__text">Jessel</span>
   </a>
-  <div class="nav__links">
+  <button class="mobile-nav-toggle" id="navToggle">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <div class="nav__links" id="navLinks">
     <a href="#how-it-works" class="nav__link">How it works</a>
     <a href="#features" class="nav__link">Features</a>
     <a href="#faq" class="nav__link">FAQ</a>
@@ -715,10 +233,7 @@
       </div>
     </div>
 
-    <!-- Glassmorphism Mockup with Motion Graphics -->
     <div class="mockup-wrapper reveal" style="transition-delay: 0.2s;">
-      
-      <!-- Floating Badges -->
       <div class="floating-badge badge-1">
         <div class="badge-icon"></div>
         +1 Commit Pulled
@@ -728,42 +243,80 @@
         Email Sent to Client
       </div>
 
-      <div class="mockup">
-        <div class="mockup__bar">
-          <div class="mockup__dot"></div>
-          <div class="mockup__dot"></div>
-          <div class="mockup__dot"></div>
-        </div>
-        <div class="mockup__body">
-          <div class="mockup__sidebar">
-            <div class="mockup__nav-item active"></div>
-            <div class="mockup__nav-item"></div>
-            <div class="mockup__nav-item"></div>
-            <div class="mockup__nav-item"></div>
+      <div class="mockup" id="heroMockup">
+        <div class="mini-sidebar">
+          <div class="mini-brand">
+            <div class="mini-brand-mark"></div>
+            Jessel
           </div>
-          <div class="mockup__main">
-            <div class="mockup__header">
-              <div class="mockup__title"></div>
-              <div class="mockup__live">LIVE UPDATE</div>
-            </div>
-            <div class="mockup__card">
-              <div class="mockup__text w-50"></div>
-              <!-- Typing Animation -->
-              <div style="height: 8px; background: var(--gray-dark); border-radius: 2px; margin-bottom: 0.5rem;" class="typing-text"></div>
-              <div class="mockup__text w-90"></div>
-              <div class="mockup__text w-70"></div>
-              
-              <!-- SVG Chart Animation -->
-              <svg class="mockup__chart" viewBox="0 0 300 80">
-                <path class="chart-path" d="M0,60 Q50,80 100,50 T200,40 T300,10" />
-              </svg>
-            </div>
-            <div class="mockup__card" style="opacity: 0.6;">
-              <div class="mockup__text w-90"></div>
-              <div class="mockup__text w-70"></div>
-            </div>
+          <div class="mini-nav-item active">
+            <div class="mini-nav-icon"></div>
+            Projects
+          </div>
+          <div class="mini-nav-item">
+            <div class="mini-nav-icon"></div>
+            Settings
           </div>
         </div>
+        <div class="mini-main">
+          <div class="mini-header">
+            <div class="mini-title"></div>
+            <div class="mini-btn" id="miniBtn"></div>
+          </div>
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <div class="mini-stat-val"></div>
+              <div class="mini-stat-label"></div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-val"></div>
+              <div class="mini-stat-label"></div>
+            </div>
+            <div class="mini-stat">
+              <div class="mini-stat-val"></div>
+              <div class="mini-stat-label"></div>
+            </div>
+          </div>
+          <div class="mini-list">
+            <div class="mini-card" id="miniCard1">
+              <div class="mini-card-head">
+                <div class="mini-card-title"></div>
+                <div class="mini-card-badge"></div>
+              </div>
+              <div class="mini-card-line"></div>
+            </div>
+            <div class="mini-card" id="miniCard2">
+              <div class="mini-card-head">
+                <div class="mini-card-title"></div>
+                <div class="mini-card-badge"></div>
+              </div>
+              <div class="mini-card-line"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Simulated Cursor -->
+        <div class="sim-cursor" id="simCursor">
+          <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0 0 L0 12 L4 8 L7 14 L9 13 L6 7 L12 7 Z"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar reveal" style="transition-delay: 0.4s;">
+      <div class="stat-item">
+        <div class="stat-num">10+</div>
+        <div class="stat-label">Hours Saved Weekly</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">100%</div>
+        <div class="stat-label">Client Transparency</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Manual Reports</div>
       </div>
     </div>
   </div>
@@ -793,34 +346,59 @@
   </div>
 </section>
 
-<!-- How It Works -->
+<!-- How It Works (Horizontal Flow) -->
 <section id="how-it-works" class="how-it-works">
   <div class="container">
     <div class="section-header reveal">
-      <h2>How it works.</h2>
-      <p>Automate your client communication in four simple steps.</p>
+      <h2>Your commits already tell the story.</h2>
+      <p>Why waste time writing status emails?</p>
     </div>
-    <div class="steps">
-      <div class="step reveal">
-        <div class="step__num">01</div>
+    <div class="how-steps reveal">
+      
+      <div class="how-step-item">
+        <div class="step-icon-circle">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.87 1.52 2.34 1.07 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/></svg>
+        </div>
         <h3>Connect GitHub</h3>
-        <p>Securely link your repository to Jessel in one click.</p>
+        <p>OAuth integration with your repositories</p>
       </div>
-      <div class="step reveal" style="transition-delay: 0.1s;">
-        <div class="step__num">02</div>
-        <h3>AI Summarization</h3>
-        <p>Commits are automatically summarized in plain English.</p>
+
+      <div class="step-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </div>
-      <div class="step reveal" style="transition-delay: 0.2s;">
-        <div class="step__num">03</div>
-        <h3>Share Private Link</h3>
-        <p>Clients get a private link to view progress—no login required.</p>
+
+      <div class="how-step-item">
+        <div class="step-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        </div>
+        <h3>AI Summary</h3>
+        <p>Commits translated to plain English</p>
       </div>
-      <div class="step reveal" style="transition-delay: 0.3s;">
-        <div class="step__num">04</div>
-        <h3>Add Milestones</h3>
-        <p>Manually add key milestones to highlight major achievements.</p>
+
+      <div class="step-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
       </div>
+
+      <div class="how-step-item">
+        <div class="step-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+        </div>
+        <h3>Share Portal Link</h3>
+        <p>Give your client read-only access</p>
+      </div>
+
+      <div class="step-arrow">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </div>
+
+      <div class="how-step-item">
+        <div class="step-icon-circle">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <h3>Automatic Updates</h3>
+        <p>Clients see progress as you commit</p>
+      </div>
+
     </div>
   </div>
 </section>
@@ -833,40 +411,12 @@
       <p>A complete toolkit for transparent freelance development.</p>
     </div>
     <div class="features__grid">
-      <div class="feature-card glass-card reveal">
-        <h3>GitHub Tracking</h3>
-        <p>Pull requests and commits are tracked automatically from connected repositories.</p>
-      </div>
-      <div class="feature-card glass-card reveal" style="transition-delay: 0.1s;">
-        <h3>AI Summaries</h3>
-        <p>Technical jargon is converted into clear, client-friendly updates.</p>
-      </div>
-      <div class="feature-card glass-card reveal" style="transition-delay: 0.2s;">
-        <h3>Client Reactions</h3>
-        <p>Clients can leave feedback and react to updates directly on the portal.</p>
-      </div>
-      <div class="feature-card glass-card reveal" style="transition-delay: 0.3s;">
-        <h3>Milestone Tracking</h3>
-        <p>Highlight major project milestones and deliverables separately.</p>
-      </div>
-      <div class="feature-card glass-card reveal" style="transition-delay: 0.4s;">
-        <h3>Email Digests</h3>
-        <p>Send daily or weekly progress summaries straight to the client's inbox.</p>
-      </div>
-      <div class="feature-card glass-card reveal" style="transition-delay: 0.5s;">
-        <h3>No Client Login</h3>
-        <p>Clients access updates via a secure, private link without creating an account.</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Who It's For -->
-<section id="who" class="who-section">
-  <div class="container">
-    <div class="who glass-card reveal">
-      <h2>Built for freelance developers and small studios.</h2>
-      <p style="margin-top: 1.5rem; font-size: 1.1rem;">If you write code and bill clients, Jessel is designed to bridge the gap between your IDE and your client's inbox.</p>
+      <div class="feature-card glass-card reveal"><h3>GitHub Tracking</h3><p>Pull requests and commits are tracked automatically from connected repositories.</p></div>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.1s;"><h3>AI Summaries</h3><p>Technical jargon is converted into clear, client-friendly updates.</p></div>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.2s;"><h3>Client Reactions</h3><p>Clients can leave feedback and react to updates directly on the portal.</p></div>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.3s;"><h3>Milestone Tracking</h3><p>Highlight major project milestones and deliverables separately.</p></div>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.4s;"><h3>Email Digests</h3><p>Send daily or weekly progress summaries straight to the client's inbox.</p></div>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.5s;"><h3>No Client Login</h3><p>Clients access updates via a secure, private link without creating an account.</p></div>
     </div>
   </div>
 </section>
@@ -880,27 +430,19 @@
     <div class="faq__list reveal">
       <div class="faq__item">
         <button class="faq__q">Do clients need an account?</button>
-        <div class="faq__a">
-          <p>No. Clients receive a private, secure link that gives them direct access to the project portal without needing to sign up.</p>
-        </div>
+        <div class="faq__a"><p>No. Clients receive a private, secure link that gives them direct access to the project portal without needing to sign up.</p></div>
       </div>
       <div class="faq__item">
         <button class="faq__q">What happens to my GitHub data?</button>
-        <div class="faq__a">
-          <p>Jessel only reads commit metadata and messages. We do not access your code, source files, or sensitive repository settings.</p>
-        </div>
+        <div class="faq__a"><p>Jessel only reads commit metadata and messages. We do not access your code, source files, or sensitive repository settings.</p></div>
       </div>
       <div class="faq__item">
         <button class="faq__q">Can I use this for multiple projects?</button>
-        <div class="faq__a">
-          <p>Yes. You can connect multiple repositories and manage multiple clients from a single Jessel dashboard.</p>
-        </div>
+        <div class="faq__a"><p>Yes. You can connect multiple repositories and manage multiple clients from a single Jessel dashboard.</p></div>
       </div>
       <div class="faq__item">
         <button class="faq__q">Can I edit the automatic summaries?</button>
-        <div class="faq__a">
-          <p>Absolutely. You have full control to edit, delete, or hide any automatically generated update before the client sees it.</p>
-        </div>
+        <div class="faq__a"><p>Absolutely. You have full control to edit, delete, or hide any automatically generated update before the client sees it.</p></div>
       </div>
     </div>
   </div>
@@ -909,7 +451,7 @@
 <!-- Final CTA -->
 <section class="final-cta">
   <div class="container">
-    <div class="cta-box glass reveal">
+    <div class="cta-box reveal">
       <h2>Ready to automate your updates?</h2>
       <p>Join the developers who never write another manual status report.</p>
       <a href="signup.html" class="btn btn-primary btn-large">Sign up for free</a>
@@ -924,13 +466,25 @@
     <div class="footer__links">
       <a href="terms.html">Terms</a>
       <a href="privacy.html">Privacy</a>
-      <a href="#">© 2024 Jessel</a>
+      <a href="#">© 2026 Jessel</a>
     </div>
   </div>
 </footer>
 
 <script>
-  // Scroll Reveal Animation
+  // Mobile Nav Toggle
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // Scroll Reveal
   const revealEls = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -940,7 +494,6 @@
       }
     });
   }, { threshold: 0.1 });
-
   revealEls.forEach(el => observer.observe(el));
 
   // FAQ Accordion
@@ -949,14 +502,73 @@
     const question = item.querySelector('.faq__q');
     question.addEventListener('click', () => {
       const isActive = item.classList.contains('active');
-      // Close all
       faqItems.forEach(i => i.classList.remove('active'));
-      // Open clicked if it was closed
-      if (!isActive) {
-        item.classList.add('active');
-      }
+      if (!isActive) item.classList.add('active');
     });
   });
+
+  // Simulated Cursor Animation Logic
+  const mockup = document.getElementById('heroMockup');
+  const cursor = document.getElementById('simCursor');
+  const btn = document.getElementById('miniBtn');
+  const card1 = document.getElementById('miniCard1');
+
+  function animateCursor() {
+    // Reset
+    cursor.classList.remove('active');
+    btn.classList.remove('clicked');
+    card1.classList.remove('highlight');
+
+    setTimeout(() => {
+      cursor.classList.add('active');
+      // Move to button
+      const mockRect = mockup.getBoundingClientRect();
+      const btnRect = btn.getBoundingClientRect();
+      const targetX = btnRect.left - mockRect.left + (btnRect.width / 2) - 8;
+      const targetY = btnRect.top - mockRect.top + (btnRect.height / 2) - 8;
+      cursor.style.left = targetX + 'px';
+      cursor.style.top = targetY + 'px';
+    }, 500);
+
+    // Click button
+    setTimeout(() => {
+      cursor.classList.add('click');
+      btn.classList.add('clicked');
+      setTimeout(() => {
+        cursor.classList.remove('click');
+        btn.classList.remove('clicked');
+      }, 200);
+    }, 1500);
+
+    // Move to card
+    setTimeout(() => {
+      const mockRect = mockup.getBoundingClientRect();
+      const cardRect = card1.getBoundingClientRect();
+      const targetX = cardRect.left - mockRect.left + (cardRect.width / 2) - 8;
+      const targetY = cardRect.top - mockRect.top + (cardRect.height / 2) - 8;
+      cursor.style.left = targetX + 'px';
+      cursor.style.top = targetY + 'px';
+    }, 2000);
+
+    // Click card
+    setTimeout(() => {
+      cursor.classList.add('click');
+      card1.classList.add('highlight');
+      setTimeout(() => {
+        cursor.classList.remove('click');
+        card1.classList.remove('highlight');
+      }, 200);
+    }, 3000);
+    
+    // Fade out
+    setTimeout(() => {
+      cursor.classList.remove('active');
+    }, 4500);
+  }
+
+  // Run once on load, then loop every 5 seconds
+  animateCursor();
+  setInterval(animateCursor, 5000);
 </script>
 
 </body>
