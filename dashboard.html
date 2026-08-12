@@ -173,10 +173,11 @@
   }
 
   /* Responsive */
-  @media (max-width: 880px) { 
+   /* Responsive — Only collapse sidebar on phones (768px), keep it for tablets */
+  @media (max-width: 768px) { 
     .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 1rem 1.5rem; } 
     .brand { margin-bottom: 0; margin-right: auto; }
-    .nav-links { display: none; } /* Hide nav links on mobile to simplify */
+    .nav-links { display: none; } 
     .sidebar-footer { border-top: none; padding-top: 0; flex-direction: row; }
     .user-info { display: none; }
     .btn-logout { padding: 0.5rem; }
