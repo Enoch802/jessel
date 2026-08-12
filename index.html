@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jessel — Automatic Client Updates for Developers</title>
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230A0A0A'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Inter,%20sans-serif'%20font-weight='700'%20font-size='52'%20fill='%23FFFFFF'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -17,6 +19,7 @@
     --off-white: #FAFAFA;
     --white: #FFFFFF;
     --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
@@ -29,6 +32,7 @@
     color: var(--black);
     line-height: 1.6;
     overflow-x: hidden;
+    position: relative;
   }
 
   /* ===== Typography ===== */
@@ -52,24 +56,55 @@
     position: relative;
   }
 
-  /* ===== Navigation (Glassmorphism) ===== */
-  .nav {
+  /* ===== Ambient Background Motion ===== */
+  .bg-orbs {
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    z-index: 1000;
-    background: rgba(250, 250, 250, 0.6);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(229, 229, 229, 0.6);
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
   }
 
-  .nav__inner {
+  .orb {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: 0.6;
+    animation: float-orb 20s infinite ease-in-out;
+  }
+
+  .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
+  .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
+  .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+
+  @keyframes float-orb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+
+  /* ===== Navigation ===== */
+  .nav {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    width: calc(100% - 2rem);
+    max-width: 1140px;
+    z-index: 1000;
+    border-radius: 12px;
+    padding: 0.8rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 72px;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 20px rgba(10, 10, 10, 0.03);
   }
 
   .logo {
@@ -81,14 +116,14 @@
   }
 
   .logo__mark {
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     background: var(--black);
     border-radius: 4px;
   }
 
   .logo__text {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
     letter-spacing: -0.02em;
   }
@@ -96,13 +131,13 @@
   .nav__links {
     display: flex;
     align-items: center;
-    gap: 2.5rem;
+    gap: 2rem;
   }
 
   .nav__link {
     text-decoration: none;
     color: var(--gray-dark);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 500;
     transition: color 0.2s ease;
   }
@@ -114,14 +149,14 @@
     align-items: center;
     justify-content: center;
     font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
     font-weight: 600;
     padding: 0.7rem 1.4rem;
-    border-radius: 4px;
+    border-radius: 6px;
     text-decoration: none;
     cursor: pointer;
-    transition: all 0.2s var(--ease-quiet);
+    transition: all 0.3s var(--ease-quiet);
     border: 1px solid transparent;
+    font-size: 0.85rem;
   }
 
   .btn-primary {
@@ -133,55 +168,44 @@
   .btn-primary:hover {
     background: transparent;
     color: var(--black);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(10, 10, 10, 0.1);
   }
 
   .btn-secondary {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.4);
     color: var(--black);
-    border-color: var(--gray-light);
+    border-color: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(8px);
   }
 
   .btn-secondary:hover {
     background: var(--black);
     color: var(--white);
     border-color: var(--black);
+    transform: translateY(-2px);
   }
 
   .btn-large {
     padding: 1rem 2rem;
-    font-size: 1rem;
+    font-size: 0.95rem;
+    border-radius: 8px;
   }
 
   /* ===== Hero Section ===== */
   .hero {
-    padding-top: 12rem;
+    padding-top: 10rem;
     padding-bottom: 6rem;
     text-align: center;
     position: relative;
     overflow: hidden;
   }
 
-  /* Motion Graphic: Monochrome shifting gradient */
-  .hero__bg {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 80%;
-    height: 600px;
-    background: radial-gradient(circle, rgba(229,229,229,0.5) 0%, rgba(250,250,250,0) 70%);
-    z-index: -1;
-    animation: pulse-bg 8s infinite alternate ease-in-out;
-  }
-
-  @keyframes pulse-bg {
-    0% { transform: translateX(-50%) scale(1); opacity: 0.8; }
-    100% { transform: translateX(-50%) scale(1.2); opacity: 0.4; }
-  }
-
   .hero__content {
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 2;
   }
 
   .hero h1 {
@@ -191,36 +215,41 @@
   }
 
   .hero__sub {
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     color: var(--gray-dark);
     max-width: 600px;
     margin: 0 auto 3rem;
+    line-height: 1.6;
   }
 
   .hero__ctas {
     display: flex;
     justify-content: center;
     gap: 1rem;
-    margin-bottom: 4rem;
+    margin-bottom: 5rem;
   }
 
-  /* Glassmorphism Product Mockup */
-  .mockup {
+  /* Hero Mockup with Glassmorphism */
+  .mockup-wrapper {
+    position: relative;
     max-width: 900px;
     margin: 0 auto;
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 8px;
-    box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08);
+  }
+
+  .mockup {
+    border-radius: 12px;
     overflow: hidden;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08);
   }
 
   .mockup__bar {
-    height: 36px;
+    height: 40px;
     background: rgba(250, 250, 250, 0.8);
-    border-bottom: 1px solid var(--gray-light);
+    border-bottom: 1px solid rgba(229, 229, 229, 0.6);
     display: flex;
     align-items: center;
     padding: 0 1rem;
@@ -232,6 +261,7 @@
     height: 10px;
     border-radius: 50%;
     background: var(--gray-light);
+    border: 1px solid var(--gray-light);
   }
 
   .mockup__body {
@@ -239,58 +269,56 @@
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 2rem;
-    height: 400px;
+    height: 420px;
   }
 
   .mockup__sidebar {
-    border-right: 1px solid var(--gray-light);
+    border-right: 1px solid rgba(229, 229, 229, 0.6);
     padding-right: 2rem;
   }
 
-  .mockup__item {
-    height: 12px;
-    background: var(--gray-light);
-    border-radius: 2px;
+  .mockup__nav-item {
+    height: 10px;
+    background: rgba(229, 229, 229, 0.8);
+    border-radius: 4px;
     margin-bottom: 1rem;
+    width: 80%;
   }
 
-  .mockup__item.short { width: 60%; }
-  .mockup__item.mid { width: 80%; }
+  .mockup__nav-item.active { background: var(--gray-mid); width: 90%; }
 
   .mockup__main {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
+    gap: 1.5rem;
   }
 
-  .mockup__card {
-    background: var(--white);
-    border: 1px solid var(--gray-light);
-    border-radius: 4px;
-    padding: 1rem;
-  }
-
-  .mockup__text {
-    height: 10px;
-    background: var(--gray-light);
-    border-radius: 2px;
+  .mockup__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 0.5rem;
   }
 
-  .mockup__text.w-90 { width: 90%; }
-  .mockup__text.w-70 { width: 70%; }
-  
+  .mockup__title {
+    width: 40%;
+    height: 14px;
+    background: var(--gray-dark);
+    border-radius: 2px;
+  }
+
   /* Motion Graphic: Live Update Blinker */
   .mockup__live {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
     color: var(--black);
-    background: var(--gray-light);
-    padding: 0.2rem 0.5rem;
-    border-radius: 2px;
+    background: rgba(229, 229, 229, 0.6);
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
   }
 
   .mockup__live::before {
@@ -307,12 +335,131 @@
     50% { opacity: 0.2; }
   }
 
-  /* ===== Problem Section ===== */
+  .mockup__card {
+    background: rgba(255, 255, 255, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    padding: 1rem;
+    border-radius: 8px;
+  }
+
+  .mockup__text {
+    height: 8px;
+    background: var(--gray-light);
+    border-radius: 2px;
+    margin-bottom: 0.5rem;
+  }
+
+  .mockup__text.w-90 { width: 90%; }
+  .mockup__text.w-70 { width: 70%; }
+  .mockup__text.w-50 { width: 50%; }
+
+  /* Motion Graphic: SVG Chart Animation */
+  .mockup__chart {
+    margin-top: 1rem;
+    height: 80px;
+    width: 100%;
+  }
+
+  .chart-path {
+    fill: none;
+    stroke: var(--black);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1000;
+    stroke-dashoffset: 1000;
+    animation: draw-chart 4s ease-in-out infinite;
+  }
+
+  @keyframes draw-chart {
+    0% { stroke-dashoffset: 1000; }
+    50% { stroke-dashoffset: 0; }
+    100% { stroke-dashoffset: -1000; } /* Loop smoothly */
+  }
+
+  /* Motion Graphic: Typing Effect */
+  .typing-text {
+    border-right: 2px solid var(--black);
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    animation: typing 3s steps(30, end) infinite, blink-caret 0.75s step-end infinite;
+  }
+
+  @keyframes typing {
+    0%, 90%, 100% { width: 0; }
+    10%, 80% { width: 24ch; }
+  }
+
+  @keyframes blink-caret {
+    50% { border-color: transparent; }
+  }
+
+  /* Floating UI Elements */
+  .floating-badge {
+    position: absolute;
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 8px 20px rgba(10, 10, 10, 0.05);
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 5;
+  }
+
+  .badge-1 { top: 10%; left: -5%; animation: float-badge 6s ease-in-out infinite; }
+  .badge-2 { bottom: 15%; right: -5%; animation: float-badge 7s ease-in-out infinite reverse; }
+
+  @keyframes float-badge {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .badge-icon {
+    width: 8px;
+    height: 8px;
+    background: var(--black);
+    border-radius: 50%;
+  }
+
+  /* ===== Sections ===== */
+  .section-header {
+    text-align: center;
+    max-width: 600px;
+    margin: 0 auto 5rem;
+  }
+
+  .section-header h2 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 1rem;
+    font-weight: 800;
+  }
+
+  /* Problem Section */
   .problem__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 3rem;
-    margin-top: 4rem;
+    gap: 2rem;
+  }
+
+  .glass-card {
+    border-radius: 12px;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    transition: transform 0.3s var(--ease-quiet);
+  }
+
+  .glass-card:hover {
+    transform: translateY(-4px);
   }
 
   .problem__item h3 {
@@ -324,24 +471,7 @@
     font-size: 0.95rem;
   }
 
-  /* ===== How It Works ===== */
-  .how-it-works {
-    background: var(--white);
-    border-top: 1px solid var(--gray-light);
-    border-bottom: 1px solid var(--gray-light);
-  }
-
-  .section-header {
-    text-align: center;
-    max-width: 600px;
-    margin: 0 auto 5rem;
-  }
-
-  .section-header h2 {
-    font-size: clamp(2rem, 4vw, 3rem);
-    margin-bottom: 1rem;
-  }
-
+  /* How It Works */
   .steps {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -351,7 +481,16 @@
   .step {
     position: relative;
     padding-top: 2rem;
-    border-top: 2px solid var(--black);
+  }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background: var(--black);
   }
 
   .step__num {
@@ -370,24 +509,11 @@
     font-size: 0.9rem;
   }
 
-  /* ===== Features ===== */
+  /* Features */
   .features__grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-  }
-
-  .feature-card {
-    background: var(--white);
-    border: 1px solid var(--gray-light);
-    padding: 2rem;
-    border-radius: 4px;
-    transition: transform 0.3s var(--ease-quiet), box-shadow 0.3s var(--ease-quiet);
-  }
-
-  .feature-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 12px 24px rgba(10, 10, 10, 0.05);
+    gap: 1.5rem;
   }
 
   .feature-card h3 {
@@ -399,31 +525,25 @@
     font-size: 0.9rem;
   }
 
-  /* ===== Who It's For ===== */
+  /* Who It's For */
   .who {
     text-align: center;
     max-width: 700px;
     margin: 0 auto;
+    padding: 4rem;
+    border-radius: 16px;
   }
 
-  /* ===== FAQ ===== */
-  .faq {
-    background: var(--white);
-    border-top: 1px solid var(--gray-light);
-    border-bottom: 1px solid var(--gray-light);
-  }
-
+  /* FAQ */
   .faq__list {
     max-width: 700px;
     margin: 0 auto;
   }
 
   .faq__item {
-    border-bottom: 1px solid var(--gray-light);
-  }
-
-  .faq__item:first-child {
-    border-top: 1px solid var(--gray-light);
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   .faq__q {
@@ -431,7 +551,7 @@
     background: none;
     border: none;
     text-align: left;
-    padding: 1.5rem 0;
+    padding: 1.5rem;
     font-family: 'Inter', sans-serif;
     font-size: 1.1rem;
     font-weight: 600;
@@ -440,13 +560,20 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    transition: background 0.3s ease;
+  }
+
+  .faq__q:hover {
+    background: rgba(255, 255, 255, 0.8);
   }
 
   .faq__q::after {
     content: '+';
     font-size: 1.5rem;
     font-weight: 400;
-    transition: transform 0.2s ease;
+    transition: transform 0.3s var(--ease-quiet);
   }
 
   .faq__item.active .faq__q::after {
@@ -456,43 +583,50 @@
   .faq__a {
     max-height: 0;
     overflow: hidden;
-    transition: max-height 0.3s var(--ease-quiet), padding 0.3s var(--ease-quiet);
+    transition: max-height 0.4s var(--ease-quiet);
+    background: rgba(255, 255, 255, 0.3);
   }
 
   .faq__item.active .faq__a {
     max-height: 200px;
-    padding-bottom: 1.5rem;
   }
 
   .faq__a p {
+    padding: 1.5rem;
     font-size: 0.95rem;
+    border-top: 1px solid rgba(229, 229, 229, 0.6);
   }
 
-  /* ===== Final CTA ===== */
+  /* Final CTA */
   .final-cta {
-    background: var(--black);
-    color: var(--white);
     text-align: center;
-    padding: 10rem 0;
+    padding: 8rem 0;
+  }
+
+  .cta-box {
+    padding: 4rem;
+    border-radius: 16px;
+    max-width: 800px;
+    margin: 0 auto;
   }
 
   .final-cta h2 {
     font-size: clamp(2rem, 4vw, 3.5rem);
-    margin-bottom: 1.5rem;
+    margin-bottom: 1rem;
   }
 
   .final-cta p {
-    color: var(--gray-light);
+    color: var(--gray-dark);
     max-width: 500px;
-    margin: 0 auto 3rem;
+    margin: 0 auto 2.5rem;
   }
 
-  /* ===== Footer ===== */
+  /* Footer */
   footer {
     background: var(--black);
     color: var(--gray-mid);
     padding: 3rem 0;
-    border-top: 1px solid var(--charcoal);
+    margin-top: 6rem;
   }
 
   .footer__inner {
@@ -504,6 +638,7 @@
   .footer__logo {
     color: var(--white);
     font-weight: 700;
+    font-size: 1.2rem;
   }
 
   .footer__links {
@@ -523,7 +658,7 @@
   /* ===== Scroll Reveal Animation ===== */
   .reveal {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(30px);
     transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet);
   }
 
@@ -540,31 +675,36 @@
     .mockup__sidebar { display: none; }
     .problem__grid, .steps, .features__grid { grid-template-columns: 1fr; }
     .footer__inner { flex-direction: column; gap: 1.5rem; }
+    .floating-badge { display: none; }
   }
 </style>
 </head>
 <body>
 
+<!-- Ambient Background Orbs -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
 <!-- Navigation -->
 <nav class="nav">
-  <div class="container nav__inner">
-    <a href="#" class="logo">
-      <div class="logo__mark"></div>
-      <span class="logo__text">Jessel</span>
-    </a>
-    <div class="nav__links">
-      <a href="#how-it-works" class="nav__link">How it works</a>
-      <a href="#features" class="nav__link">Features</a>
-      <a href="#faq" class="nav__link">FAQ</a>
-      <a href="login.html" class="nav__link">Log in</a>
-      <a href="signup.html" class="btn btn-primary">Sign up</a>
-    </div>
+  <a href="#" class="logo">
+    <div class="logo__mark"></div>
+    <span class="logo__text">Jessel</span>
+  </a>
+  <div class="nav__links">
+    <a href="#how-it-works" class="nav__link">How it works</a>
+    <a href="#features" class="nav__link">Features</a>
+    <a href="#faq" class="nav__link">FAQ</a>
+    <a href="login.html" class="nav__link">Log in</a>
+    <a href="signup.html" class="btn btn-primary">Sign up</a>
   </div>
 </nav>
 
 <!-- Hero -->
 <section class="hero">
-  <div class="hero__bg"></div>
   <div class="container">
     <div class="hero__content reveal">
       <h1>Automatic client updates for developers.</h1>
@@ -575,36 +715,53 @@
       </div>
     </div>
 
-    <!-- Glassmorphism Mockup -->
-    <div class="mockup reveal" style="transition-delay: 0.2s;">
-      <div class="mockup__bar">
-        <div class="mockup__dot"></div>
-        <div class="mockup__dot"></div>
-        <div class="mockup__dot"></div>
+    <!-- Glassmorphism Mockup with Motion Graphics -->
+    <div class="mockup-wrapper reveal" style="transition-delay: 0.2s;">
+      
+      <!-- Floating Badges -->
+      <div class="floating-badge badge-1">
+        <div class="badge-icon"></div>
+        +1 Commit Pulled
       </div>
-      <div class="mockup__body">
-        <div class="mockup__sidebar">
-          <div class="mockup__item mid"></div>
-          <div class="mockup__item short"></div>
-          <div class="mockup__item mid"></div>
-          <div class="mockup__item short"></div>
+      <div class="floating-badge badge-2">
+        <div class="badge-icon"></div>
+        Email Sent to Client
+      </div>
+
+      <div class="mockup">
+        <div class="mockup__bar">
+          <div class="mockup__dot"></div>
+          <div class="mockup__dot"></div>
+          <div class="mockup__dot"></div>
         </div>
-        <div class="mockup__main">
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
-            <div style="width: 40%; height: 16px; background: var(--gray-dark); border-radius: 2px;"></div>
-            <div class="mockup__live">LIVE UPDATE</div>
+        <div class="mockup__body">
+          <div class="mockup__sidebar">
+            <div class="mockup__nav-item active"></div>
+            <div class="mockup__nav-item"></div>
+            <div class="mockup__nav-item"></div>
+            <div class="mockup__nav-item"></div>
           </div>
-          <div class="mockup__card">
-            <div class="mockup__text w-90"></div>
-            <div class="mockup__text w-70"></div>
-          </div>
-          <div class="mockup__card">
-            <div class="mockup__text w-90"></div>
-            <div class="mockup__text w-70"></div>
-          </div>
-          <div class="mockup__card">
-            <div class="mockup__text w-90"></div>
-            <div class="mockup__text w-70"></div>
+          <div class="mockup__main">
+            <div class="mockup__header">
+              <div class="mockup__title"></div>
+              <div class="mockup__live">LIVE UPDATE</div>
+            </div>
+            <div class="mockup__card">
+              <div class="mockup__text w-50"></div>
+              <!-- Typing Animation -->
+              <div style="height: 8px; background: var(--gray-dark); border-radius: 2px; margin-bottom: 0.5rem;" class="typing-text"></div>
+              <div class="mockup__text w-90"></div>
+              <div class="mockup__text w-70"></div>
+              
+              <!-- SVG Chart Animation -->
+              <svg class="mockup__chart" viewBox="0 0 300 80">
+                <path class="chart-path" d="M0,60 Q50,80 100,50 T200,40 T300,10" />
+              </svg>
+            </div>
+            <div class="mockup__card" style="opacity: 0.6;">
+              <div class="mockup__text w-90"></div>
+              <div class="mockup__text w-70"></div>
+            </div>
           </div>
         </div>
       </div>
@@ -620,15 +777,15 @@
       <p>Freelance developers waste hours formatting weekly updates. Clients hate being out of the loop.</p>
     </div>
     <div class="problem__grid">
-      <div class="problem__item reveal">
+      <div class="problem__item glass-card reveal">
         <h3>Time-consuming</h3>
         <p>Writing manual status reports takes you away from actual development work.</p>
       </div>
-      <div class="problem__item reveal" style="transition-delay: 0.1s;">
+      <div class="problem__item glass-card reveal" style="transition-delay: 0.1s;">
         <h3>Silent gaps</h3>
         <p>Clients panic when they don't hear from you, even if you're making great progress.</p>
       </div>
-      <div class="problem__item reveal" style="transition-delay: 0.2s;">
+      <div class="problem__item glass-card reveal" style="transition-delay: 0.2s;">
         <h3>Context switching</h3>
         <p>Answering "how is it going?" emails breaks your focus and slows down the project.</p>
       </div>
@@ -646,22 +803,22 @@
     <div class="steps">
       <div class="step reveal">
         <div class="step__num">01</div>
-        <h3>Connect your GitHub repo</h3>
+        <h3>Connect GitHub</h3>
         <p>Securely link your repository to Jessel in one click.</p>
       </div>
       <div class="step reveal" style="transition-delay: 0.1s;">
         <div class="step__num">02</div>
-        <h3>Automatic summarization</h3>
+        <h3>AI Summarization</h3>
         <p>Commits are automatically summarized in plain English.</p>
       </div>
       <div class="step reveal" style="transition-delay: 0.2s;">
         <div class="step__num">03</div>
-        <h3>Share private link</h3>
+        <h3>Share Private Link</h3>
         <p>Clients get a private link to view progress—no login required.</p>
       </div>
       <div class="step reveal" style="transition-delay: 0.3s;">
         <div class="step__num">04</div>
-        <h3>Add milestones</h3>
+        <h3>Add Milestones</h3>
         <p>Manually add key milestones to highlight major achievements.</p>
       </div>
     </div>
@@ -676,28 +833,28 @@
       <p>A complete toolkit for transparent freelance development.</p>
     </div>
     <div class="features__grid">
-      <div class="feature-card reveal">
-        <h3>Automatic GitHub Tracking</h3>
+      <div class="feature-card glass-card reveal">
+        <h3>GitHub Tracking</h3>
         <p>Pull requests and commits are tracked automatically from connected repositories.</p>
       </div>
-      <div class="feature-card reveal" style="transition-delay: 0.1s;">
-        <h3>AI-Written Summaries</h3>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.1s;">
+        <h3>AI Summaries</h3>
         <p>Technical jargon is converted into clear, client-friendly updates.</p>
       </div>
-      <div class="feature-card reveal" style="transition-delay: 0.2s;">
-        <h3>Client Comments & Reactions</h3>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.2s;">
+        <h3>Client Reactions</h3>
         <p>Clients can leave feedback and react to updates directly on the portal.</p>
       </div>
-      <div class="feature-card reveal" style="transition-delay: 0.3s;">
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.3s;">
         <h3>Milestone Tracking</h3>
         <p>Highlight major project milestones and deliverables separately.</p>
       </div>
-      <div class="feature-card reveal" style="transition-delay: 0.4s;">
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.4s;">
         <h3>Email Digests</h3>
         <p>Send daily or weekly progress summaries straight to the client's inbox.</p>
       </div>
-      <div class="feature-card reveal" style="transition-delay: 0.5s;">
-        <h3>No Client Login Required</h3>
+      <div class="feature-card glass-card reveal" style="transition-delay: 0.5s;">
+        <h3>No Client Login</h3>
         <p>Clients access updates via a secure, private link without creating an account.</p>
       </div>
     </div>
@@ -707,7 +864,7 @@
 <!-- Who It's For -->
 <section id="who" class="who-section">
   <div class="container">
-    <div class="who reveal">
+    <div class="who glass-card reveal">
       <h2>Built for freelance developers and small studios.</h2>
       <p style="margin-top: 1.5rem; font-size: 1.1rem;">If you write code and bill clients, Jessel is designed to bridge the gap between your IDE and your client's inbox.</p>
     </div>
@@ -751,10 +908,12 @@
 
 <!-- Final CTA -->
 <section class="final-cta">
-  <div class="container reveal">
-    <h2>Ready to automate your updates?</h2>
-    <p>Join the developers who never write another manual status report.</p>
-    <a href="signup.html" class="btn btn-secondary btn-large" style="background: var(--white); color: var(--black); border-color: var(--white);">Sign up for free</a>
+  <div class="container">
+    <div class="cta-box glass reveal">
+      <h2>Ready to automate your updates?</h2>
+      <p>Join the developers who never write another manual status report.</p>
+      <a href="signup.html" class="btn btn-primary btn-large">Sign up for free</a>
+    </div>
   </div>
 </section>
 
