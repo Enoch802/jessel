@@ -4,76 +4,236 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jessel — New Project</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230A0A0A'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Inter,%20sans-serif'%20font-weight='700'%20font-size='52'%20fill='%23FFFFFF'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-soft:#EAE8D5; --hairline-dark:rgba(13,40,24,0.15); --ease-quiet:cubic-bezier(.22,1,.36,1); --ease-precise:cubic-bezier(.4,0,.2,1); }
-  * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
-  body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
-  .nav { display:flex; justify-content:space-between; align-items:center; padding:1.75rem 3rem; border-bottom:1px solid var(--hairline-dark); background:var(--ivory); }
-  .brand { display:flex; align-items:center; gap:0.85rem; text-decoration:none; }
-  .brand__mark { width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; }
-  .brand__name { font-family:'Cormorant Garamond',serif; font-size:1.4rem; color:var(--jungle-primary); font-weight:500; }
-  .nav-link { display:inline-flex; align-items:center; gap:0.6rem; color:var(--jungle-primary); text-decoration:none; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; }
-  .nav-link:hover { color:var(--gold-dark); }
-  .main { max-width:640px; margin:0 auto; padding:5rem 2rem 8rem; }
-  .form-eyebrow { display:inline-flex; font-weight:500; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:1.5rem; }
-  .form-title { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.2rem,3.5vw,2.8rem); margin-bottom:3.5rem; padding-bottom:2rem; border-bottom:1px solid var(--hairline-dark); }
-  .form-title em { font-style:italic; color:var(--gold-dark); }
-  .field { margin-bottom:2.5rem; }
-  .field label { display:block; font-size:11px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:0.95rem; }
-  .field input { width:100%; background:transparent; border:0; border-bottom:1px solid var(--hairline-dark); padding:0.5rem 0 0.85rem; font-size:16px; font-weight:300; color:var(--jungle-primary); outline:none; }
-  .field input:focus { border-bottom-color:var(--gold); }
-  .helper-text { display:block; font-size:12px; color:rgba(13,40,24,0.45); margin-top:0.65rem; }
-  .toggle-group { display:inline-flex; background:var(--ivory-soft); padding:4px; border-radius:2px; }
-  .toggle-group button { border:0; background:transparent; padding:0.65rem 1.5rem; font-size:12px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; color:rgba(13,40,24,0.5); cursor:pointer; border-radius:2px; }
-  .toggle-group button.active { background:var(--jungle-primary); color:var(--ivory); }
-  .actions { display:flex; justify-content:flex-end; align-items:center; gap:2rem; margin-top:3rem; }
-  .cancel-link { font-size:13px; color:rgba(13,40,24,0.5); text-decoration:none; }
-  .btn-primary { background:var(--jungle-primary); color:var(--ivory); border:0; padding:1rem 1.75rem; font-size:12px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; cursor:pointer; border-radius:2px; display:inline-flex; align-items:center; gap:0.65rem; }
-  .btn-primary:hover { background:var(--gold); color:var(--jungle-deep); }
-  .form-error { color:#9B3B3B; font-size:13px; margin-bottom:1rem; display:none; }
-  .form-error.show { display:block; }
-  @media (max-width:880px) { .nav{padding:1.25rem 1.5rem;} .main{padding:3rem 1.5rem 5rem;} }
+  :root {
+    --black: #0A0A0A;
+    --charcoal: #1A1A1A;
+    --gray-dark: #4A4A4A;
+    --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5;
+    --off-white: #FAFAFA;
+    --white: #FFFFFF;
+    --error: #D32F2F;
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--off-white);
+    color: var(--black);
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  /* ===== Ambient Background Motion ===== */
+  .bg-orbs {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden;
+  }
+  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
+  .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
+  .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
+  .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+  @keyframes float-orb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+
+  /* ===== Sidebar (Glassmorphism) ===== */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
+    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03);
+    display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100;
+  }
+  .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); margin-bottom: 3rem; padding: 0 0.5rem; }
+  .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 8px; display: grid; place-items: center; color: var(--white); font-size: 1rem; font-weight: 800; }
+  .brand__name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+
+  .nav-links { display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; }
+  .nav-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s ease; }
+  .nav-link:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
+  .nav-link.active { background: var(--black); color: var(--white); }
+  .nav-link svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+  .sidebar-footer { border-top: 1px solid rgba(229, 229, 229, 0.6); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .user-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; margin-bottom: 0.5rem; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--black); color: var(--white); display: grid; place-items: center; }
+  .user-info { display: flex; flex-direction: column; }
+  .user-name { font-size: 0.9rem; font-weight: 600; color: var(--black); }
+  .user-email { font-size: 0.75rem; color: var(--gray-mid); }
+
+  .btn-logout { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s ease; background: none; border: none; cursor: pointer; font-family: inherit; text-align: left; }
+  .btn-logout:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
+  .btn-logout svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+  /* ===== Main Layout ===== */
+  .main-content { margin-left: 260px; padding: 3rem 3rem 6rem; min-height: 100vh; position: relative; max-width: 800px; }
+  
+  .page-head { margin-bottom: 3.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--gray-light); }
+  .eyebrow { display: inline-flex; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1rem; }
+  .page-title { font-weight: 800; font-size: clamp(2rem, 4vw, 2.8rem); line-height: 1.1; letter-spacing: -0.03em; color: var(--black); }
+  .page-title em { font-style: normal; color: var(--gray-mid); font-weight: 800; }
+
+  /* ===== Glassmorphism Form Card ===== */
+  .form-wrap {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    padding: 3rem;
+    box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08);
+  }
+
+  .field { margin-bottom: 2rem; }
+  .field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 0.75rem; }
+  .field input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--gray-light); padding: 0.6rem 0 0.9rem; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500; color: var(--black); outline: none; transition: border-color 300ms var(--ease-precise); }
+  .field input::placeholder { color: var(--gray-mid); font-weight: 400; }
+  .field input:focus { border-bottom-color: var(--black); }
+  
+  .helper-text { display: block; font-size: 0.85rem; color: var(--gray-mid); margin-top: 0.5rem; line-height: 1.4; }
+
+  /* Toggle Group */
+  .toggle-group { display: inline-flex; background: var(--gray-light); padding: 4px; border-radius: 8px; margin-top: -0.25rem; }
+  .toggle-group button { border: 0; background: transparent; padding: 0.65rem 1.5rem; font-size: 12px; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; color: var(--gray-dark); cursor: pointer; border-radius: 6px; transition: all 0.3s var(--ease-quiet); }
+  .toggle-group button.active { background: var(--black); color: var(--white); }
+
+  .actions { display: flex; justify-content: flex-end; align-items: center; gap: 1.5rem; margin-top: 2.5rem; }
+  .cancel-link { font-size: 0.9rem; color: var(--gray-mid); text-decoration: none; font-weight: 600; transition: color 0.2s ease; }
+  .cancel-link:hover { color: var(--black); }
+  
+  .btn-primary { background: var(--black); color: var(--white); border: 1px solid var(--black); padding: 0.8rem 1.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; transition: all 0.2s var(--ease-quiet); }
+  .btn-primary:hover { background: transparent; color: var(--black); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(10, 10, 10, 0.1); }
+  .btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .form-error { color: var(--error); font-size: 0.9rem; margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(211, 47, 47, 0.05); border: 1px solid rgba(211, 47, 47, 0.2); border-radius: 6px; display: none; font-weight: 500; }
+  .form-error.show { display: block; }
+
+  /* ===== Scroll Reveal ===== */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 880px) {
+    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 1rem 1.5rem; }
+    .brand { margin-bottom: 0; margin-right: auto; }
+    .nav-links { display: none; }
+    .sidebar-footer { border-top: none; padding-top: 0; flex-direction: row; }
+    .user-info { display: none; }
+    .btn-logout { padding: 0.5rem; }
+    .main-content { margin-left: 0; padding: 2rem 1.5rem 4rem; }
+    .form-wrap { padding: 2rem; }
+  }
 </style>
 </head>
 <body>
-<nav class="nav">
-  <a href="dashboard.html" class="brand"><div class="brand__mark">J</div><div class="brand__name">Jessel<sup>™</sup></div></a>
-  <a href="dashboard.html" class="nav-link">
-    <svg width="14" height="10" viewBox="0 0 14 10" fill="none"><path d="M13 5H1M1 5L5 1M1 5L5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/></svg>
-    Back to Dashboard
+
+<!-- Ambient Background Orbs -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<aside class="sidebar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand__mark">J</div>
+    <div class="brand__name">Jessel</div>
   </a>
-</nav>
-<main class="main">
-  <div class="form-eyebrow">New project</div>
-  <h1 class="form-title">Set up your <em>workspace</em>.</h1>
-  <form id="newProjectForm">
-    <div class="field"><label for="project-name">Project name</label><input id="project-name" type="text" placeholder="e.g. Sarah's Bakery Website" required></div>
-    <div class="field">
-      <label>Connect GitHub repo</label>
-      <p class="helper-text" style="margin-top:0;">GitHub connection isn't live yet — you can connect a repo from the project page once that's built.</p>
-    </div>
-    <div class="field"><label for="client-email">Client email</label><input id="client-email" type="email" placeholder="client@example.com"><span class="helper-text">We'll use this to send update notifications.</span></div>
-    <div class="field">
-      <label>Update frequency</label>
-      <div class="toggle-group" id="freqToggle">
-        <button type="button" class="active" data-value="daily">Daily</button>
-        <button type="button" data-value="weekly">Weekly</button>
+  
+  <nav class="nav-links">
+    <a href="dashboard.html" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Projects
+    </a>
+    <a href="settings.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <span class="user-name">Account</span>
+        <span class="user-email">settings</span>
       </div>
     </div>
-    <div class="field"><label>Preview URL <span style="text-transform:lowercase;opacity:0.6;">(optional)</span></label><input id="preview-url" type="text" placeholder="https://my-project.vercel.app"><span class="helper-text">Paste a live link to your project if you have one.</span></div>
-    <div class="form-error" id="formError"></div>
-    <div class="actions">
-      <a href="dashboard.html" class="cancel-link">Cancel</a>
-      <button class="btn-primary" type="submit" id="submitBtn"><span>Create project</span></button>
-    </div>
-  </form>
+    <button class="btn-logout" id="logoutBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <div class="page-head reveal">
+    <div class="eyebrow">New project</div>
+    <h1 class="page-title">Set up your <em>workspace</em>.</h1>
+  </div>
+
+  <div class="form-wrap reveal" style="transition-delay: 0.1s;">
+    <form id="newProjectForm">
+      <div class="field">
+        <label for="project-name">Project name</label>
+        <input id="project-name" type="text" placeholder="e.g. Sarah's Bakery Website" required>
+      </div>
+      
+      <div class="field">
+        <label>Connect GitHub repo</label>
+        <p class="helper-text" style="margin-top:0;">GitHub connection isn't live yet — you can connect a repo from the project page once that's built.</p>
+      </div>
+      
+      <div class="field">
+        <label for="client-email">Client email</label>
+        <input id="client-email" type="email" placeholder="client@example.com">
+        <span class="helper-text">We'll use this to send update notifications.</span>
+      </div>
+      
+      <div class="field">
+        <label>Update frequency</label>
+        <div class="toggle-group" id="freqToggle">
+          <button type="button" class="active" data-value="daily">Daily</button>
+          <button type="button" data-value="weekly">Weekly</button>
+        </div>
+      </div>
+      
+      <div class="field">
+        <label>Preview URL <span style="text-transform:lowercase;opacity:0.6;">(optional)</span></label>
+        <input id="preview-url" type="text" placeholder="https://my-project.vercel.app">
+        <span class="helper-text">Paste a live link to your project if you have one.</span>
+      </div>
+      
+      <div class="form-error" id="formError"></div>
+      
+      <div class="actions">
+        <a href="dashboard.html" class="cancel-link">Cancel</a>
+        <button class="btn-primary" type="submit" id="submitBtn"><span>Create project</span></button>
+      </div>
+    </form>
+  </div>
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
+  // Logout logic for sidebar
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
   let frequency = 'daily';
   document.querySelectorAll('#freqToggle button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -110,5 +270,21 @@
     window.location.href = 'dashboard.html';
   });
 </script>
+
+<script>
+  // Scroll Reveal Animation (Safe addition for motion graphics)
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  revealEls.forEach(el => observer.observe(el));
+</script>
+
 </body>
 </html>
