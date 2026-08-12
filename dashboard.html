@@ -32,50 +32,49 @@
   }
 
   /* ===== Ambient Background Motion ===== */
-  .bg-orbs {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.6;
-    animation: float-orb 20s infinite ease-in-out;
-  }
+  .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
   .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
   .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
   .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
-  @keyframes float-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, -30px) scale(1.1); }
-    66% { transform: translate(-30px, 40px) scale(0.95); }
-  }
+  @keyframes float-orb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 66% { transform: translate(-30px, 40px) scale(0.95); } }
 
-  /* ===== Sidebar (Glassmorphism) ===== */
-  .sidebar {
+  /* ===== Mobile Top Bar (Hidden on Desktop) ===== */
+  .mobile-topbar {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
-    bottom: 0;
-    width: 260px;
+    right: 0;
+    height: 60px;
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
-    border-right: 1px solid rgba(255, 255, 255, 0.8);
-    box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03);
-    display: flex;
-    flex-direction: column;
-    padding: 2rem 1.5rem;
-    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.8);
+    z-index: 99;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem;
   }
+  .mobile-menu-btn {
+    background: none;
+    border: none;
+    color: var(--black);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+  }
+  .mobile-logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--black); text-decoration: none; }
 
+  /* ===== Sidebar (Glassmorphism Drawer) ===== */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
+    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03);
+    display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100;
+    transition: transform 0.3s var(--ease-quiet);
+  }
   .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); margin-bottom: 3rem; padding: 0 0.5rem; }
   .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 8px; display: grid; place-items: center; color: var(--white); font-size: 1rem; font-weight: 800; }
   .brand__name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -88,7 +87,7 @@
 
   .sidebar-footer { border-top: 1px solid rgba(229, 229, 229, 0.6); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
   .user-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; margin-bottom: 0.5rem; }
-  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--black); color: var(--white); display: grid; place-items: center; font-size: 0.85rem; font-weight: 600; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--black); color: var(--white); display: grid; place-items: center; }
   .user-info { display: flex; flex-direction: column; }
   .user-name { font-size: 0.9rem; font-weight: 600; color: var(--black); }
   .user-email { font-size: 0.75rem; color: var(--gray-mid); }
@@ -97,14 +96,26 @@
   .btn-logout:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
   .btn-logout svg { width: 20px; height: 20px; stroke-width: 1.5; }
 
-  /* ===== Main Layout ===== */
-  .main-content {
-    margin-left: 260px;
-    padding: 3rem 3rem 6rem;
-    min-height: 100vh;
-    position: relative;
+  /* ===== Overlay (for mobile drawer) ===== */
+  .mobile-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    z-index: 90;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  .mobile-overlay.active {
+    display: block;
+    opacity: 1;
   }
 
+  /* ===== Main Layout ===== */
+  .main-content { margin-left: 260px; padding: 3rem 3rem 6rem; min-height: 100vh; position: relative; max-width: 1140px; }
   .page-head { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--gray-light); }
   .eyebrow { display: inline-flex; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1rem; }
   .page-title { font-weight: 800; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; color: var(--black); }
@@ -129,11 +140,7 @@
     flex-direction: column; 
     transition: transform 0.3s var(--ease-quiet), box-shadow 0.3s var(--ease-quiet), border-color 0.3s var(--ease-quiet); 
   }
-  .card:hover { 
-    border-color: var(--black); 
-    box-shadow: 0 12px 30px rgba(10, 10, 10, 0.08); 
-    transform: translateY(-4px); 
-  }
+  .card:hover { border-color: var(--black); box-shadow: 0 12px 30px rgba(10, 10, 10, 0.08); transform: translateY(-4px); }
   .card__top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.5rem; }
   .card__title { font-size: 1.3rem; font-weight: 700; margin-right: 1rem; letter-spacing: -0.01em; }
   .badge { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.35rem 0.65rem; border-radius: 4px; white-space: nowrap; }
@@ -144,17 +151,9 @@
   .timestamp { font-size: 11px; color: var(--gray-mid); }
 
   .empty-state { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    justify-content: center; 
-    text-align: center; 
-    padding: 6rem 2rem; 
-    border: 1px dashed var(--gray-light); 
-    border-radius: 16px; 
-    background: rgba(255, 255, 255, 0.5); 
-    backdrop-filter: blur(16px); 
-    -webkit-backdrop-filter: blur(16px); 
+    display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; 
+    padding: 6rem 2rem; border: 1px dashed var(--gray-light); border-radius: 16px; 
+    background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
   }
   .empty-icon { width: 60px; height: 60px; background: var(--white); border: 1px solid var(--gray-light); border-radius: 12px; display: grid; place-items: center; margin-bottom: 2rem; color: var(--black); }
   .empty-title { font-size: 1.8rem; font-weight: 800; margin-bottom: 0.75rem; letter-spacing: -0.02em; color: var(--black); }
@@ -162,50 +161,22 @@
   .empty-text { font-size: 0.95rem; color: var(--gray-dark); max-width: 340px; line-height: 1.6; margin-bottom: 2.5rem; }
 
   /* ===== Scroll Reveal ===== */
-  .reveal {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet);
-  }
-  .reveal.is-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-  /* Responsive */
-   /* Responsive — Only collapse sidebar on phones (768px), keep it for tablets */
-    /* Responsive — Mobile Top Bar */
-  @media (max-width: 768px) { 
-    .sidebar { 
-      width: 100%; 
-      height: auto; 
-      position: relative; 
-      flex-direction: row; 
-      align-items: center; 
-      padding: 1rem 1.5rem; 
-      gap: 1rem;
+  /* ===== Responsive (Mobile Drawer) ===== */
+  @media (max-width: 768px) {
+    .mobile-topbar { display: flex; }
+    .sidebar {
+      transform: translateX(-100%); /* Hide off-screen by default */
+    }
+    .sidebar.open {
+      transform: translateX(0); /* Slide in when open */
+    }
+    .main-content { 
+      margin-left: 0; 
+      padding: 5rem 1.5rem 4rem; /* Added top padding to clear the topbar */
     } 
-    .brand { margin-bottom: 0; margin-right: auto; }
-    
-    /* Show nav links horizontally on mobile */
-    .nav-links { 
-      display: flex; 
-      flex-direction: row; 
-      gap: 0.5rem;
-    }
-    .nav-link { 
-      padding: 0.5rem 0.75rem; 
-    }
-    
-    .sidebar-footer { 
-      border-top: none; 
-      padding-top: 0; 
-      flex-direction: row; 
-    }
-    .user-info { display: none; }
-    .btn-logout { padding: 0.5rem; }
-    
-    .main-content { margin-left: 0; padding: 2rem 1.5rem 4rem; } 
     .page-head { flex-direction: column; align-items: flex-start; gap: 2rem; } 
   }
 </style>
@@ -219,18 +190,30 @@
   <div class="orb orb-3"></div>
 </div>
 
-<aside class="sidebar">
+<!-- Mobile Top Bar -->
+<div class="mobile-topbar">
+  <button class="mobile-menu-btn" id="menuToggle">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a href="dashboard.html" class="mobile-logo">Jessel</a>
+  <div style="width: 24px;"></div> <!-- Spacer to center logo -->
+</div>
+
+<!-- Overlay for mobile drawer -->
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
   <a href="dashboard.html" class="brand">
     <div class="brand__mark">J</div>
     <div class="brand__name">Jessel</div>
   </a>
   
   <nav class="nav-links">
-    <a href="dashboard.html" class="nav-link active">
+    <a href="dashboard.html" class="nav-link active" id="navProjects">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Projects
     </a>
-    <a href="settings.html" class="nav-link">
+    <a href="settings.html" class="nav-link" id="navSettings">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
       Settings
     </a>
@@ -280,11 +263,40 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
+  // ===== Mobile Drawer Logic =====
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+
+  if (menuToggle) {
+    menuToggle.addEventListener('click', () => {
+      sidebar.classList.toggle('open');
+      mobileOverlay.classList.toggle('active');
+    });
+  }
+  if (mobileOverlay) {
+    mobileOverlay.addEventListener('click', () => {
+      sidebar.classList.remove('open');
+      mobileOverlay.classList.remove('active');
+    });
+  }
+  // Close drawer when a nav link is clicked
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 768) {
+        sidebar.classList.remove('open');
+        mobileOverlay.classList.remove('active');
+      }
+    });
+  });
+
+  // ===== Logout Logic =====
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await sb.auth.signOut();
     window.location.href = 'login.html';
   });
 
+  // ===== Load Projects =====
   async function loadProjects() {
     const { data: { user } } = await sb.auth.getUser();
     if (!user) { window.location.href = 'login.html'; return; }
@@ -319,7 +331,7 @@
 </script>
 
 <script>
-  // Scroll Reveal Animation
+  // ===== Scroll Reveal Animation =====
   const revealEls = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -332,7 +344,6 @@
 
   revealEls.forEach(el => observer.observe(el));
 
-  // Observe dynamically loaded elements
   const dynamicObserver = new MutationObserver((mutations) => {
     mutations.forEach(mutation => {
       mutation.addedNodes.forEach(node => {
