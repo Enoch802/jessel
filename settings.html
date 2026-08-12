@@ -4,99 +4,226 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jessel — Account Settings</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230D2818'/%3E%3Ccircle%20cx='50'%20cy='50'%20r='38'%20fill='none'%20stroke='%23C9A227'%20stroke-width='3'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Georgia,%20serif'%20font-style='italic'%20font-size='52'%20fill='%23C9A227'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20100%20100'%3E%3Crect%20width='100'%20height='100'%20rx='20'%20fill='%230A0A0A'/%3E%3Ctext%20x='50'%20y='68'%20font-family='Inter,%20sans-serif'%20font-weight='700'%20font-size='52'%20fill='%23FFFFFF'%20text-anchor='middle'%3EJ%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  :root { --jungle-deep:#05140A; --jungle-primary:#0D2818; --jungle-secondary:#1A4D2E; --gold:#C9A227; --gold-dark:#B8860B; --ivory:#F5F5DC; --ivory-soft:#EAE8D5; --ivory-card:#FDFDF7; --terracotta:#9B3B3B; --hairline-dark:rgba(13,40,24,0.15); }
-  * { box-sizing:border-box; margin:0; padding:0; -webkit-font-smoothing:antialiased; }
-  body { font-family:'Inter',sans-serif; background:var(--ivory); color:var(--jungle-primary); min-height:100vh; overflow-x:hidden; }
-  .nav { display:flex; justify-content:space-between; align-items:center; padding:1.75rem 3rem; border-bottom:1px solid var(--hairline-dark); background:var(--ivory); }
-  .brand { display:flex; align-items:center; gap:0.85rem; text-decoration:none; }
-  .brand__mark { width:36px; height:36px; border:1px solid var(--gold); border-radius:50%; display:grid; place-items:center; color:var(--gold); font-family:'Cormorant Garamond',serif; font-size:1.2rem; font-style:italic; }
-  .brand__name { font-family:'Cormorant Garamond',serif; font-size:1.4rem; font-weight:500; }
-  .main { max-width:640px; margin:0 auto; padding:5rem 2rem 8rem; }
-  .form-eyebrow { display:inline-flex; font-weight:500; font-size:11px; letter-spacing:0.32em; text-transform:uppercase; color:var(--gold-dark); margin-bottom:1.5rem; }
-  .form-title { font-family:'Cormorant Garamond',serif; font-weight:400; font-size:clamp(2.2rem,3.5vw,2.8rem); margin-bottom:4rem; padding-bottom:2rem; border-bottom:1px solid var(--hairline-dark); }
-  .form-title em { font-style:italic; color:var(--gold-dark); }
-  .section { margin-bottom:4rem; }
-  .section-title { font-size:11px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:2rem; padding-bottom:1rem; border-bottom:1px solid var(--hairline-dark); }
-  .field { margin-bottom:2rem; }
-  .field label { display:block; font-size:10px; font-weight:500; letter-spacing:0.28em; text-transform:uppercase; color:var(--jungle-secondary); margin-bottom:0.85rem; }
-  .field input { width:100%; background:transparent; border:0; border-bottom:1px solid var(--hairline-dark); padding:0.5rem 0 0.85rem; font-size:16px; font-weight:300; color:var(--jungle-primary); outline:none; }
-  .field input:focus { border-bottom-color:var(--gold); }
-  .btn-primary { background:var(--jungle-primary); color:var(--ivory); border:0; padding:0.85rem 1.5rem; font-size:11px; font-weight:500; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
-  .btn-primary:hover { background:var(--gold); color:var(--jungle-deep); }
-  .integration-row { display:flex; justify-content:space-between; align-items:center; padding:1.5rem 0; border-bottom:1px solid var(--hairline-dark); }
-  .integration-name { font-size:15px; font-weight:500; }
-  .integration-status { font-size:12px; color:rgba(13,40,24,0.5); margin-top:0.15rem; }
-  .btn-connect { background:transparent; border:1px solid var(--hairline-dark); color:var(--jungle-primary); padding:0.6rem 1.2rem; font-size:11px; font-weight:500; letter-spacing:0.15em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
-  .toggle-row { display:flex; justify-content:space-between; align-items:center; padding:0.5rem 0; }
-  .toggle { width:44px; height:24px; background:var(--ivory-soft); border:1px solid var(--hairline-dark); border-radius:12px; position:relative; cursor:pointer; }
-  .toggle::after { content:''; position:absolute; top:2px; left:2px; width:18px; height:18px; background:var(--ivory); border-radius:50%; transition:transform 300ms; }
-  .toggle.active { background:var(--jungle-primary); border-color:var(--jungle-primary); }
-  .toggle.active::after { transform:translateX(20px); background:var(--gold); }
-  .billing-row { display:flex; justify-content:space-between; align-items:center; padding:1.5rem 0; }
-  .plan-name { font-size:15px; font-weight:500; }
-  .plan-desc { font-size:12px; color:rgba(13,40,24,0.5); margin-top:0.15rem; }
-  .btn-disabled { background:transparent; border:1px solid var(--hairline-dark); color:rgba(13,40,24,0.4); cursor:not-allowed; padding:0.65rem 1.2rem; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; border-radius:2px; }
-  .coming-soon { font-size:10px; letter-spacing:0.2em; text-transform:uppercase; color:rgba(13,40,24,0.35); margin-left:0.5rem; }
-  .danger-zone { border:1px solid rgba(155,59,59,0.3); border-radius:4px; padding:2rem; background:rgba(155,59,59,0.02); }
-  .danger-text { font-size:14px; color:rgba(155,59,59,0.8); margin-bottom:1.5rem; }
-  .btn-danger { background:transparent; border:1px solid var(--terracotta); color:var(--terracotta); padding:0.75rem 1.5rem; font-size:11px; letter-spacing:0.2em; text-transform:uppercase; cursor:pointer; border-radius:2px; }
-  .btn-danger:hover { background:var(--terracotta); color:var(--ivory); }
-  @media (max-width:880px) { .nav{padding:1.25rem 1.5rem;} .main{padding:3rem 1.5rem 5rem;} }
+  :root {
+    --black: #0A0A0A;
+    --charcoal: #1A1A1A;
+    --gray-dark: #4A4A4A;
+    --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5;
+    --off-white: #FAFAFA;
+    --white: #FFFFFF;
+    --terracotta: #D32F2F; /* Standard professional error red */
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
+    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
+  html, body { height: 100%; }
+  body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--off-white);
+    color: var(--black);
+    overflow-x: hidden;
+    position: relative;
+    line-height: 1.6;
+  }
+
+  /* ===== Ambient Background Motion ===== */
+  .bg-orbs {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden;
+  }
+  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
+  .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
+  .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
+  .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
+  @keyframes float-orb {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(50px, -30px) scale(1.1); }
+    66% { transform: translate(-30px, 40px) scale(0.95); }
+  }
+
+  /* ===== Sidebar (Glassmorphism) ===== */
+  .sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
+    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
+    border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03);
+    display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100;
+  }
+  .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); margin-bottom: 3rem; padding: 0 0.5rem; }
+  .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 8px; display: grid; place-items: center; color: var(--white); font-size: 1rem; font-weight: 800; }
+  .brand__name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
+
+  .nav-links { display: flex; flex-direction: column; gap: 0.5rem; flex-grow: 1; }
+  .nav-link { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s ease; }
+  .nav-link:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
+  .nav-link.active { background: var(--black); color: var(--white); }
+  .nav-link svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+  .sidebar-footer { border-top: 1px solid rgba(229, 229, 229, 0.6); padding-top: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+  .user-card { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem; margin-bottom: 0.5rem; }
+  .avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--black); color: var(--white); display: grid; place-items: center; }
+  .user-info { display: flex; flex-direction: column; }
+  .user-name { font-size: 0.9rem; font-weight: 600; color: var(--black); }
+  .user-email { font-size: 0.75rem; color: var(--gray-mid); }
+
+  .btn-logout { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--gray-dark); font-size: 0.95rem; font-weight: 500; padding: 0.75rem 1rem; border-radius: 8px; transition: all 0.2s ease; background: none; border: none; cursor: pointer; font-family: inherit; text-align: left; }
+  .btn-logout:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
+  .btn-logout svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+  /* ===== Main Layout ===== */
+  .main-content { margin-left: 260px; padding: 3rem 3rem 6rem; min-height: 100vh; position: relative; }
+  
+  .page-head { margin-bottom: 3.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--gray-light); }
+  .eyebrow { display: inline-flex; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1rem; }
+  .page-title { font-weight: 800; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; color: var(--black); }
+  .page-title em { font-style: normal; color: var(--gray-mid); font-weight: 800; }
+
+  .section { margin-bottom: 4rem; }
+  .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light); }
+
+  .field { margin-bottom: 2rem; }
+  .field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 0.85rem; }
+  .field input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--gray-light); padding: 0.6rem 0 0.9rem; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500; color: var(--black); outline: none; transition: border-color 300ms var(--ease-precise); }
+  .field input::placeholder { color: var(--gray-mid); font-weight: 400; }
+  .field input:focus { border-bottom-color: var(--black); }
+
+  .btn-primary { background: var(--black); color: var(--white); border: 1px solid var(--black); padding: 0.8rem 1.4rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; transition: all 0.2s var(--ease-quiet); }
+  .btn-primary:hover { background: transparent; color: var(--black); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(10, 10, 10, 0.1); }
+
+  .toggle-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; }
+  .toggle-label { font-size: 1rem; color: var(--black); font-weight: 500; }
+  .toggle { width: 44px; height: 24px; background: var(--gray-light); border: 1px solid var(--gray-light); border-radius: 12px; position: relative; cursor: pointer; transition: background 300ms var(--ease-precise), border-color 300ms var(--ease-precise); }
+  .toggle::after { content: ''; position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; background: var(--white); border-radius: 50%; transition: transform 300ms var(--ease-quiet), background 300ms var(--ease-quiet); box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+  .toggle.active { background: var(--black); border-color: var(--black); }
+  .toggle.active::after { transform: translateX(20px); background: var(--white); }
+
+  .billing-row { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; }
+  .plan-name { font-size: 1rem; font-weight: 600; color: var(--black); }
+  .plan-desc { font-size: 0.85rem; color: var(--gray-dark); margin-top: 0.15rem; }
+  .btn-disabled { background: transparent; border: 1px solid var(--gray-light); color: var(--gray-mid); cursor: not-allowed; padding: 0.65rem 1.2rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; border-radius: 6px; }
+  .coming-soon { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; color: var(--gray-mid); margin-left: 0.5rem; }
+
+  .danger-zone { border: 1px solid rgba(211, 47, 47, 0.3); border-radius: 8px; padding: 2rem; background: rgba(211, 47, 47, 0.02); }
+  .danger-text { font-size: 0.95rem; color: var(--terracotta); margin-bottom: 1.5rem; line-height: 1.5; }
+  .btn-danger { background: transparent; border: 1px solid var(--terracotta); color: var(--terracotta); padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; cursor: pointer; border-radius: 6px; transition: all 0.2s var(--ease-precise); }
+  .btn-danger:hover { background: var(--terracotta); color: var(--white); }
+
+  /* ===== Scroll Reveal ===== */
+  .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+  /* Responsive */
+  @media (max-width: 880px) {
+    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 1rem 1.5rem; }
+    .brand { margin-bottom: 0; margin-right: auto; }
+    .nav-links { display: none; }
+    .sidebar-footer { border-top: none; padding-top: 0; flex-direction: row; }
+    .user-info { display: none; }
+    .btn-logout { padding: 0.5rem; }
+    .main-content { margin-left: 0; padding: 2rem 1.5rem 4rem; }
+  }
 </style>
 </head>
 <body>
-<nav class="nav"><a href="dashboard.html" class="brand"><div class="brand__mark">J</div><div class="brand__name">Jessel<sup>™</sup></div></a></nav>
-<main class="main">
-  <div class="form-eyebrow">Settings</div>
-  <h1 class="form-title">Account <em>settings</em>.</h1>
 
-  <section class="section">
+<!-- Ambient Background Orbs -->
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<aside class="sidebar">
+  <a href="dashboard.html" class="brand">
+    <div class="brand__mark">J</div>
+    <div class="brand__name">Jessel</div>
+  </a>
+  
+  <nav class="nav-links">
+    <a href="dashboard.html" class="nav-link">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      Projects
+    </a>
+    <a href="settings.html" class="nav-link active">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Settings
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-card">
+      <div class="avatar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div class="user-info">
+        <span class="user-name">Account</span>
+        <span class="user-email">settings</span>
+      </div>
+    </div>
+    <button class="btn-logout" id="logoutBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      Log out
+    </button>
+  </div>
+</aside>
+
+<main class="main-content">
+  <div class="page-head reveal">
+    <div class="eyebrow">Settings</div>
+    <h1 class="page-title">Account <em>settings</em>.</h1>
+  </div>
+
+  <section class="section reveal">
     <h2 class="section-title">Profile</h2>
     <form id="profileForm">
-      <div class="field"><label for="name">Full name</label><input id="name" type="text" placeholder="Enter your name"></div>
-      <div class="field"><label for="email">Email address</label><input id="email" type="email" placeholder="you@email.com"></div>
-      <button class="btn-primary" type="submit" id="saveBtn"><span>Save changes</span></button>
+      <div class="field">
+        <label for="name">Full name</label>
+        <input id="name" type="text" placeholder="Enter your name">
+      </div>
+      <div class="field">
+        <label for="email">Email address</label>
+        <input id="email" type="email" placeholder="you@email.com">
+      </div>
+      <button class="btn-primary" type="submit" id="saveBtn">
+        <span>Save changes</span>
+      </button>
     </form>
   </section>
 
-  <section class="section">
-    <h2 class="section-title">Connected accounts</h2>
-    <div class="integration-row">
-      <div><div class="integration-name">GitHub</div><div class="integration-status">Not connected</div></div>
-      <button class="btn-connect" disabled>Connect</button>
-    </div>
-    <div class="integration-row">
-      <div><div class="integration-name">Google</div><div class="integration-status">Not connected</div></div>
-      <button class="btn-connect" disabled>Connect</button>
-    </div>
-  </section>
-
-  <section class="section">
+  <section class="section reveal">
     <h2 class="section-title">Notifications</h2>
     <div class="toggle-row">
-      <span>Email me when a project gets a new update</span>
+      <span class="toggle-label">Email me when a project gets a new update</span>
       <div class="toggle" id="notifToggle"></div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section reveal">
     <h2 class="section-title">Billing</h2>
     <div class="billing-row">
-      <div><div class="plan-name">Free plan</div><div class="plan-desc">Includes 3 projects and weekly digests.</div></div>
-      <div style="display:flex;align-items:center;"><button class="btn-disabled">Upgrade</button><span class="coming-soon">Coming soon</span></div>
+      <div>
+        <div class="plan-name">Free plan</div>
+        <div class="plan-desc">Includes 3 projects and weekly digests.</div>
+      </div>
+      <div style="display: flex; align-items: center;">
+        <button class="btn-disabled" disabled>Upgrade</button>
+        <span class="coming-soon">Coming soon</span>
+      </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section reveal">
     <h2 class="section-title">Danger zone</h2>
     <div class="danger-zone">
       <p class="danger-text">This permanently deletes your account and all projects. This can't be undone.</p>
       <button class="btn-danger" id="deleteBtn">Delete account</button>
     </div>
   </section>
+
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -119,13 +246,37 @@
       document.getElementById('email').value = user.email || '';
     }
     document.getElementById('notifToggle').classList.toggle('active', notify);
+    
+    // Trigger entrance animations
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('is-visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    const sections = document.querySelectorAll('.section, .page-head');
+    sections.forEach((sec, i) => {
+      sec.style.transitionDelay = `${300 + i * 100}ms`;
+      io.observe(sec);
+    });
   }
 
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    window.location.href = 'login.html';
+  });
+
+  // Notification Toggle
   document.getElementById('notifToggle').addEventListener('click', function () {
     notify = !notify;
     this.classList.toggle('active', notify);
   });
 
+  // Save Profile
   document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
@@ -136,6 +287,7 @@
     setTimeout(() => { btn.querySelector('span').textContent = 'Save changes'; }, 2000);
   });
 
+  // Delete Account
   document.getElementById('deleteBtn').addEventListener('click', async () => {
     if (!confirm("This permanently deletes your account and all projects. This can't be undone. Continue?")) return;
     await sb.auth.signOut();
@@ -144,5 +296,6 @@
 
   load();
 </script>
+
 </body>
 </html>
