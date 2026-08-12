@@ -25,7 +25,7 @@ export default async function handler(req, res) {
       body: JSON.stringify({
         sender: {
           name: 'Jessel',
-          email: 'jenoch637@gmail.com',
+          email: 'updates@jessel.me',
         },
         to: [{ email: clientEmail }],
         subject: `New update on ${projectName}`,
