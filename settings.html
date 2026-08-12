@@ -10,49 +10,27 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0A0A0A;
-    --charcoal: #1A1A1A;
-    --gray-dark: #4A4A4A;
-    --gray-mid: #8A8A8A;
-    --gray-light: #E5E5E5;
-    --off-white: #FAFAFA;
-    --white: #FFFFFF;
-    --terracotta: #D32F2F; /* Standard professional error red */
-    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+    --black: #0A0A0A; --charcoal: #1A1A1A; --gray-dark: #4A4A4A; --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5; --off-white: #FAFAFA; --white: #FFFFFF; --terracotta: #D32F2F;
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1); --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
   html, body { height: 100%; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--off-white);
-    color: var(--black);
-    overflow-x: hidden;
-    position: relative;
-    line-height: 1.6;
-  }
+  body { font-family: 'Inter', sans-serif; background-color: var(--off-white); color: var(--black); overflow-x: hidden; position: relative; line-height: 1.6; }
 
-  /* ===== Ambient Background Motion ===== */
-  .bg-orbs {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden;
-  }
+  .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
   .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
   .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
   .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
   .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
-  @keyframes float-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, -30px) scale(1.1); }
-    66% { transform: translate(-30px, 40px) scale(0.95); }
-  }
+  @keyframes float-orb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 66% { transform: translate(-30px, 40px) scale(0.95); } }
 
-  /* ===== Sidebar (Glassmorphism) ===== */
-  .sidebar {
-    position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
-    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03);
-    display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100;
-  }
+  /* Mobile Top Bar */
+  .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.8); z-index: 99; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
+  .mobile-menu-btn { background: none; border: none; color: var(--black); cursor: pointer; padding: 0.5rem; display: flex; align-items: center; }
+  .mobile-logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--black); text-decoration: none; }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03); display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100; transition: transform 0.3s var(--ease-quiet); }
   .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); margin-bottom: 3rem; padding: 0 0.5rem; }
   .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 8px; display: grid; place-items: center; color: var(--white); font-size: 1rem; font-weight: 800; }
   .brand__name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -74,9 +52,10 @@
   .btn-logout:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
   .btn-logout svg { width: 20px; height: 20px; stroke-width: 1.5; }
 
-  /* ===== Main Layout ===== */
+  .mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 90; opacity: 0; transition: opacity 0.3s ease; }
+  .mobile-overlay.active { display: block; opacity: 1; }
+
   .main-content { margin-left: 260px; padding: 3rem 3rem 6rem; min-height: 100vh; position: relative; }
-  
   .page-head { margin-bottom: 3.5rem; padding-bottom: 2rem; border-bottom: 1px solid var(--gray-light); }
   .eyebrow { display: inline-flex; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1rem; }
   .page-title { font-weight: 800; font-size: clamp(2.2rem, 4vw, 3rem); line-height: 1.1; letter-spacing: -0.03em; color: var(--black); }
@@ -112,32 +91,36 @@
   .btn-danger { background: transparent; border: 1px solid var(--terracotta); color: var(--terracotta); padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; cursor: pointer; border-radius: 6px; transition: all 0.2s var(--ease-precise); }
   .btn-danger:hover { background: var(--terracotta); color: var(--white); }
 
-  /* ===== Scroll Reveal ===== */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
   .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-  /* Responsive */
-  @media (max-width: 880px) {
-    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 1rem 1.5rem; }
-    .brand { margin-bottom: 0; margin-right: auto; }
-    .nav-links { display: none; }
-    .sidebar-footer { border-top: none; padding-top: 0; flex-direction: row; }
-    .user-info { display: none; }
-    .btn-logout { padding: 0.5rem; }
-    .main-content { margin-left: 0; padding: 2rem 1.5rem 4rem; }
+  @media (max-width: 1024px) {
+    .mobile-topbar { display: flex; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 5rem 1.5rem 4rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- Ambient Background Orbs -->
 <div class="bg-orbs">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 </div>
 
-<aside class="sidebar">
+<div class="mobile-topbar">
+  <button class="mobile-menu-btn" id="menuToggle">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a href="dashboard.html" class="mobile-logo">Jessel</a>
+  <div style="width: 24px;"></div>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
   <a href="dashboard.html" class="brand">
     <div class="brand__mark">J</div>
     <div class="brand__name">Jessel</div>
@@ -223,12 +206,32 @@
       <button class="btn-danger" id="deleteBtn">Delete account</button>
     </div>
   </section>
-
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
+  // Mobile Drawer Logic
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    mobileOverlay.classList.toggle('active');
+  });
+  mobileOverlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    mobileOverlay.classList.remove('active');
+  });
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+        mobileOverlay.classList.remove('active');
+      }
+    });
+  });
+
   let notify = false;
   let currentUser = null;
 
@@ -247,7 +250,6 @@
     }
     document.getElementById('notifToggle').classList.toggle('active', notify);
     
-    // Trigger entrance animations
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -264,19 +266,16 @@
     });
   }
 
-  // Logout
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await sb.auth.signOut();
     window.location.href = 'login.html';
   });
 
-  // Notification Toggle
   document.getElementById('notifToggle').addEventListener('click', function () {
     notify = !notify;
     this.classList.toggle('active', notify);
   });
 
-  // Save Profile
   document.getElementById('profileForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const name = document.getElementById('name').value;
@@ -287,7 +286,6 @@
     setTimeout(() => { btn.querySelector('span').textContent = 'Save changes'; }, 2000);
   });
 
-  // Delete Account
   document.getElementById('deleteBtn').addEventListener('click', async () => {
     if (!confirm("This permanently deletes your account and all projects. This can't be undone. Continue?")) return;
     await sb.auth.signOut();
@@ -296,6 +294,5 @@
 
   load();
 </script>
-
 </body>
 </html>
