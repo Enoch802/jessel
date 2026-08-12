@@ -10,49 +10,26 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --black: #0A0A0A;
-    --charcoal: #1A1A1A;
-    --gray-dark: #4A4A4A;
-    --gray-mid: #8A8A8A;
-    --gray-light: #E5E5E5;
-    --off-white: #FAFAFA;
-    --white: #FFFFFF;
-    --terracotta: #D32F2F;
-    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+    --black: #0A0A0A; --charcoal: #1A1A1A; --gray-dark: #4A4A4A; --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5; --off-white: #FAFAFA; --white: #FFFFFF; --terracotta: #D32F2F;
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1); --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
   html, body { height: 100%; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--off-white);
-    color: var(--black);
-    overflow-x: hidden;
-    position: relative;
-    line-height: 1.6;
-  }
+  body { font-family: 'Inter', sans-serif; background-color: var(--off-white); color: var(--black); overflow-x: hidden; position: relative; line-height: 1.6; }
 
-  /* ===== Ambient Background Motion ===== */
-  .bg-orbs {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden;
-  }
+  .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
   .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
   .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
   .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
   .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
-  @keyframes float-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, -30px) scale(1.1); }
-    66% { transform: translate(-30px, 40px) scale(0.95); }
-  }
+  @keyframes float-orb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 66% { transform: translate(-30px, 40px) scale(0.95); } }
 
-  /* ===== Sidebar (Glassmorphism) ===== */
-  .sidebar {
-    position: fixed; top: 0; left: 0; bottom: 0; width: 260px;
-    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03);
-    display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100;
-  }
+  .mobile-topbar { display: none; position: fixed; top: 0; left: 0; right: 0; height: 60px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid rgba(255, 255, 255, 0.8); z-index: 99; align-items: center; justify-content: space-between; padding: 0 1.5rem; }
+  .mobile-menu-btn { background: none; border: none; color: var(--black); cursor: pointer; padding: 0.5rem; display: flex; align-items: center; }
+  .mobile-logo { font-weight: 800; font-size: 1.1rem; letter-spacing: -0.02em; color: var(--black); text-decoration: none; }
+
+  .sidebar { position: fixed; top: 0; left: 0; bottom: 0; width: 260px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-right: 1px solid rgba(255, 255, 255, 0.8); box-shadow: 4px 0 20px rgba(10, 10, 10, 0.03); display: flex; flex-direction: column; padding: 2rem 1.5rem; z-index: 100; transition: transform 0.3s var(--ease-quiet); }
   .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); margin-bottom: 3rem; padding: 0 0.5rem; }
   .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 8px; display: grid; place-items: center; color: var(--white); font-size: 1rem; font-weight: 800; }
   .brand__name { font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em; }
@@ -74,9 +51,10 @@
   .btn-logout:hover { background: rgba(10, 10, 10, 0.05); color: var(--black); }
   .btn-logout svg { width: 20px; height: 20px; stroke-width: 1.5; }
 
-  /* ===== Main Layout ===== */
+  .mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 90; opacity: 0; transition: opacity 0.3s ease; }
+  .mobile-overlay.active { display: block; opacity: 1; }
+
   .main-content { margin-left: 260px; padding: 3rem 3rem 6rem; min-height: 100vh; position: relative; max-width: 1000px; }
-  
   .header-row { display: flex; justify-content: space-between; align-items: flex-end; padding-bottom: 2.5rem; border-bottom: 1px solid var(--gray-light); margin-bottom: 3rem; }
   .eyebrow { display: inline-flex; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1rem; }
   .title-group { display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap; }
@@ -110,12 +88,7 @@
   .cancel-link:hover { color: var(--black); }
   .inline-btn { background: var(--black); color: var(--white); border: 0; padding: 0.65rem 1.25rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 6px; }
 
-  .client-link-box { 
-    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
-    border: 1px solid rgba(255, 255, 255, 0.9); border-left: 2px solid var(--black); 
-    border-radius: 8px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; 
-    margin-bottom: 4rem; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; 
-  }
+  .client-link-box { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-left: 2px solid var(--black); border-radius: 8px; padding: 1.25rem 1.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 4rem; gap: 1rem; flex-wrap: wrap; margin-top: 3rem; }
   .link-label { font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); display: block; margin-bottom: 0.35rem; }
   .link-url { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--black); }
   .copy-btn { background: var(--black); color: var(--white); border: 0; padding: 0.75rem 1.25rem; font-size: 0.85rem; font-weight: 600; cursor: pointer; border-radius: 6px; transition: all 0.2s ease; }
@@ -134,11 +107,7 @@
   .timeline-item { position: relative; padding-bottom: 2.5rem; }
   .timeline-marker { position: absolute; left: -2rem; top: 5px; width: 11px; height: 11px; border-radius: 50%; background: var(--off-white); border: 2px solid var(--gray-dark); }
   .timeline-item--milestone .timeline-marker { width: 14px; height: 14px; background: var(--black); border-color: var(--charcoal); left: -2.1rem; transform: rotate(45deg); border-radius: 2px; }
-  .timeline-item--milestone .timeline-content { 
-    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
-    border: 1px solid rgba(255, 255, 255, 0.9); border-left: 2px solid var(--black); 
-    padding: 1.25rem 1.5rem; border-radius: 8px; 
-  }
+  .timeline-item--milestone .timeline-content { background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-left: 2px solid var(--black); padding: 1.25rem 1.5rem; border-radius: 8px; }
   .timeline-text { font-size: 1rem; color: var(--gray-dark); line-height: 1.6; margin-bottom: 0.5rem; }
   .timeline-time { font-size: 11px; color: var(--gray-mid); margin-top: 0.75rem; }
   .timeline-empty { text-align: center; padding: 4rem 2rem; color: var(--gray-mid); font-size: 0.95rem; border: 1px dashed var(--gray-light); border-radius: 8px; background: rgba(255, 255, 255, 0.5); margin-left: -2rem; }
@@ -164,51 +133,47 @@
   .milestone-cancel-btn { background: transparent; border: 0; color: var(--gray-mid); font-size: 0.75rem; font-weight: 600; cursor: pointer; text-decoration: underline; }
 
   .repo-list { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1rem; }
-  .repo-card {
-    display: flex; align-items: center; gap: 0.75rem;
-    background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); 
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 8px; padding: 0.85rem 1rem; width: 100%;
-    text-align: left; cursor: pointer;
-    font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;
-    color: var(--black);
-    transition: border-color 300ms var(--ease-precise), background-color 300ms var(--ease-precise);
-  }
+  .repo-card { display: flex; align-items: center; gap: 0.75rem; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 8px; padding: 0.85rem 1rem; width: 100%; text-align: left; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--black); transition: border-color 300ms var(--ease-precise), background-color 300ms var(--ease-precise); }
   .repo-card:hover { border-color: var(--black); background: rgba(255, 255, 255, 0.8); }
   .repo-card svg { width: 16px; height: 16px; color: var(--gray-dark); flex-shrink: 0; }
 
-  /* ===== Scroll Reveal ===== */
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
   .reveal.is-visible { opacity: 1; transform: translateY(0); }
 
-  @media (max-width: 880px) {
-    .sidebar { width: 100%; height: auto; position: relative; flex-direction: row; align-items: center; padding: 1rem 1.5rem; }
-    .brand { margin-bottom: 0; margin-right: auto; }
-    .nav-links { display: none; }
-    .sidebar-footer { border-top: none; padding-top: 0; flex-direction: row; }
-    .user-info { display: none; }
-    .btn-logout { padding: 0.5rem; }
-    .main-content { margin-left: 0; padding: 2rem 1.5rem 4rem; }
+  @media (max-width: 1024px) {
+    .mobile-topbar { display: flex; }
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 5rem 1.5rem 4rem; }
   }
 </style>
 </head>
 <body>
 
-<!-- Ambient Background Orbs -->
 <div class="bg-orbs">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
   <div class="orb orb-3"></div>
 </div>
 
-<aside class="sidebar">
+<div class="mobile-topbar">
+  <button class="mobile-menu-btn" id="menuToggle">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+  </button>
+  <a href="dashboard.html" class="mobile-logo">Jessel</a>
+  <div style="width: 24px;"></div>
+</div>
+
+<div class="mobile-overlay" id="mobileOverlay"></div>
+
+<aside class="sidebar" id="sidebar">
   <a href="dashboard.html" class="brand">
     <div class="brand__mark">J</div>
     <div class="brand__name">Jessel</div>
   </a>
   
   <nav class="nav-links">
-    <a href="dashboard.html" class="nav-link">
+    <a href="dashboard.html" class="nav-link active">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
       Projects
     </a>
@@ -304,16 +269,37 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
-  const params = new URLSearchParams(window.location.search);
-  const projectId = params.get('id');
-  const githubTokenFromUrl = params.get('github_token');
-  let project = null;
+  // Mobile Drawer Logic
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebar = document.getElementById('sidebar');
+  const mobileOverlay = document.getElementById('mobileOverlay');
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    mobileOverlay.classList.toggle('active');
+  });
+  mobileOverlay.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+    mobileOverlay.classList.remove('active');
+  });
+  document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+      if (window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+        mobileOverlay.classList.remove('active');
+      }
+    });
+  });
 
-  // Logout logic for sidebar
+  // Logout
   document.getElementById('logoutBtn').addEventListener('click', async () => {
     await sb.auth.signOut();
     window.location.href = 'login.html';
   });
+
+  const params = new URLSearchParams(window.location.search);
+  const projectId = params.get('id');
+  const githubTokenFromUrl = params.get('github_token');
+  let project = null;
 
   async function load() {
     const { data: { user } } = await sb.auth.getUser();
@@ -545,7 +531,6 @@
     document.getElementById('milestoneForm').classList.remove('active');
     loadUpdates();
 
-    // Milestones always email the client immediately, regardless of digest frequency
     if (project.client_email) {
       fetch('/api/send-update-email', {
         method: 'POST',
@@ -640,7 +625,7 @@
 </script>
 
 <script>
-  // Scroll Reveal Animation (Safe addition for motion graphics)
+  // Scroll Reveal Animation
   const revealEls = document.querySelectorAll('.reveal');
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -651,10 +636,8 @@
     });
   }, { threshold: 0.1 });
 
-  // Observe static elements
   revealEls.forEach(el => observer.observe(el));
 
-  // Observe dynamically loaded elements (like timeline items)
   const dynamicObserver = new MutationObserver((mutations) => {
     mutations.forEach(mutation => {
       mutation.addedNodes.forEach(node => {
