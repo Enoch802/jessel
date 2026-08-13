@@ -10,518 +10,113 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root {
-    /* Strict Monochrome Design System matching index.html */
-    --black: #0A0A0A;
-    --charcoal: #1A1A1A;
-    --gray-dark: #4A4A4A;
-    --gray-mid: #8A8A8A;
-    --gray-light: #E5E5E5;
-    --off-white: #FAFAFA;
-    --white: #FFFFFF;
-    --error: #D32F2F; /* Professional error red */
-    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
-    --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
+    --black: #0A0A0A; --charcoal: #1A1A1A; --gray-dark: #4A4A4A; --gray-mid: #8A8A8A;
+    --gray-light: #E5E5E5; --off-white: #FAFAFA; --white: #FFFFFF; --error: #D32F2F;
+    --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1); --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
   html, body { height: 100%; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background-color: var(--off-white);
-    color: var(--black);
-    overflow-x: hidden;
-    position: relative;
-    line-height: 1.6;
-  }
+  body { font-family: 'Inter', sans-serif; background-color: var(--off-white); color: var(--black); overflow-x: hidden; position: relative; line-height: 1.6; }
 
-  /* ===== Ambient Background Motion ===== */
-  .bg-orbs {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    pointer-events: none;
-    overflow: hidden;
-  }
-  .orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: 0.6;
-    animation: float-orb 20s infinite ease-in-out;
-  }
+  .bg-orbs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+  .orb { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.6; animation: float-orb 20s infinite ease-in-out; }
   .orb-1 { width: 600px; height: 600px; background: #E5E5E5; top: -10%; left: -10%; animation-duration: 25s; }
   .orb-2 { width: 500px; height: 500px; background: #F0F0F0; top: 40%; right: -15%; animation-duration: 30s; animation-delay: -5s; }
   .orb-3 { width: 400px; height: 400px; background: #EFEFEF; bottom: -10%; left: 30%; animation-duration: 22s; animation-delay: -10s; }
-  @keyframes float-orb {
-    0%, 100% { transform: translate(0, 0) scale(1); }
-    33% { transform: translate(50px, -30px) scale(1.1); }
-    66% { transform: translate(-30px, 40px) scale(0.95); }
-  }
+  @keyframes float-orb { 0%, 100% { transform: translate(0, 0) scale(1); } 33% { transform: translate(50px, -30px) scale(1.1); } 66% { transform: translate(-30px, 40px) scale(0.95); } }
 
-  .stage {
-    display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    min-height: 100vh;
-  }
+  .stage { display: grid; grid-template-columns: 1.2fr 1fr; min-height: 100vh; }
 
-  /* ===== LEFT: High-Contrast Typography Panel ===== */
-  .aside {
-    position: relative;
-    padding: 4rem 5rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    z-index: 2;
-  }
-
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 0.8rem;
-    text-decoration: none;
-    color: var(--black);
-  }
-  .brand__mark {
-    width: 32px; height: 32px;
-    background: var(--black);
-    border-radius: 6px;
-    display: grid; place-items: center;
-    color: var(--white);
-    font-family: 'Inter', sans-serif;
-    font-size: 1.1rem;
-    font-weight: 800;
-  }
-  .brand__name {
-    font-family: 'Inter', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: -0.03em;
-    color: var(--black);
-    font-weight: 700;
-  }
-  .brand__name sup {
-    font-family: 'Inter', sans-serif;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    color: var(--gray-mid);
-    margin-left: 0.3rem;
-    vertical-align: super;
-    font-weight: 500;
-  }
+  .aside { position: relative; padding: 4rem 5rem; display: flex; flex-direction: column; justify-content: space-between; z-index: 2; }
+  .brand { display: flex; align-items: center; gap: 0.8rem; text-decoration: none; color: var(--black); }
+  .brand__mark { width: 32px; height: 32px; background: var(--black); border-radius: 6px; display: grid; place-items: center; color: var(--white); font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 800; }
+  .brand__name { font-family: 'Inter', sans-serif; font-size: 1.4rem; letter-spacing: -0.03em; color: var(--black); font-weight: 700; }
+  .brand__name sup { font-family: 'Inter', sans-serif; font-size: 9px; letter-spacing: 0.2em; color: var(--gray-mid); margin-left: 0.3rem; vertical-align: super; font-weight: 500; }
 
   .statement { margin-top: 4rem; max-width: 36rem; }
-
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray-dark);
-    margin-bottom: 2rem;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 700ms var(--ease-quiet), transform 700ms var(--ease-quiet);
-  }
-  .eyebrow::after {
-    content: '';
-    display: inline-block;
-    width: 0;
-    height: 1px;
-    margin-left: 1rem;
-    background: currentColor;
-    transition: width 800ms var(--ease-quiet) 500ms;
-  }
+  .eyebrow { display: inline-flex; align-items: center; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 2rem; opacity: 0; transform: translateY(14px); transition: opacity 700ms var(--ease-quiet), transform 700ms var(--ease-quiet); }
+  .eyebrow::after { content: ''; display: inline-block; width: 0; height: 1px; margin-left: 1rem; background: currentColor; transition: width 800ms var(--ease-quiet) 500ms; }
   .eyebrow.is-in { opacity: 1; transform: none; }
   .eyebrow.is-in::after { width: 2.5rem; }
 
-  .statement h1 {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: clamp(2.8rem, 4.5vw, 4rem);
-    line-height: 1.05;
-    color: var(--black);
-    letter-spacing: -0.04em;
-  }
+  .statement h1 { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(2.8rem, 4.5vw, 4rem); line-height: 1.05; color: var(--black); letter-spacing: -0.04em; }
   .statement h1 .line { display: block; overflow: hidden; }
-  .statement h1 .inner {
-    display: block;
-    transform: translateY(112%);
-    transition: transform 1200ms var(--ease-quiet);
-    transition-delay: calc(var(--i, 0) * 180ms);
-  }
+  .statement h1 .inner { display: block; transform: translateY(112%); transition: transform 1200ms var(--ease-quiet); transition-delay: calc(var(--i, 0) * 180ms); }
   .statement h1.is-in .inner { transform: translateY(0); }
-  .statement h1 em {
-    font-style: normal;
-    color: var(--gray-mid);
-    font-weight: 800;
-  }
+  .statement h1 em { font-style: normal; color: var(--gray-mid); font-weight: 800; }
 
-  .statement .lede {
-    margin-top: 2.5rem;
-    font-size: 1.15rem;
-    line-height: 1.6;
-    color: var(--gray-dark);
-    max-width: 32rem;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 900ms var(--ease-quiet) 900ms, transform 900ms var(--ease-quiet) 900ms;
-  }
+  .statement .lede { margin-top: 2.5rem; font-size: 1.15rem; line-height: 1.6; color: var(--gray-dark); max-width: 32rem; opacity: 0; transform: translateY(20px); transition: opacity 900ms var(--ease-quiet) 900ms, transform 900ms var(--ease-quiet) 900ms; }
   .statement.is-in .lede { opacity: 1; transform: none; }
 
-  .aside__foot {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-top: 4rem;
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-    font-weight: 500;
-  }
-  .aside__foot strong {
-    display: block;
-    color: var(--black);
-    font-weight: 700;
-    margin-bottom: 0.4rem;
-    font-size: 12px;
-  }
+  .aside__foot { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 4rem; font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); font-weight: 500; }
+  .aside__foot strong { display: block; color: var(--black); font-weight: 700; margin-bottom: 0.4rem; font-size: 12px; }
 
-  /* ===== RIGHT: Obvious Glassmorphism Form Card ===== */
-  .main {
-    background: transparent;
-    padding: 4rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    z-index: 2;
-  }
+  .main { background: transparent; padding: 4rem; display: flex; flex-direction: column; justify-content: center; position: relative; z-index: 2; }
+  .form-wrap { width: 100%; max-width: 480px; margin: 0 auto; background: rgba(255, 255, 255, 0.55); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; padding: 3rem; box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08); }
 
-  .form-wrap {
-    width: 100%;
-    max-width: 480px;
-    margin: 0 auto;
-    
-    /* Obvious Glassmorphism */
-    background: rgba(255, 255, 255, 0.55);
-    backdrop-filter: blur(24px);
-    -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
-    border-radius: 16px;
-    padding: 3rem;
-    box-shadow: 0 20px 50px rgba(10, 10, 10, 0.08);
-  }
-
-  .form-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 12px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray-dark);
-    margin-bottom: 1.5rem;
-    margin-top: 0.5rem;
-    opacity: 0;
-    transform: translateY(14px);
-    transition: opacity 700ms var(--ease-quiet) 200ms, transform 700ms var(--ease-quiet) 200ms;
-  }
-  .form-eyebrow::after {
-    content: '';
-    display: inline-block;
-    width: 0; height: 1px;
-    margin-left: 1rem;
-    background: currentColor;
-    transition: width 800ms var(--ease-quiet) 700ms;
-  }
+  .form-eyebrow { display: inline-flex; align-items: center; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-dark); margin-bottom: 1.5rem; margin-top: 0.5rem; opacity: 0; transform: translateY(14px); transition: opacity 700ms var(--ease-quiet) 200ms, transform 700ms var(--ease-quiet) 200ms; }
+  .form-eyebrow::after { content: ''; display: inline-block; width: 0; height: 1px; margin-left: 1rem; background: currentColor; transition: width 800ms var(--ease-quiet) 700ms; }
   .form-eyebrow.is-in { opacity: 1; transform: none; }
   .form-eyebrow.is-in::after { width: 2rem; }
 
-  .form-title {
-    font-family: 'Inter', sans-serif;
-    font-weight: 800;
-    font-size: clamp(1.8rem, 3vw, 2.2rem);
-    line-height: 1.2;
-    color: var(--black);
-    margin-bottom: 1rem;
-    letter-spacing: -0.03em;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 900ms var(--ease-quiet) 400ms, transform 900ms var(--ease-quiet) 400ms;
-  }
+  .form-title { font-family: 'Inter', sans-serif; font-weight: 800; font-size: clamp(1.8rem, 3vw, 2.2rem); line-height: 1.2; color: var(--black); margin-bottom: 1rem; letter-spacing: -0.03em; opacity: 0; transform: translateY(18px); transition: opacity 900ms var(--ease-quiet) 400ms, transform 900ms var(--ease-quiet) 400ms; }
   .form-title.is-in { opacity: 1; transform: none; }
   .form-title em { font-style: normal; color: var(--gray-mid); font-weight: 800; }
 
-  .form-sub {
-    font-size: 1rem;
-    line-height: 1.6;
-    color: var(--gray-dark);
-    margin-bottom: 2.5rem;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 900ms var(--ease-quiet) 600ms, transform 900ms var(--ease-quiet) 600ms;
-  }
+  .form-sub { font-size: 1rem; line-height: 1.6; color: var(--gray-dark); margin-bottom: 2.5rem; opacity: 0; transform: translateY(18px); transition: opacity 900ms var(--ease-quiet) 600ms, transform 900ms var(--ease-quiet) 600ms; }
   .form-sub.is-in { opacity: 1; transform: none; }
 
-  .field {
-    margin-bottom: 1.75rem;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet);
-  }
+  .field { margin-bottom: 1.75rem; opacity: 0; transform: translateY(18px); transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet); }
   .field.is-in { opacity: 1; transform: none; }
 
-  .field label {
-    display: block;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-    margin-bottom: 0.75rem;
-  }
-  .field input {
-    width: 100%;
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid var(--gray-light);
-    padding: 0.6rem 0 0.9rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--black);
-    outline: none;
-    transition: border-color 300ms var(--ease-precise);
-  }
-  .field input::placeholder {
-    color: var(--gray-mid);
-    font-weight: 400;
-  }
+  .field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 0.75rem; }
+  .field input { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--gray-light); padding: 0.6rem 0 0.9rem; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500; color: var(--black); outline: none; transition: border-color 300ms var(--ease-precise); }
+  .field input::placeholder { color: var(--gray-mid); font-weight: 400; }
   .field input:focus { border-bottom-color: var(--black); }
-  .field input.input-error { border-bottom-color: var(--error); }
 
-  .row {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 0 0 2rem;
-    font-size: 0.9rem;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet);
-  }
+  .row { display: flex; justify-content: flex-start; align-items: center; margin: 0 0 2rem; font-size: 0.9rem; opacity: 0; transform: translateY(18px); transition: opacity 800ms var(--ease-quiet) 1100ms, transform 800ms var(--ease-quiet) 1100ms; }
   .row.is-in { opacity: 1; transform: none; }
-  .check {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    color: var(--gray-dark);
-    cursor: pointer;
-    user-select: none;
-    font-weight: 500;
-  }
-  .check input {
-    appearance: none;
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border: 1px solid var(--gray-mid);
-    border-radius: 4px;
-    cursor: pointer;
-    position: relative;
-    background: transparent;
-    transition: background 200ms var(--ease-precise), border-color 200ms var(--ease-precise);
-  }
-  .check input:checked {
-    background: var(--black);
-    border-color: var(--black);
-  }
-  .check input:checked::after {
-    content: '';
-    position: absolute;
-    left: 4px; top: 0;
-    width: 5px; height: 9px;
-    border: solid var(--white);
-    border-width: 0 2px 2px 0;
-    transform: rotate(45deg);
-  }
-  .check a {
-    color: var(--black);
-    text-decoration: none;
-    border-bottom: 1px solid var(--black);
-    padding-bottom: 1px;
-    font-weight: 600;
-  }
+  .check { display: inline-flex; align-items: center; gap: 0.65rem; color: var(--gray-dark); cursor: pointer; user-select: none; font-weight: 500; }
+  .check input { appearance: none; -webkit-appearance: none; width: 16px; height: 16px; border: 1px solid var(--gray-mid); border-radius: 4px; cursor: pointer; position: relative; background: transparent; transition: background 200ms var(--ease-precise), border-color 200ms var(--ease-precise); }
+  .check input:checked { background: var(--black); border-color: var(--black); }
+  .check input:checked::after { content: ''; position: absolute; left: 4px; top: 0; width: 5px; height: 9px; border: solid var(--white); border-width: 0 2px 2px 0; transform: rotate(45deg); }
+  .check a { color: var(--black); text-decoration: none; border-bottom: 1px solid var(--black); padding-bottom: 1px; font-weight: 600; }
 
-  .form-error {
-    font-size: 0.9rem;
-    color: var(--error);
-    margin-bottom: 1rem;
-    display: none;
-    font-weight: 500;
-    background: rgba(211, 47, 47, 0.05);
-    padding: 0.75rem 1rem;
-    border-radius: 6px;
-    border: 1px solid rgba(211, 47, 47, 0.2);
-  }
+  .form-error { font-size: 0.9rem; color: var(--error); margin-bottom: 1rem; display: none; font-weight: 500; background: rgba(211, 47, 47, 0.05); padding: 0.75rem 1rem; border-radius: 6px; border: 1px solid rgba(211, 47, 47, 0.2); }
   .form-error.show { display: block; }
 
-  .submit {
-    width: 100%;
-    background: var(--black);
-    color: var(--white);
-    border: 0;
-    padding: 1.1rem 1.5rem;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    cursor: pointer;
-    border-radius: 8px;
-    position: relative;
-    overflow: hidden;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet), background-color 300ms ease, transform 300ms ease;
-  }
+  .submit { width: 100%; background: var(--black); color: var(--white); border: 0; padding: 1.1rem 1.5rem; font-family: 'Inter', sans-serif; font-size: 0.95rem; font-weight: 600; cursor: pointer; border-radius: 8px; position: relative; overflow: hidden; opacity: 0; transform: translateY(18px); transition: opacity 800ms var(--ease-quiet) 1300ms, transform 800ms var(--ease-quiet) 1300ms, background-color 300ms ease; }
   .submit.is-in { opacity: 1; transform: none; }
-  .submit span {
-    position: relative;
-    z-index: 1;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.65rem;
-    transition: color 400ms var(--ease-quiet);
-  }
-  .submit::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: var(--white);
-    transform: translateY(100%);
-    transition: transform 500ms var(--ease-quiet);
-  }
+  .submit span { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.65rem; transition: color 400ms var(--ease-quiet); }
+  .submit::before { content: ''; position: absolute; inset: 0; background: var(--white); transform: translateY(100%); transition: transform 500ms var(--ease-quiet); }
   .submit:hover::before { transform: translateY(0); }
   .submit:hover span { color: var(--black); }
-  .submit:hover { 
-    transform: translateY(-2px); 
-    box-shadow: 0 8px 20px rgba(10, 10, 10, 0.1);
-    border: 1px solid var(--black);
-  }
-  .submit svg {
-    transition: transform 400ms var(--ease-quiet);
-    position: relative;
-    z-index: 1;
-  }
-  .submit:hover svg { transform: translateX(4px); }
+  .submit:disabled { opacity: 0.6; cursor: not-allowed; }
 
-  .divider {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin: 2rem 0 1.25rem;
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--gray-mid);
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet);
-  }
-  .divider.is-in { opacity: 1; transform: none; }
-  .divider::before, .divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--gray-light);
-  }
-
-  .alt {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet);
-  }
-  .alt.is-in { opacity: 1; transform: none; }
-  .alt a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.6rem;
-    padding: 0.9rem;
-    border: 1px solid var(--gray-light);
-    text-decoration: none;
-    color: var(--black);
-    font-size: 0.95rem;
-    font-weight: 500;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: border-color 300ms var(--ease-precise), background-color 300ms var(--ease-precise);
-    background: rgba(255, 255, 255, 0.4);
-  }
-  .alt a:hover {
-    border-color: var(--black);
-    background: var(--white);
-  }
-
-  .signin {
-    margin-top: 2rem;
-    text-align: center;
-    font-size: 0.95rem;
-    color: var(--gray-dark);
-    opacity: 0;
-    transform: translateY(18px);
-    transition: opacity 800ms var(--ease-quiet), transform 800ms var(--ease-quiet);
-  }
+  .signin { margin-top: 2rem; text-align: center; font-size: 0.95rem; color: var(--gray-dark); opacity: 0; transform: translateY(18px); transition: opacity 800ms var(--ease-quiet) 1800ms, transform 800ms var(--ease-quiet) 1800ms; }
   .signin.is-in { opacity: 1; transform: none; }
-  .signin a {
-    color: var(--black);
-    text-decoration: none;
-    font-weight: 600;
-    border-bottom: 1px solid var(--black);
-    padding-bottom: 2px;
-    margin-left: 0.4rem;
-    transition: color 200ms var(--ease-precise);
-  }
+  .signin a { color: var(--black); text-decoration: none; font-weight: 600; border-bottom: 1px solid var(--black); padding-bottom: 2px; margin-left: 0.4rem; transition: color 200ms var(--ease-precise); }
   .signin a:hover { color: var(--gray-mid); }
 
-  @media (max-width: 1024px) {
-    .main { padding: 3rem 2rem; }
-    .aside { padding: 3rem 2rem; }
-  }
+  /* Verification Waiting State */
+  .verification-state { text-align: center; display: none; flex-direction: column; align-items: center; }
+  .spinner { width: 32px; height: 32px; border: 3px solid var(--gray-light); border-top-color: var(--black); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 1.5rem; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 1024px) { .main { padding: 3rem 2rem; } .aside { padding: 3rem 2rem; } }
   @media (max-width: 880px) {
     .stage { grid-template-columns: 1fr; }
-    .aside {
-      min-height: auto;
-      padding: 2.5rem 1.5rem 0;
-    }
+    .aside { min-height: auto; padding: 2.5rem 1.5rem 0; }
     .statement { margin-top: 2rem; }
     .aside__foot { margin-top: 3rem; }
     .main { padding: 2rem 1.5rem 4rem; }
     .form-wrap { padding: 2rem; }
   }
-
-  @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
-    }
-    .bg-orbs { display: none; }
-  }
 </style>
 </head>
 <body>
 
-<!-- Ambient Background Orbs -->
 <div class="bg-orbs">
   <div class="orb orb-1"></div>
   <div class="orb orb-2"></div>
@@ -529,7 +124,6 @@
 </div>
 
 <div class="stage">
-
   <aside class="aside">
     <div class="aside__content">
       <div class="brand">
@@ -557,63 +151,63 @@
 
   <main class="main">
     <div class="form-wrap">
-      <div class="form-eyebrow">Sign up</div>
-      <h2 class="form-title">Welcome to <em>Jessel</em>.</h2>
-      <p class="form-sub">Create your account to automate your client updates.</p>
+      
+      <!-- Signup Form State -->
+      <div id="signupState">
+        <div class="form-eyebrow">Sign up</div>
+        <h2 class="form-title">Welcome to <em>Jessel</em>.</h2>
+        <p class="form-sub">Create your account to automate your client updates.</p>
 
-      <form id="signupForm" novalidate>
-        <div class="field">
-          <label for="name">Full name</label>
-          <input id="name" type="text" autocomplete="name">
-        </div>
-        <div class="field">
-          <label for="email">Email address</label>
-          <input id="email" type="email" placeholder="you@gmail.com" autocomplete="email">
-        </div>
-        <div class="field">
-          <label for="password">Password</label>
-          <input id="password" type="password" placeholder="••••••••••••" autocomplete="new-password">
-        </div>
-        <div class="field">
-          <label for="confirm-password">Confirm password</label>
-          <input id="confirm-password" type="password" placeholder="••••••••••••" autocomplete="new-password">
-        </div>
-        <div class="row">
-          <label class="check">
-            <input type="checkbox" id="terms">
-            <span>I agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a></span>
-          </label>
-        </div>
-        
-        <div class="form-error" id="formError"></div>
-        
-        <button class="submit" type="submit">
-          <span>Create account
-            <svg width="16" height="12" viewBox="0 0 14 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M1 5H13M13 5L9 1M13 5L9 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="square"/>
-            </svg>
-          </span>
-        </button>
+        <form id="signupForm" novalidate>
+          <div class="field">
+            <label for="name">Full name</label>
+            <input id="name" type="text" autocomplete="name">
+          </div>
+          <div class="field">
+            <label for="email">Email address</label>
+            <input id="email" type="email" placeholder="you@gmail.com" autocomplete="email">
+          </div>
+          <div class="field">
+            <label for="password">Password</label>
+            <input id="password" type="password" placeholder="••••••••••••" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <label for="confirm-password">Confirm password</label>
+            <input id="confirm-password" type="password" placeholder="••••••••••••" autocomplete="new-password">
+          </div>
+          <div class="row">
+            <label class="check">
+              <input type="checkbox" id="terms">
+              <span>I agree to the <a href="terms.html">Terms</a> and <a href="privacy.html">Privacy Policy</a></span>
+            </label>
+          </div>
+          
+          <div class="form-error" id="formError"></div>
+          
+          <button class="submit" type="submit">
+            <span>Create account</span>
+          </button>
+        </form>
 
-        <div class="divider">or continue with</div>
+        <div class="signin">Already have an account?<a href="login.html">Sign in</a></div>
+      </div>
 
-        <div class="alt">
-          <a href="#" id="googleBtn">
-            <svg width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
-            </svg>
-            Continue with Google
-          </a>
-        </div>
-      </form>
+      <!-- Waiting for Verification State -->
+      <div id="verificationState" class="verification-state">
+        <div class="spinner"></div>
+        <h2 class="form-title" style="margin-bottom: 0.5rem; opacity: 1; transform: none;">Check your email</h2>
+        <p class="form-sub" style="text-align: center; margin-bottom: 0; opacity: 1; transform: none;">
+          We've sent a verification link to <strong id="verifiedEmail" style="color: var(--black);"></strong>. 
+          Please open the link in a new tab to activate your account.<br><br>
+          <span style="font-size: 0.85rem; color: var(--gray-mid);">Waiting for you to confirm...</span>
+        </p>
+        <a href="login.html" class="submit" style="text-decoration: none; display: inline-block; margin-top: 2rem; width: auto; padding: 0.8rem 2rem; opacity: 1; transform: none; transition: none; background: transparent; color: var(--black); border: 1px solid var(--gray-light);">
+          <span>I've verified, take me to login</span>
+        </a>
+      </div>
 
-      <div class="signin">Already have an account?<a href="login.html">Sign in</a></div>
     </div>
   </main>
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -630,6 +224,16 @@
   
   ['.eyebrow', '.statement', '.statement h1', '.form-eyebrow', '.form-title', '.form-sub', '.field', '.row', '.submit', '.signin'].forEach(sel => {
     document.querySelectorAll(sel).forEach(el => io.observe(el));
+  });
+
+  // ===== Auto-Login Listener =====
+  // If the user clicks the verification link in their email, Supabase will 
+  // establish a session. This listener will catch it (even in another tab) 
+  // and automatically redirect them to the dashboard.
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      window.location.href = 'dashboard.html';
+    }
   });
 
   // ===== SIGNUP LOGIC =====
@@ -680,10 +284,7 @@
       return;
     }
 
-    // ALWAYS show verification screen if a user is returned.
     if (data.user) {
-      // If Supabase returned a temporary session, sign it out immediately 
-      // to prevent the dashboard from loading prematurely.
       if (data.session) {
         await sb.auth.signOut();
       }
@@ -698,5 +299,6 @@
     }
   });
 </script>
+
 </body>
 </html>
