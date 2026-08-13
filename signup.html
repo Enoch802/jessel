@@ -620,27 +620,23 @@
 <script src="supabase-config.js"></script>
 <script>
   document.querySelectorAll('.statement h1 .inner').forEach((el, i) => el.style.setProperty('--i', i));
+
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
   }, { threshold: 0.15 });
+
   const fields = document.querySelectorAll('.field');
   fields.forEach((field, i) => { field.style.transitionDelay = `${800 + i * 150}ms`; });
-  document.querySelector('.row').style.transitionDelay = `${800 + fields.length * 150}ms`;
-  document.querySelector('.submit').style.transitionDelay = `${800 + (fields.length + 1) * 150}ms`;
-  document.querySelector('.divider').style.transitionDelay = `${800 + (fields.length + 2) * 150}ms`;
-  document.querySelector('.alt').style.transitionDelay = `${800 + (fields.length + 3) * 150}ms`;
-  document.querySelector('.signin').style.transitionDelay = `${800 + (fields.length + 4) * 150}ms`;
-  ['.eyebrow', '.statement', '.statement h1', '.form-eyebrow', '.form-title', '.form-sub', '.field', '.row', '.submit', '.divider', '.alt', '.signin'].forEach(sel => {
+  
+  ['.eyebrow', '.statement', '.statement h1', '.form-eyebrow', '.form-title', '.form-sub', '.field', '.row', '.submit', '.signin'].forEach(sel => {
     document.querySelectorAll(sel).forEach(el => io.observe(el));
   });
-  document.querySelectorAll('.leaf').forEach((leaf, i) => {
-    const rot = parseFloat(leaf.dataset.baseRot || '0');
-    leaf.style.transform = `scale(0.82) rotate(${rot - 5}deg)`;
-    setTimeout(() => { leaf.classList.add('in'); leaf.style.transform = `scale(1) rotate(${rot}deg)`; }, 250 + i * 200);
-  });
 
-  // ===== REAL SIGNUP LOGIC =====
+  // ===== SIGNUP LOGIC =====
   const errorEl = document.getElementById('formError');
+  const signupState = document.getElementById('signupState');
+  const verificationState = document.getElementById('verificationState');
+
   function showError(msg, inputs = []) {
     errorEl.textContent = msg;
     errorEl.classList.add('show');
@@ -664,18 +660,42 @@
     if (password !== confirmPassword) return showError('Passwords do not match.', [document.getElementById('password'), document.getElementById('confirm-password')]);
     if (!terms) return showError('Please agree to the Terms and Privacy Policy to continue.');
 
-    const { data, error } = await sb.auth.signUp({ email, password, options: { data: { name } } });
-    if (error) return showError(error.message);
+    const submitBtn = document.querySelector('.submit');
+    submitBtn.disabled = true;
+    submitBtn.querySelector('span').textContent = 'Creating account...';
 
-    if (data.user) {
-      await sb.from('freelancers').insert({ id: data.user.id, name, email });
+    const { data, error } = await sb.auth.signUp({ 
+      email, 
+      password, 
+      options: { 
+        data: { name },
+        emailRedirectTo: window.location.origin + '/login.html'
+      } 
+    });
+
+    if (error) {
+      showError(error.message);
+      submitBtn.disabled = false;
+      submitBtn.querySelector('span').textContent = 'Create account';
+      return;
     }
-    window.location.href = 'dashboard.html';
-  });
 
-  document.getElementById('googleBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    await sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: window.location.origin + '/dashboard.html' } });
+    // ALWAYS show verification screen if a user is returned.
+    if (data.user) {
+      // If Supabase returned a temporary session, sign it out immediately 
+      // to prevent the dashboard from loading prematurely.
+      if (data.session) {
+        await sb.auth.signOut();
+      }
+      
+      document.getElementById('verifiedEmail').textContent = email;
+      signupState.style.display = 'none';
+      verificationState.style.display = 'flex';
+    } else {
+      showError('Something went wrong. Please try again.');
+      submitBtn.disabled = false;
+      submitBtn.querySelector('span').textContent = 'Create account';
+    }
   });
 </script>
 </body>
