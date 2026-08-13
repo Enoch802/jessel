@@ -251,6 +251,10 @@
       <span class="stat-value mono" id="statPreview">—</span>
       <input type="text" class="stat-input mono" id="editPreviewInput" style="display:none;">
     </div>
+    <div class="stat-item">
+      <span class="stat-label">Team Type</span>
+      <span class="stat-value" id="statTeam">—</span>
+    </div>
   </div>
 
   <div class="stats-edit-actions" id="statsEditActions">
@@ -352,6 +356,11 @@
     document.getElementById('statEmail').textContent = proj.client_email || '—';
     document.getElementById('statFreq').textContent = proj.digest_frequency || '—';
     document.getElementById('statPreview').textContent = proj.preview_url || '—';
+    
+    // Render Team Type nicely
+    const teamTypeText = proj.team_type === 'team' ? 'A team' : 'Just me';
+    document.getElementById('statTeam').textContent = teamTypeText;
+
     document.getElementById('clientLink').textContent = window.location.origin + '/client-page.html?p=' + proj.client_link_slug;
 
     renderGithubSection();
