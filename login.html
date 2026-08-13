@@ -692,7 +692,7 @@
     })();
   }
 
-  // ===== REAL LOGIN LOGIC =====
+   // ===== REAL LOGIN LOGIC =====
   const errorEl = document.getElementById('formError');
   const submitBtn = document.getElementById('submitBtn');
 
@@ -718,20 +718,16 @@
     submitBtn.disabled = false;
 
     if (error) {
-      showError(error.message);
+      // Handle the unverified email error gracefully
+      if (error.message.toLowerCase().includes('email not confirmed')) {
+        showError('Your email is not verified yet. Please check your inbox for the verification link before logging in.');
+      } else {
+        showError(error.message);
+      }
       return;
     }
 
     window.location.href = 'dashboard.html';
-  });
-
-  document.getElementById('googleBtn').addEventListener('click', async (e) => {
-    e.preventDefault();
-    const { error } = await sb.auth.signInWithOAuth({
-      provider: 'google',
-      options: { redirectTo: window.location.origin + '/dashboard.html' }
-    });
-    if (error) showError(error.message);
   });
 </script>
 
