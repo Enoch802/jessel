@@ -11,7 +11,7 @@
 <style>
   :root {
     --black: #0A0A0A; --charcoal: #1A1A1A; --gray-dark: #4A4A4A; --gray-mid: #8A8A8A;
-    --gray-light: #E5E5E5; --off-white: #FAFAFA; --white: #FFFFFF; --terracotta: #D32F2F;
+    --gray-light: #E5E5E5; --off-white: #FAFAFA; --white: #FFFFFF;
     --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1); --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-font-smoothing: antialiased; }
@@ -100,14 +100,25 @@
   .settings-project-name { font-size: 0.95rem; font-weight: 600; color: var(--black); }
   .settings-status-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 4px; background: rgba(10, 10, 10, 0.08); color: var(--gray-dark); }
   .settings-status-badge.completed { background: transparent; border: 1px solid var(--gray-light); color: var(--gray-mid); }
-  .row-delete-btn { background: none; border: none; color: var(--terracotta); cursor: pointer; font-size: 0.85rem; font-weight: 600; text-decoration: underline; transition: color 0.2s; opacity: 0.8; }
-  .row-delete-btn:hover { color: #B71C1C; opacity: 1; }
+  
+  /* Glass Delete Button (Monochrome) */
+  .glass-delete-btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.5); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.9); box-shadow: 0 4px 12px rgba(10, 10, 10, 0.03);
+    color: var(--black); padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s var(--ease-quiet); text-decoration: none;
+  }
+  .glass-delete-btn:hover { background: var(--black); color: var(--white); border-color: var(--black); }
+  .glass-delete-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+  
   .empty-projects { font-size: 0.9rem; color: var(--gray-mid); padding: 1rem 0; }
 
-  .danger-zone { border: 1px solid rgba(211, 47, 47, 0.3); border-radius: 8px; padding: 2rem; background: rgba(211, 47, 47, 0.02); }
-  .danger-text { font-size: 0.95rem; color: var(--terracotta); margin-bottom: 1.5rem; line-height: 1.5; }
-  .btn-danger { background: transparent; border: 1px solid var(--terracotta); color: var(--terracotta); padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; cursor: pointer; border-radius: 6px; transition: all 0.2s var(--ease-precise); }
-  .btn-danger:hover { background: var(--terracotta); color: var(--white); }
+  /* Danger Zone (Monochrome) */
+  .danger-zone { border: 1px solid var(--gray-light); border-radius: 12px; padding: 2rem; background: rgba(255, 255, 255, 0.4); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+  .danger-text { font-size: 0.95rem; color: var(--gray-dark); margin-bottom: 1.5rem; line-height: 1.5; }
+  .btn-danger { background: transparent; border: 1px solid var(--black); color: var(--black); padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; cursor: pointer; border-radius: 6px; transition: all 0.2s var(--ease-precise); }
+  .btn-danger:hover { background: var(--black); color: var(--white); }
 
   .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s var(--ease-quiet), transform 0.8s var(--ease-quiet); }
   .reveal.is-visible { opacity: 1; transform: translateY(0); }
@@ -357,14 +368,47 @@
       projListEl.innerHTML = '<p class="empty-projects">No projects yet. Create one from the Projects page.</p>';
     } else {
       projListEl.innerHTML = projects.map(p => `
-        <div class="settings-project-row">
+        <div class="settings-project-row" id="row-${p.id}">
           <div class="settings-project-info">
             <span class="settings-project-name">${p.name}</span>
             <span class="settings-status-badge ${p.status === 'completed' ? 'completed' : ''}">${p.status === 'completed' ? 'Completed' : 'Active'}</span>
           </div>
-          <button class="row-delete-btn" data-id="${p.id}">Delete</button>
+          <button class="glass-delete-btn" data-id="${p.id}">Delete</button>
         </div>
       `).join('');
+
+      // Attach event listeners to the new delete buttons
+      document.querySelectorAll('.glass-delete-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          const id = e.target.dataset.id;
+          if (!confirm('Are you sure you want to delete this project? This will permanently delete the project and all its updates and comments.')) return;
+
+          // Disable button and show loading state
+          btn.disabled = true;
+          btn.textContent = 'Deleting...';
+
+          // Delete associated updates first
+          await sb.from('updates').delete().eq('project_id', id);
+          // Then delete the project itself
+          const { error: deleteError } = await sb.from('projects').delete().eq('id', id);
+
+          if (deleteError) {
+            alert('Failed to delete project. Please try again.');
+            btn.disabled = false;
+            btn.textContent = 'Delete';
+            return;
+          }
+
+          // Remove the row from DOM
+          const row = document.getElementById(`row-${id}`);
+          if (row) row.remove();
+
+          // If no projects left, show empty state
+          if (document.querySelectorAll('.settings-project-row').length === 0) {
+             projListEl.innerHTML = '<p class="empty-projects">No projects yet. Create one from the Projects page.</p>';
+          }
+        });
+      });
     }
 
     const io = new IntersectionObserver((entries) => {
