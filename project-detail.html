@@ -66,7 +66,7 @@
   .edit-settings-btn { background: transparent; border: 0; color: var(--black); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: color 200ms ease; text-decoration: underline; }
   .edit-settings-btn:hover { color: var(--gray-mid); }
   
-  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; margin-bottom: 0.5rem; }
+  .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; margin-bottom: 2rem; }
   .stat-item { display: flex; flex-direction: column; gap: 0.5rem; }
   .stat-label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); }
   .stat-value { font-size: 0.95rem; word-break: break-all; font-weight: 500; }
@@ -81,6 +81,11 @@
   .toggle-group input:checked + label { color: var(--white); }
   .toggle-slider { position: absolute; top: 4px; bottom: 4px; width: calc(50% - 4px); background: var(--black); border-radius: 6px; transition: transform 400ms var(--ease-quiet); }
   #editWeekly:checked ~ .toggle-slider { transform: translateX(100%); }
+
+  /* Description Box */
+  .description-box { margin-bottom: 3rem; padding: 1.5rem; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 12px; }
+  .description-box .stat-label { margin-bottom: 0.75rem; display: block; }
+  .description-text { font-size: 1rem; color: var(--gray-dark); line-height: 1.6; white-space: pre-wrap; }
 
   .stats-edit-actions { margin-top: 1.5rem; display: none; align-items: center; gap: 1.5rem; margin-bottom: 3rem; }
   .stats-edit-actions.active { display: flex; }
@@ -257,6 +262,12 @@
     </div>
   </div>
 
+  <!-- Description Box -->
+  <div class="description-box reveal">
+    <span class="stat-label">Description</span>
+    <p class="description-text" id="projectDescription">No description provided.</p>
+  </div>
+
   <div class="stats-edit-actions" id="statsEditActions">
     <button class="inline-btn" id="saveSettingsBtn">Save changes</button>
     <button class="cancel-link" id="cancelSettingsBtn">Cancel</button>
@@ -360,6 +371,9 @@
     // Render Team Type nicely
     const teamTypeText = proj.team_type === 'team' ? 'A team' : 'Just me';
     document.getElementById('statTeam').textContent = teamTypeText;
+
+    // Render Description
+    document.getElementById('projectDescription').textContent = proj.description || 'No description provided.';
 
     document.getElementById('clientLink').textContent = window.location.origin + '/client-page.html?p=' + proj.client_link_slug;
 
