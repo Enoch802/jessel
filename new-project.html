@@ -167,6 +167,14 @@
       </div>
       
       <div class="field">
+        <label>Who's working on this?</label>
+        <div class="toggle-group" id="teamToggle">
+          <button type="button" class="active" data-value="solo">Just me</button>
+          <button type="button" data-value="team">A team</button>
+        </div>
+      </div>
+
+      <div class="field">
         <label>Connect GitHub repo</label>
         <p class="helper-text" style="margin-top:0;">GitHub connection isn't live yet — you can connect a repo from the project page once that's built.</p>
       </div>
@@ -248,6 +256,15 @@
     });
   });
 
+  let teamType = 'solo';
+  document.querySelectorAll('#teamToggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#teamToggle button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      teamType = btn.dataset.value;
+    });
+  });
+
   const errorEl = document.getElementById('formError');
   const submitBtn = document.getElementById('submitBtn');
 
@@ -268,11 +285,12 @@
       client_email: document.getElementById('client-email').value.trim() || null,
       digest_frequency: frequency,
       preview_url: document.getElementById('preview-url').value.trim() || null,
+      team_type: teamType,
     });
     submitBtn.disabled = false;
 
     if (error) { errorEl.textContent = error.message; errorEl.classList.add('show'); return; }
-    window.location.href = 'dashboard.html'; 
+    window.location.href = 'projects.html'; 
   });
 
   // ===== Scroll Reveal Animation =====
