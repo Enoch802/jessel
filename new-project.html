@@ -68,6 +68,15 @@
   .field input::placeholder { color: var(--gray-mid); font-weight: 400; }
   .field input:focus { border-bottom-color: var(--black); }
   
+  .field textarea {
+    width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--gray-light);
+    padding: 0.6rem 0 0.9rem; font-family: 'Inter', sans-serif; font-size: 1rem; font-weight: 500;
+    color: var(--black); outline: none; transition: border-color 300ms var(--ease-precise);
+    resize: vertical; min-height: 80px; line-height: 1.5;
+  }
+  .field textarea::placeholder { color: var(--gray-mid); font-weight: 400; }
+  .field textarea:focus { border-bottom-color: var(--black); }
+  
   .helper-text { display: block; font-size: 0.85rem; color: var(--gray-mid); margin-top: 0.5rem; line-height: 1.4; }
 
   .toggle-group { display: inline-flex; background: var(--gray-light); padding: 4px; border-radius: 8px; margin-top: -0.25rem; }
@@ -164,6 +173,11 @@
       <div class="field">
         <label for="project-name">Project name</label>
         <input id="project-name" type="text" required>
+      </div>
+      
+      <div class="field">
+        <label for="project-description">Project description <span style="text-transform:lowercase;opacity:0.6;">(optional)</span></label>
+        <textarea id="project-description" rows="3" placeholder="Briefly describe what this project is about..."></textarea>
       </div>
       
       <div class="field">
@@ -275,6 +289,8 @@
     const name = document.getElementById('project-name').value.trim();
     if (!name) { errorEl.textContent = 'Project name is required.'; errorEl.classList.add('show'); return; }
 
+    const description = document.getElementById('project-description').value.trim();
+
     const { data: { user } } = await sb.auth.getUser();
     if (!user) { window.location.href = 'login.html'; return; }
 
@@ -282,6 +298,7 @@
     const { error } = await sb.from('projects').insert({
       freelancer_id: user.id,
       name,
+      description: description || null,
       client_email: document.getElementById('client-email').value.trim() || null,
       digest_frequency: frequency,
       preview_url: document.getElementById('preview-url').value.trim() || null,
