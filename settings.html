@@ -63,7 +63,6 @@
   .section { margin-bottom: 4rem; }
   .section-title { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 2rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light); }
 
-  /* Stats Grid & Header (for Profile Section) */
   .stats-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1px solid var(--gray-light); }
   .stats-title { font-size: 12px; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gray-mid); }
   .edit-settings-btn { background: transparent; border: 0; color: var(--black); font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: color 200ms ease; text-decoration: underline; }
@@ -254,6 +253,14 @@
     });
   });
 
+  // Helper function to extract name from email
+  function extractNameFromEmail(email) {
+    if (!email) return '';
+    const prefix = email.split('@')[0];
+    // Replace dots/underscores/hyphens with spaces and capitalize words
+    return prefix.split(/[._-]/).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
+  }
+
   // Auth & Data Loading
   let notify = false;
   let currentUser = null;
@@ -273,7 +280,8 @@
   async function loadUserData() {
     const { data: { user } } = await sb.auth.getUser();
     if (user) {
-      document.getElementById('sidebarUserName').textContent = user.user_metadata?.name || user.email;
+      const initialName = user.user_metadata?.full_name || user.user_metadata?.name || user.email;
+      document.getElementById('sidebarUserName').textContent = initialName;
       document.getElementById('sidebarUserEmail').textContent = user.email;
     }
   }
@@ -284,14 +292,44 @@
     currentUser = user;
 
     const { data } = await sb.from('freelancers').select('*').eq('id', user.id).single();
+    
+    let finalName = '';
+    let finalEmail = user.email || '';
+    let needsDbUpdate = false;
+
     if (data) {
-      statName.textContent = data.name || '—';
-      statEmail.textContent = data.email || user.email || '—';
+      finalName = data.name || '';
+      finalEmail = data.email || finalEmail;
       notify = data.notify_on_updates || false;
-    } else {
-      statName.textContent = '—';
-      statEmail.textContent = user.email || '—';
     }
+
+    // If name is missing from DB, check auth metadata (Google/Signup)
+    if (!finalName) {
+      finalName = user.user_metadata?.full_name || user.user_metadata?.name || '';
+    }
+
+    // If still missing, extract from email
+    if (!finalName && finalEmail) {
+      finalName = extractNameFromEmail(finalEmail);
+      needsDbUpdate = true; // Save this extracted name for future use
+    }
+
+    // If we found a name but the DB was empty, save it now
+    if (needsDbUpdate && finalName) {
+      await sb.from('freelancers').upsert({ 
+        id: currentUser.id, 
+        name: finalName, 
+        email: finalEmail 
+      });
+    }
+
+    statName.textContent = finalName || '—';
+    statEmail.textContent = finalEmail || '—';
+    
+    // Update sidebar to show the real name
+    document.getElementById('sidebarUserName').textContent = finalName || finalEmail;
+    document.getElementById('sidebarUserEmail').textContent = finalEmail;
+
     document.getElementById('notifToggle').classList.toggle('active', notify);
     
     const io = new IntersectionObserver((entries) => {
