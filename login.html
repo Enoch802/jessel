@@ -18,6 +18,7 @@
     --gray-light: #E5E5E5;
     --off-white: #FAFAFA;
     --white: #FFFFFF;
+    --error: #D32F2F; /* Professional error red */
     --ease-quiet: cubic-bezier(0.22, 1, 0.36, 1);
     --ease-precise: cubic-bezier(0.4, 0, 0.2, 1);
     --ease-emphasis: cubic-bezier(0.16, 1, 0.3, 1);
@@ -33,7 +34,7 @@
     line-height: 1.6;
   }
 
-  /* ===== Ambient Background Motion (Exact match to index.html) ===== */
+  /* ===== Ambient Background Motion ===== */
   .bg-orbs {
     position: fixed;
     top: 0;
@@ -484,7 +485,7 @@
 
   .form-error {
     font-size: 0.9rem;
-    color: #D32F2F; /* Professional error red */
+    color: var(--error); /* Professional error red */
     margin-bottom: 1rem;
     display: none;
     font-weight: 500;
@@ -619,6 +620,17 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script>
 <script>
+  // ===== Auth State Listener (Creates profile if missing) =====
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session?.user) {
+      const { data: existing } = await sb.from('freelancers').select('id').eq('id', session.user.id).single();
+      if (!existing) {
+        const name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
+        await sb.from('freelancers').insert({ id: session.user.id, name, email: session.user.email });
+      }
+    }
+  });
+
   document.querySelectorAll('.statement h1 .inner').forEach((el, i) => el.style.setProperty('--i', i));
 
   const io = new IntersectionObserver((entries) => {
