@@ -93,6 +93,17 @@
   .btn-disabled { background: transparent; border: 1px solid var(--gray-light); color: var(--gray-mid); cursor: not-allowed; padding: 0.65rem 1.2rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; border-radius: 6px; }
   .coming-soon { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; color: var(--gray-mid); margin-left: 0.5rem; }
 
+  /* Your Projects Section */
+  .settings-project-row { display: flex; justify-content: space-between; align-items: center; padding: 1.25rem 0; border-bottom: 1px solid var(--gray-light); }
+  .settings-project-row:last-child { border-bottom: none; }
+  .settings-project-info { display: flex; align-items: center; gap: 1rem; }
+  .settings-project-name { font-size: 0.95rem; font-weight: 600; color: var(--black); }
+  .settings-status-badge { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.2rem 0.5rem; border-radius: 4px; background: rgba(10, 10, 10, 0.08); color: var(--gray-dark); }
+  .settings-status-badge.completed { background: transparent; border: 1px solid var(--gray-light); color: var(--gray-mid); }
+  .row-delete-btn { background: none; border: none; color: var(--terracotta); cursor: pointer; font-size: 0.85rem; font-weight: 600; text-decoration: underline; transition: color 0.2s; opacity: 0.8; }
+  .row-delete-btn:hover { color: #B71C1C; opacity: 1; }
+  .empty-projects { font-size: 0.9rem; color: var(--gray-mid); padding: 1rem 0; }
+
   .danger-zone { border: 1px solid rgba(211, 47, 47, 0.3); border-radius: 8px; padding: 2rem; background: rgba(211, 47, 47, 0.02); }
   .danger-text { font-size: 0.95rem; color: var(--terracotta); margin-bottom: 1.5rem; line-height: 1.5; }
   .btn-danger { background: transparent; border: 1px solid var(--terracotta); color: var(--terracotta); padding: 0.75rem 1.5rem; font-size: 0.85rem; font-weight: 600; letter-spacing: 0.01em; text-transform: uppercase; cursor: pointer; border-radius: 6px; transition: all 0.2s var(--ease-precise); }
@@ -219,6 +230,14 @@
     </div>
   </section>
 
+  <!-- Your Projects Section -->
+  <section class="section reveal">
+    <h2 class="section-title">Your Projects</h2>
+    <div id="settingsProjectList">
+      <p class="empty-projects">Loading projects...</p>
+    </div>
+  </section>
+
   <section class="section reveal">
     <h2 class="section-title">Danger zone</h2>
     <div class="danger-zone">
@@ -257,7 +276,6 @@
   function extractNameFromEmail(email) {
     if (!email) return '';
     const prefix = email.split('@')[0];
-    // Replace dots/underscores/hyphens with spaces and capitalize words
     return prefix.split(/[._-]/).map(part => part.charAt(0).toUpperCase() + part.slice(1)).join(' ');
   }
 
@@ -303,18 +321,15 @@
       notify = data.notify_on_updates || false;
     }
 
-    // If name is missing from DB, check auth metadata (Google/Signup)
     if (!finalName) {
       finalName = user.user_metadata?.full_name || user.user_metadata?.name || '';
     }
 
-    // If still missing, extract from email
     if (!finalName && finalEmail) {
       finalName = extractNameFromEmail(finalEmail);
-      needsDbUpdate = true; // Save this extracted name for future use
+      needsDbUpdate = true;
     }
 
-    // If we found a name but the DB was empty, save it now
     if (needsDbUpdate && finalName) {
       await sb.from('freelancers').upsert({ 
         id: currentUser.id, 
@@ -326,12 +341,32 @@
     statName.textContent = finalName || '—';
     statEmail.textContent = finalEmail || '—';
     
-    // Update sidebar to show the real name
     document.getElementById('sidebarUserName').textContent = finalName || finalEmail;
     document.getElementById('sidebarUserEmail').textContent = finalEmail;
 
     document.getElementById('notifToggle').classList.toggle('active', notify);
     
+    // Fetch Projects
+    const { data: projects, error: projError } = await sb.from('projects')
+      .select('id, name, status')
+      .eq('freelancer_id', user.id)
+      .order('created_at', { ascending: false });
+
+    const projListEl = document.getElementById('settingsProjectList');
+    if (projError || !projects || projects.length === 0) {
+      projListEl.innerHTML = '<p class="empty-projects">No projects yet. Create one from the Projects page.</p>';
+    } else {
+      projListEl.innerHTML = projects.map(p => `
+        <div class="settings-project-row">
+          <div class="settings-project-info">
+            <span class="settings-project-name">${p.name}</span>
+            <span class="settings-status-badge ${p.status === 'completed' ? 'completed' : ''}">${p.status === 'completed' ? 'Completed' : 'Active'}</span>
+          </div>
+          <button class="row-delete-btn" data-id="${p.id}">Delete</button>
+        </div>
+      `).join('');
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -356,7 +391,6 @@
   document.getElementById('notifToggle').addEventListener('click', function () {
     notify = !notify;
     this.classList.toggle('active', notify);
-    // Immediately persist notification preference
     if (currentUser) {
       sb.from('freelancers').upsert({ id: currentUser.id, notify_on_updates: notify }).then(({ error }) => {
         if (error) console.warn("Failed to save notification preference");
@@ -404,8 +438,6 @@
     if (!error) {
       statName.textContent = newName || '—';
       statEmail.textContent = newEmail || '—';
-      
-      // Update sidebar name dynamically
       document.getElementById('sidebarUserName').textContent = newName || newEmail;
     } else {
       alert('Failed to save profile. Please try again.');
