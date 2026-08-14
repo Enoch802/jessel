@@ -226,12 +226,26 @@
     document.querySelectorAll(sel).forEach(el => io.observe(el));
   });
 
-  // ===== Auto-Login Listener =====
+   // ===== Auto-Login Listener =====
   // If the user clicks the verification link in their email, Supabase will 
-  // establish a session. This listener will catch it (even in another tab) 
-  // and automatically redirect them to the dashboard.
-  sb.auth.onAuthStateChange((event, session) => {
+  // establish a session. This listener will catch it (even in another tab),
+  // create their freelancer profile, and redirect them to the dashboard.
+  sb.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN' && session) {
+      // 1. Check if the freelancer profile already exists
+      const { data: existing } = await sb.from('freelancers').select('id').eq('id', session.user.id).single();
+      
+      // 2. If it doesn't exist, create it now using their signup data
+      if (!existing) {
+        const name = session.user.user_metadata?.full_name || session.user.user_metadata?.name || '';
+        await sb.from('freelancers').insert({ 
+          id: session.user.id, 
+          name: name, 
+          email: session.user.email 
+        });
+      }
+      
+      // 3. Now safe to go to the dashboard
       window.location.href = 'dashboard.html';
     }
   });
