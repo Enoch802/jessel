@@ -674,17 +674,15 @@
     }
 
     submitBtn.disabled = true;
-    
-    // If "Keep me signed in" is UNCHECKED, tell Supabase NOT to persist the session permanently
+
+    // 1. Read the checkbox
     const isPersistent = rememberCheckbox.checked;
-    
-    const { data, error } = await sb.auth.signInWithPassword({ 
-      email, 
-      password,
-      options: {
-        persistSession: isPersistent
-      }
-    });
+
+    // 2. Call the function from your supabase-config.js to switch storage
+    window.configureAuthStorage(isPersistent);
+
+    // 3. Sign in normally. The sb client will now use the correct storage.
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
 
     if (error) {
       // Handle the unverified email error gracefully
@@ -697,30 +695,15 @@
       return;
     }
 
-    // Fallback hack to ensure sessionStorage is used if they didn't check the box
-    if (!isPersistent && data.session) {
-      try {
-        // Find the Supabase token in localStorage and move it to sessionStorage
-        for (let i = 0; i < localStorage.length; i++) {
-          const key = localStorage.key(i);
-          if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
-            const token = localStorage.getItem(key);
-            sessionStorage.setItem(key, token);
-            localStorage.removeItem(key);
-            break;
-          }
-        }
-      } catch (err) {
-        console.warn('Could not switch to sessionStorage:', err);
-      }
-    }
-
+    // Redirect to dashboard
     window.location.href = 'dashboard.html';
   });
 
   document.getElementById('googleBtn').addEventListener('click', async (e) => {
     e.preventDefault();
-    // Google OAuth always persists by default in a new tab/popup context
+    // Google OAuth implies a permanent session
+    window.configureAuthStorage(true);
+    
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
       options: { redirectTo: window.location.origin + '/dashboard.html' }
