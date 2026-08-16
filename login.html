@@ -651,50 +651,10 @@
     if (el) io.observe(el);
   });
 
-  document.querySelectorAll('.leaf').forEach((leaf, i) => {
-    const rot = parseFloat(leaf.dataset.baseRot || '0');
-    leaf.style.transform = `scale(0.82) rotate(${rot - 5}deg)`;
-    setTimeout(() => {
-      leaf.classList.add('in');
-      leaf.style.transform = `scale(1) rotate(${rot}deg)`;
-    }, 250 + i * 200);
-  });
-
-  const isCoarse = window.matchMedia('(pointer: coarse)').matches;
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (!isCoarse && !reducedMotion) {
-    let mx = 0, my = 0, lx = 0, ly = 0;
-    const aside = document.querySelector('.aside');
-
-    window.addEventListener('mousemove', (e) => {
-      const r = aside.getBoundingClientRect();
-      if (e.clientX < r.right) {
-        mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-        my = ((e.clientY - r.top) / r.height - 0.5) * 2;
-      }
-    });
-
-    let started = false;
-    setTimeout(() => { started = true; }, 1700);
-
-    (function tick() {
-      if (started) {
-        lx += (mx - lx) * 0.055;
-        ly += (my - ly) * 0.055;
-        document.querySelectorAll('.leaf').forEach((leaf, i) => {
-          const rot = parseFloat(leaf.dataset.baseRot || '0');
-          const depth = (i + 1) * 9;
-          leaf.style.transform = `translate(${lx * depth}px, ${ly * depth}px) rotate(${rot}deg)`;
-        });
-      }
-      requestAnimationFrame(tick);
-    })();
-  }
-
-   // ===== REAL LOGIN LOGIC =====
+  // ===== REAL LOGIN LOGIC =====
   const errorEl = document.getElementById('formError');
   const submitBtn = document.getElementById('submitBtn');
+  const rememberCheckbox = document.querySelector('.check input');
 
   function showError(msg) {
     errorEl.textContent = msg;
@@ -714,8 +674,17 @@
     }
 
     submitBtn.disabled = true;
-    const { error } = await sb.auth.signInWithPassword({ email, password });
-    submitBtn.disabled = false;
+    
+    // If "Keep me signed in" is UNCHECKED, tell Supabase NOT to persist the session permanently
+    const isPersistent = rememberCheckbox.checked;
+    
+    const { data, error } = await sb.auth.signInWithPassword({ 
+      email, 
+      password,
+      options: {
+        persistSession: isPersistent
+      }
+    });
 
     if (error) {
       // Handle the unverified email error gracefully
@@ -724,10 +693,39 @@
       } else {
         showError(error.message);
       }
+      submitBtn.disabled = false;
       return;
     }
 
+    // Fallback hack to ensure sessionStorage is used if they didn't check the box
+    if (!isPersistent && data.session) {
+      try {
+        // Find the Supabase token in localStorage and move it to sessionStorage
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (key && key.startsWith('sb-') && key.endsWith('-auth-token')) {
+            const token = localStorage.getItem(key);
+            sessionStorage.setItem(key, token);
+            localStorage.removeItem(key);
+            break;
+          }
+        }
+      } catch (err) {
+        console.warn('Could not switch to sessionStorage:', err);
+      }
+    }
+
     window.location.href = 'dashboard.html';
+  });
+
+  document.getElementById('googleBtn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    // Google OAuth always persists by default in a new tab/popup context
+    const { error } = await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/dashboard.html' }
+    });
+    if (error) showError(error.message);
   });
 </script>
 
