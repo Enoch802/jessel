@@ -14,7 +14,10 @@ frontend — every .html file works exactly as-is.
 
 - login.html
 - signup.html
+- forgot-password.html
+- reset-password.html
 - dashboard.html
+- projects.html
 - new-project.html
 - project-detail.html?id=PROJECT_ID   (dynamic via query param)
 - client-page.html?p=CLIENT_LINK_SLUG (dynamic via query param, public, no login)
@@ -26,10 +29,12 @@ frontend — every .html file works exactly as-is.
 
 These become live backend endpoints automatically once deployed on Vercel:
 
-- api/github-webhook.js — receives GitHub push events (not wired to a real
-  GitHub OAuth App yet — that's the next step)
+- api/create-webhook.js — creates a GitHub webhook for a project
+- api/github-callback.js — exchanges the GitHub OAuth code and redirects back
+- api/github-webhook.js — receives GitHub push events and records updates
+- api/send-digests.js — sends scheduled daily or weekly client digests
+- api/send-update-email.js — sends a single client update through Brevo
 - api/summarize.js — turns a commit message into plain English using Groq
-  (needs GROQ_API_KEY set in Vercel's environment variables)
 
 ## Deploying
 
@@ -43,10 +48,27 @@ These become live backend endpoints automatically once deployed on Vercel:
 
 ## Not built yet
 
-- Real GitHub OAuth connection + webhook activation (api/github-webhook.js is
-  ready to receive data, but nothing sends it there yet)
-- Automatic email sending to clients (Resend)
-- Google sign-in requires enabling the Google provider in Supabase Auth settings
+- Real GitHub OAuth connection + webhook activation is still being completed.
+- Automatic email sending to clients depends on `BREVO_API_KEY`.
+- Google sign-in requires enabling the Google provider in Supabase Auth settings.
+
+## Structure
+
+```text
+.
+├── *.html                 Public frontend routes (served from the root)
+├── api/                   Vercel serverless functions and integrations
+├── assets/icons/          PWA icons referenced by manifest.json
+├── apple-touch-icon.png   Root fallback for iOS home-screen icons
+├── manifest.json          PWA metadata
+├── supabase-config.js     Browser Supabase client configuration
+├── sw.js                  Minimal service worker
+├── vercel.json             Vercel deployment and cron configuration
+└── package.json            Runtime dependency metadata
+```
+
+The root-level pages and `api/` directory are intentional: Vercel maps them
+directly to their public URLs, and the frontend has no build or bundling step.
 
 
 
